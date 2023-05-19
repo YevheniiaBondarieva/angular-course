@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NgSwitch, NgSwitchDefault, NgSwitchCase } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css'],
-    standalone: true,
-    imports: [NgSwitch, NgSwitchDefault, NgSwitchCase, RouterOutlet]
+  selector: 'app-root',
+  template: ` <router-outlet></router-outlet> `,
+  styleUrls: ['./app.component.css'],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet],
 })
 export class AppComponent {
   title = 'my-app';
