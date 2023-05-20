@@ -1,1 +1,9 @@
-<p>section works!</p>
+ <div class="section">
+ <form class="">
+        <input type="text" name="search" placeholder="Text to search" class="search-input" [(ngModel)]="searchValue">
+        <button class="search-button" (click)="onSearchClick()">Search</button>
+    </form>
+    <div class="add-course-wrapper">
+        <button class="add-course" type="button"><i class="fa fa-plus"></i> Add course</button>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+$colors: (
+        'bright-grey-color': #414452,
+        'grey-color': #b3b5bd,
+);
+
+.footer {
+    margin: 0;
+        background-color: map-get($colors, 'bright-grey-color');
+        padding: 20px;
+        font-size: 16px;
+        padding-right: 100px;
+        position: sticky;
+        display: flex;
+        color: #b3b5bd;
+        justify-content: flex-end;
+        position: sticky;
+        bottom: 0;
+        margin: 0;
+}
+
+.footer-link {
+    color: map-get($colors, 'grey-color');
+    text-decoration: none;
+}

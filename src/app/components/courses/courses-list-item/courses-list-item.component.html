@@ -1,1 +1,14 @@
-<p>courses-list-item works!</p>
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-header">
+        <h2>Video Course {{courseItem?.id}}.{{courseItem?.name}}</h2>
+        <ul class="length-and-date">
+            <li class="length"><i class="fa-regular fa-clock fa-rotate-270"></i>{{courseItem?.length}}</li>
+            <li class="date"><i class="fa-regular fa-calendar-days"></i>{{courseItem?.date}}</li>
+        </ul>
+        </div>
+{{courseItem?.description}}
+    </div>
+    <button class="course-button"><i class="fa fa-pencil"></i>Edit</button>
+    <button class="course-button" (click)="onDeleteCouse(courseItem?.id ?? null)"><i class="fa fa-trash"></i>Delete</button>
+</div>
