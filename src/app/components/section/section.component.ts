@@ -10,7 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./section.component.scss'],
 })
 export class SectionComponent {
-  searchValue: string | null = null;
+  searchValue: string | undefined = undefined;
 
   onSearchClick(): void {
     console.log(this.searchValue);

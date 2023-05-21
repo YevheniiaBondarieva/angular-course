@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CoursesListItemComponent } from './courses-list-item/courses-list-item.component';
 import { Course } from 'src/app/shared/models/course.models';
-import { courses } from 'src/app/shared/data/courses.data';
 
 @Component({
   selector: 'app-courses',

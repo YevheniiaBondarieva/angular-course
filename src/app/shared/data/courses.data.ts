@@ -20,7 +20,8 @@ export const courses: Course[] = [
   {
     id: 2,
     name: 'Test Course 2',
-    description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, odio!',
+    description:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, odio!',
     isTopRated: true,
     date: '2022-09-28',
     authors: [

@@ -1,6 +1,4 @@
-$colors: (
-      'bright-grey-color': #414452,
-);
+@use '../../../styles/variables' as *;
 
 .list {
       list-style-type: none;
@@ -12,7 +10,7 @@ $colors: (
 
 .link {
      text-decoration: none;
-     color: map-get($colors, 'bright-grey-color');
+     color: map-get($colors, 'bright-grey');
      font-weight: bolder;
      font-size: 20px;
 }

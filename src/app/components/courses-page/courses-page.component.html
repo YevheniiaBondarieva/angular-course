@@ -1,11 +1,11 @@
-<header>
-<app-header></app-header>
-</header>
-<body>
-<app-breadcrumbs></app-breadcrumbs>
-<app-section></app-section>
-<app-courses (deleteCouseItem)="onDeleteCourseItem($event)" [coursesList]="coursesArray"></app-courses>
-</body>
-<footer>
-<app-footer></app-footer>
-</footer>
+<section>
+  <app-header></app-header>
+</section>
+<section>
+  <app-breadcrumbs></app-breadcrumbs>
+  <app-section></app-section>
+  <app-courses
+    (deleteCouseItem)="onDeleteCourseItem($event)"
+    [coursesList]="coursesArray"
+  ></app-courses>
+</section>

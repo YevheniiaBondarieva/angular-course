@@ -1,23 +1,18 @@
-$colors: (
-'white-color': white,
-'black-color': black,
-'light-blue-color': #0ea6e7,
-'agate-grey-color': #c0c3ce,
-);
+@use '../../../../styles/variables' as *;
 
 .course-item{
     display: flex;
     margin-top: 20px;
-    background-color: map-get($colors, 'white-color');
+    background-color: map-get($colors, 'white');
     padding: 20px;
     border-radius: 3px;
     align-items: center;
-    box-shadow: map-get($colors, 'black-color') 0px 1px 4px;
+    box-shadow: map-get($colors, 'black') 0px 1px 4px;
 }
 
 .course-info{
- flex-basis: 80%;
-padding-right: 10px;
+    flex-basis: 80%;
+    padding-right: 10px;
 }
 
 .course-header{
@@ -26,14 +21,14 @@ padding-right: 10px;
     padding-right: 20px;
 }
 
-.length-and-date{
+.duration-and-date{
     display: flex;
-     list-style-type: none;
+    list-style-type: none;
 }
 
 
 .fa-clock, .fa-calendar-days{
-    color: map-get($colors, 'agate-grey-color');
+    color: map-get($colors, 'agate-grey');
     margin-left: 10px;
     margin-right: 10px;
 }
@@ -43,8 +38,8 @@ padding-right: 10px;
     height: 35px;
     padding: 10px;
     width: 90px;
-    color: map-get($colors, 'white-color');
-    background-color: map-get($colors, 'light-blue-color');
+    color: map-get($colors, 'white');
+    background-color: map-get($colors, 'light-blue');
     display: flex;
     border: none;
     border-radius: 2px;

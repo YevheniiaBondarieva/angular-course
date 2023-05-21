@@ -1,10 +1,8 @@
-$colors: (
-    'white-color': white,
-);
+@use '../../../styles/variables' as *;
 
 .link {
     text-decoration: none;
-    color: map-get($colors, 'white-color');
+    color: map-get($colors, 'white');
 }
 
 .image {

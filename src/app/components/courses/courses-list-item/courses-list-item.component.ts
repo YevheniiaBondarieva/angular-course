@@ -10,11 +10,12 @@ import { Course } from 'src/app/shared/models/course.models';
   styleUrls: ['./courses-list-item.component.scss'],
 })
 export class CoursesListItemComponent {
-  @Input() courseItem: Course | null = null;
+  @Input() courseItem: Course | undefined = undefined;
   @Output() deleteCourse = new EventEmitter<string | number>();
 
-  onDeleteCouse(id: number | string | null): void {
-    if (id !== null) {
+  onDeleteCouse(course: Course | undefined): void {
+    const id = course?.id;
+    if (id !== undefined) {
       this.deleteCourse.emit(id);
     }
   }

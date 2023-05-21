@@ -1,24 +1,21 @@
-$colors: (
-        'bright-grey-color': #414452,
-        'grey-color': #b3b5bd,
-);
+@use '../../../styles/variables' as *;
 
 .footer {
     margin: 0;
-        background-color: map-get($colors, 'bright-grey-color');
-        padding: 20px;
-        font-size: 16px;
-        padding-right: 100px;
-        position: sticky;
-        display: flex;
-        color: #b3b5bd;
-        justify-content: flex-end;
-        position: sticky;
-        bottom: 0;
-        margin: 0;
+    background-color: map-get($colors, 'bright-grey');
+    padding: 20px;
+    font-size: 16px;
+    padding-right: 100px;
+    position: sticky;
+    display: flex;
+    color: map-get($colors, 'grey');
+    justify-content: flex-end;
+    position: sticky;
+    bottom: 0;
+    margin: 0;
 }
 
 .footer-link {
-    color: map-get($colors, 'grey-color');
+    color: map-get($colors, 'grey');
     text-decoration: none;
 }

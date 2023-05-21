@@ -7,8 +7,6 @@ import { LogoComponent } from '../logo/logo.component';
   standalone: true,
   imports: [CommonModule, LogoComponent],
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
-
-}
+export class HeaderComponent {}
