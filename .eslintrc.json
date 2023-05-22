@@ -1,19 +1,14 @@
 {
   "root": true,
-  "ignorePatterns": [
-    "projects/**/*"
-  ],
+  "ignorePatterns": ["projects/**/*"],
   "overrides": [
     {
-      "files": [
-        "*.ts"
-      ],
+      "files": ["*.ts"],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
-        "prettier/@typescript-eslint",
         "plugin:prettier/recommended"
       ],
       "rules": {
@@ -32,13 +27,17 @@
             "prefix": "app",
             "style": "kebab-case"
           }
+        ],
+        "prettier/prettier": [
+          "error",
+          {
+            "endOfLine": "auto"
+          }
         ]
       }
     },
     {
-      "files": [
-        "*.html"
-      ],
+      "files": ["*.html"],
       "extends": [
         "plugin:@angular-eslint/template/recommended",
         "plugin:@angular-eslint/template/accessibility"

@@ -1,0 +1,60 @@
+@use '../../../styles/variables' as *;
+
+.section {
+    background-color: map-get($colors, 'signal-white');
+    padding-top: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    margin: 0;
+    margin-bottom: -20px;
+    padding-bottom: 20px;
+}
+
+.search-input {
+    height: 40px;
+    padding-left: 40px;
+    margin-right: 6px;
+    background-image: url($search-image);
+    background-repeat: no-repeat;
+    background-size: 22px;
+    background-position: 12px 50%;
+    color: map-get($colors , 'agate-grey');
+    font-size: 16px;
+    border: 1px solid map-get($colors , 'agate-grey');
+    border-radius: 2px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.search-input:focus {
+    color: map-get($colors, 'black');
+}
+
+.search-button {
+    background-color: map-get($colors, 'yellow-green');
+    border: none;
+    border-radius: 3px;
+    height: 40px;
+    width: 90px;
+    font-size: 16px;
+    color: map-get($colors, 'white');
+}
+
+.add-course-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+}
+
+.add-course {
+    background-color: map-get($colors, 'light-blue');
+    height: 40px;
+    width: 140px;
+    font-size: 16px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border: none;
+    color: map-get($colors, 'white');
+}

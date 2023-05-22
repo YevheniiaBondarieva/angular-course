@@ -1,0 +1,16 @@
+@use '../../../styles/variables' as *;
+
+.list {
+      list-style-type: none;
+      margin: 0;
+      padding-left: 10;
+      padding-top: 15px;
+      padding-bottom: 15px;
+}
+
+.link {
+     text-decoration: none;
+     color: map-get($colors, 'bright-grey');
+     font-weight: bolder;
+     font-size: 20px;
+}

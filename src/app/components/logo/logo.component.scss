@@ -1,0 +1,16 @@
+@use '../../../styles/variables' as *;
+
+.link {
+    text-decoration: none;
+    color: map-get($colors, 'white');
+}
+
+.image {
+    max-height: 60px;
+}
+
+@media (min-width: 768px) {
+    .image {
+        margin-left: 10px;
+    }
+}

@@ -1,0 +1,49 @@
+@use '../../../../styles/variables' as *;
+
+.course-item{
+    display: flex;
+    margin-top: 20px;
+    background-color: map-get($colors, 'white');
+    padding: 20px;
+    border-radius: 3px;
+    align-items: center;
+    box-shadow: map-get($colors, 'black') 0px 1px 4px;
+}
+
+.course-info{
+    flex-basis: 80%;
+    padding-right: 10px;
+}
+
+.course-header{
+    display: flex;
+    justify-content: space-between;
+    padding-right: 20px;
+}
+
+.duration-and-date{
+    display: flex;
+    list-style-type: none;
+}
+
+
+.fa-clock, .fa-calendar-days{
+    color: map-get($colors, 'agate-grey');
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.course-button{
+    margin-left: 20px;
+    height: 35px;
+    padding: 10px;
+    width: 90px;
+    color: map-get($colors, 'white');
+    background-color: map-get($colors, 'light-blue');
+    display: flex;
+    border: none;
+    border-radius: 2px;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+}
