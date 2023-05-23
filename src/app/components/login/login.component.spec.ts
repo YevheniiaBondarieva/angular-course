@@ -1,21 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RenderResult, render } from '@testing-library/angular';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
+  let fixture: RenderResult<LoginComponent>;
   let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [LoginComponent]
-    });
-    fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
+  it('should create', async () => {
+    fixture = await render(LoginComponent);
+    component = fixture.fixture.componentInstance;
     expect(component).toBeTruthy();
   });
 });

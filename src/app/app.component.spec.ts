@@ -1,28 +1,28 @@
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { RenderResult, render } from '@testing-library/angular';
 
 describe('AppComponent', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [RouterTestingModule, AppComponent]
-}));
+  let fixture: RenderResult<AppComponent>;
+  let component: AppComponent;
+
+  beforeEach(async () => {
+    fixture = await render(AppComponent);
+    component = fixture.fixture.componentInstance;
+  });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
-  it(`should have as title 'my-app'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('my-app');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('my-app app is running!');
+  describe('should render', () => {
+    it('the CoursesPageComponent', () => {
+      const coursesPageComponent =
+        fixture.container.querySelector('app-courses-page');
+      expect(coursesPageComponent).toBeTruthy();
+    });
+    it('the FooterComponent', () => {
+      const footerComponent = fixture.container.querySelector('app-footer');
+      expect(footerComponent).toBeTruthy();
+    });
   });
 });

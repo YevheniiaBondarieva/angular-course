@@ -1,18 +1,17 @@
 @use '../../../styles/variables' as *;
 
 .footer {
-    margin: 0;
+    margin: 0px;
     background-color: map-get($colors, 'bright-grey');
     padding: 20px;
     font-size: 16px;
     padding-right: 100px;
-    position: sticky;
     display: flex;
     color: map-get($colors, 'grey');
     justify-content: flex-end;
     position: sticky;
-    bottom: 0;
-    margin: 0;
+    bottom: 0px;
+    margin: 0px;
 }
 
 .footer-link {
