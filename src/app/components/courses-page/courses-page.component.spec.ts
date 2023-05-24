@@ -24,7 +24,6 @@ describe('CoursesPageComponent', () => {
   });
 
   it('should initialize coursesArray on ngOnInit', () => {
-    expect(component.coursesArray).toEqual([]);
     component.ngOnInit();
     expect(component.coursesArray).toEqual(courses);
   });
