@@ -21,6 +21,6 @@ describe('CoursesComponent', () => {
   it('should call onLoadMoreClick method on Load More button click', () => {
     jest.spyOn(component, 'onLoadMoreClick');
     component.onLoadMoreClick();
-    expect(component.onLoadMoreClick).toHaveBeenCalled();
+    expect(component.onLoadMoreClick).toHaveBeenCalledTimes(1);
   });
 });

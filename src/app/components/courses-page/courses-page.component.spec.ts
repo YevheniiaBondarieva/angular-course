@@ -19,6 +19,10 @@ describe('CoursesPageComponent', () => {
     expect(console.log).toHaveBeenCalledWith(courseId);
   });
 
+  it('should have a coursesArray property with a default value of an empty array', () => {
+    expect(component.coursesArray).toEqual([]);
+  });
+
   it('should initialize coursesArray on ngOnInit', () => {
     expect(component.coursesArray).toEqual([]);
     component.ngOnInit();
