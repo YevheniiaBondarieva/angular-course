@@ -1,14 +1,11 @@
 import { courses } from '../../shared/data/courses.data';
 import { CoursesPageComponent } from './courses-page.component';
-import { RenderResult, render } from '@testing-library/angular';
 
 describe('CoursesPageComponent', () => {
-  let fixture: RenderResult<CoursesPageComponent>;
   let component: CoursesPageComponent;
 
-  beforeEach(async () => {
-    fixture = await render(CoursesPageComponent);
-    component = fixture.fixture.componentInstance;
+  beforeEach(() => {
+    component = new CoursesPageComponent();
   });
 
   it('should create', () => {
@@ -23,9 +20,8 @@ describe('CoursesPageComponent', () => {
   });
 
   it('should initialize coursesArray on ngOnInit', () => {
-    const coursesPage = new CoursesPageComponent();
-    expect(coursesPage.coursesArray).toEqual([]);
-    coursesPage.ngOnInit();
-    expect(coursesPage.coursesArray).toEqual(courses);
+    expect(component.coursesArray).toEqual([]);
+    component.ngOnInit();
+    expect(component.coursesArray).toEqual(courses);
   });
 });
