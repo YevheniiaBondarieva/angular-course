@@ -1,18 +1,13 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RenderResult, render } from '@testing-library/angular';
 import { CoursesNewItemComponent } from './courses-new-item.component';
 
-describe('CoursesNewItemComponent', () => {
+describe(' CoursesNewItemComponent', () => {
+  let fixture: RenderResult<CoursesNewItemComponent>;
   let component: CoursesNewItemComponent;
-  let fixture: ComponentFixture<CoursesNewItemComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [CoursesNewItemComponent]
-    });
-    fixture = TestBed.createComponent(CoursesNewItemComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  beforeEach(async () => {
+    fixture = await render(CoursesNewItemComponent);
+    component = fixture.fixture.componentInstance;
   });
 
   it('should create', () => {

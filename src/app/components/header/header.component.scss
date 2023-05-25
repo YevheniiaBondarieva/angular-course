@@ -1,7 +1,7 @@
 @use '../../../styles/variables' as *;
 
 .header{
-    margin: 0;
+    margin: 0px;
     background-color: map-get($colors, 'bright-grey');
     padding: 10px;
     padding-right: 20px;

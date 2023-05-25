@@ -1,21 +1,30 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FooterComponent } from './footer.component';
+import { RenderResult, render } from '@testing-library/angular';
 
 describe('FooterComponent', () => {
+  let fixture: RenderResult<FooterComponent>;
   let component: FooterComponent;
-  let fixture: ComponentFixture<FooterComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [FooterComponent]
-    });
-    fixture = TestBed.createComponent(FooterComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  beforeEach(async () => {
+    fixture = await render(FooterComponent);
+    component = fixture.fixture.componentInstance;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('should render', () => {
+    let footer: HTMLElement | null;
+
+    beforeEach(async () => {
+      footer = fixture.container.querySelector('.footer');
+    });
+
+    it('with text: "Copyright © Videocourses. All rights reserved"', () => {
+      expect(footer?.textContent).toMatch(
+        /Copyright © Videocourses. All rights reserved/,
+      );
+    });
   });
 });

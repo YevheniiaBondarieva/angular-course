@@ -1,21 +1,33 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { HeaderComponent } from './header.component';
+import { RenderResult, render } from '@testing-library/angular';
 
 describe('HeaderComponent', () => {
+  let fixture: RenderResult<HeaderComponent>;
   let component: HeaderComponent;
-  let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [HeaderComponent]
-    });
-    fixture = TestBed.createComponent(HeaderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  beforeEach(async () => {
+    fixture = await render(HeaderComponent);
+    component = fixture.fixture.componentInstance;
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('should render', () => {
+    it('the CoursesPageComponent', () => {
+      const LogoComponent = fixture.container.querySelector('app-logo');
+      expect(LogoComponent).toBeTruthy();
+    });
+    it('placeholder with user login', () => {
+      const link = fixture.container.querySelector('li.list-item a.link');
+      expect(link?.textContent).toMatch(/User Login/);
+    });
+    it('log off button', () => {
+      const button = fixture.container.querySelector(
+        'li.list-item button.log-off',
+      );
+      expect(button).toBeTruthy();
+    });
   });
 });
