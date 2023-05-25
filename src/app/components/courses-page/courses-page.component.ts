@@ -21,7 +21,6 @@ import { Course } from 'src/app/shared/models/course.models';
   styleUrls: ['./courses-page.component.scss'],
 })
 export class CoursesPageComponent implements OnInit {
-
   coursesArray: Course[] = [];
 
   constructor() {
