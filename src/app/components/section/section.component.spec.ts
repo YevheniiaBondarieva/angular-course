@@ -19,12 +19,15 @@ describe('SectionComponent', () => {
     expect(component.searchValue).toBe('test');
   });
 
-  it('calls onSearchClick on button click', async () => {
-    jest.spyOn(component, 'onSearchClick');
+  it('should emit filterCourses event on onSearchClick', async () => {
+    jest.spyOn(component.filterCourses, 'emit');
+    component.searchValue = 'hello';
     const searchButton = fixture.container.querySelector(
       'button.search-button',
     );
     await fireEvent.click(searchButton as Element);
-    expect(component.onSearchClick).toHaveBeenCalledWith();
+    expect(component.filterCourses.emit).toHaveBeenCalledWith(
+      component.searchValue,
+    );
   });
 });

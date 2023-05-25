@@ -1,10 +1,15 @@
 <div class="main">
-  <app-courses-list-item
-    *ngFor="let course of coursesList; trackBy: trackByCourseId"
-    [courseItem]="course"
-    (deleteCourse)="onCouseDelete($event)"
-  ></app-courses-list-item>
-  <button type="button" class="load-more" (click)="onLoadMoreClick()">
+  <div class="no-data" *ngIf="coursesList.length === 0">
+    NO DATA. FEEL FREE TO ADD NEW COURSE
+  </div>
+  <div *ngIf="coursesList.length !== 0">
+    <app-courses-list-item
+      *ngFor="let course of coursesList; trackBy: trackByCourseId"
+      [courseItem]="course"
+      (deleteCourse)="onCouseDelete($event)"
+    ></app-courses-list-item>
+    <button type="button" class="load-more" (click)="onLoadMoreClick()">
     LOAD MORE
   </button>
+  </div>
 </div>

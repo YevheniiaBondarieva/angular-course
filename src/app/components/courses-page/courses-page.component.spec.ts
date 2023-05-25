@@ -1,11 +1,17 @@
+import { OrderByPipe } from '../../shared/pipes/order-by/order-by.pipe';
 import { courses } from '../../shared/data/courses.data';
 import { CoursesPageComponent } from './courses-page.component';
+import { FilterPipe } from '../../shared/pipes/filter/filter.pipe';
 
 describe('CoursesPageComponent', () => {
   let component: CoursesPageComponent;
+  let filter: FilterPipe;
+  let orderBy: OrderByPipe;
 
   beforeEach(() => {
-    component = new CoursesPageComponent();
+    orderBy = new OrderByPipe();
+    filter = new FilterPipe();
+    component = new CoursesPageComponent(orderBy, filter);
   });
 
   it('should create', () => {
@@ -26,5 +32,19 @@ describe('CoursesPageComponent', () => {
   it('should initialize coursesArray on ngOnInit', () => {
     component.ngOnInit();
     expect(component.coursesArray).toEqual(courses);
+  });
+
+  it('should update searchValue on onSearchItem', () => {
+    const searchValue = 'test';
+    component.onSearchItem(searchValue);
+    expect(component.searchValue).toEqual(searchValue);
+  });
+
+  it('should update filteredCoursesArray on onSearchItem', () => {
+    const searchValue = 'test';
+    component.onSearchItem(searchValue);
+    expect(component.filteredCoursesArray).toEqual(
+      filter.transform(component.coursesArray, searchValue),
+    );
   });
 });
