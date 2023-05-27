@@ -1,3 +1,4 @@
+import { inject } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../header/header.component';
@@ -27,16 +28,12 @@ export class CoursesPageComponent implements OnInit {
   coursesArray: Course[] = [];
   filteredCoursesArray: Course[] = [];
   searchValue: string | undefined;
-
-  constructor(
-    private orderByPipe: OrderByPipe,
-    private filterPipe: FilterPipe,
-  ) {}
+  orderByPipe = inject(OrderByPipe);
+  filterPipe = inject(FilterPipe);
 
   ngOnInit(): void {
     console.log('ngOnInit');
     this.coursesArray = courses;
-    // Sorting the courses by creation date
     this.coursesArray = this.orderByPipe.transform(this.coursesArray);
   }
 

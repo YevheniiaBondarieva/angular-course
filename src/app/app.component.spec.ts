@@ -18,10 +18,12 @@ describe('AppComponent', () => {
     it('the CoursesPageComponent', () => {
       const coursesPageComponent =
         fixture.container.querySelector('app-courses-page');
+
       expect(coursesPageComponent).toBeTruthy();
     });
     it('the FooterComponent', () => {
       const footerComponent = fixture.container.querySelector('app-footer');
+
       expect(footerComponent).toBeTruthy();
     });
   });

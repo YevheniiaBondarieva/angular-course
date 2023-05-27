@@ -6,6 +6,8 @@
   <app-section (filterCourses)="onSearchItem($event)"></app-section>
   <app-courses
     (deleteCouseItem)="onDeleteCourseItem($event)"
-    [coursesList]="filteredCoursesArray.length > 0 ? filteredCoursesArray : coursesArray"
+    [coursesList]="
+      filteredCoursesArray.length > 0 ? filteredCoursesArray : coursesArray
+    "
   ></app-courses>
 </section>

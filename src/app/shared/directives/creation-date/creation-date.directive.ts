@@ -19,20 +19,20 @@ export class CreationDateDirective implements OnInit {
 
   private daysBeforeCurrentDate(days: number): Date {
     const date = new Date('2023-01-01');
-    // console.log(date);
     date.setDate(date.getDate() - days);
-    // console.log(date.getDate());
     return date;
   }
 
   ngOnInit(): void {
     if (this.creationDate !== undefined) {
-      if (
-        new Date(this.creationDate) < this.currentDate() &&
-        new Date(this.creationDate) >= this.daysBeforeCurrentDate(14)
-      ) {
+      const isFinishedCourse = new Date(this.creationDate) < this.currentDate();
+      const isTwoWeeksCourse =
+        new Date(this.creationDate) >= this.daysBeforeCurrentDate(14);
+      const isFutureCourse = new Date(this.creationDate) > this.currentDate();
+
+      if (isFinishedCourse && isTwoWeeksCourse) {
         this.borderColor = this.colors.green;
-      } else if (new Date(this.creationDate) > this.currentDate()) {
+      } else if (isFutureCourse) {
         this.borderColor = this.colors.blue;
       }
     }

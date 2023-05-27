@@ -15,7 +15,9 @@ export class FilterPipe implements PipeTransform {
       return coursesItems;
     }
     return coursesItems.filter((courseItem: Course) =>
-      courseItem.name.toUpperCase().includes(filterString.toUpperCase()),
+      courseItem.name
+        .toLocaleUpperCase()
+        .includes(filterString.toLocaleUpperCase()),
     );
   }
 }

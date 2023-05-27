@@ -15,7 +15,9 @@ describe('SectionComponent', () => {
 
   it('updates searchValue on input change', async () => {
     const input = fixture.container.querySelector('form input.search-input');
+
     await fireEvent.input(input as Element, { target: { value: 'test' } });
+
     expect(component.searchValue).toBe('test');
   });
 
@@ -25,7 +27,9 @@ describe('SectionComponent', () => {
     const searchButton = fixture.container.querySelector(
       'button.search-button',
     );
+
     await fireEvent.click(searchButton as Element);
+
     expect(component.filterCourses.emit).toHaveBeenCalledWith(
       component.searchValue,
     );

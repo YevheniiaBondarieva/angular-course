@@ -52,6 +52,7 @@ describe('OrderByPipe', () => {
       },
     ];
     const transformedValue = pipe.transform(coursesItems);
+
     expect(transformedValue).toStrictEqual(expectedResult);
   });
 });
