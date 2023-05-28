@@ -2,12 +2,9 @@ import { courses } from '../../shared/data/courses.data';
 import { CoursesPageComponent } from './courses-page.component';
 import { FilterPipe } from '../../shared/pipes/filter/filter.pipe';
 import { OrderByPipe } from '../../shared/pipes/order-by/order-by.pipe';
-import { inject } from '@angular/core';
+import * as angularCore from '@angular/core';
 
-jest.mock('@angular/core', () => ({
-  ...jest.requireActual('@angular/core'),
-  inject: jest.fn(),
-}));
+const injectSpy = jest.spyOn(angularCore, 'inject');
 
 describe('CoursesPageComponent', () => {
   let component: CoursesPageComponent;
@@ -15,11 +12,8 @@ describe('CoursesPageComponent', () => {
   const orderBy = { transform: jest.fn(() => courses) } as OrderByPipe;
 
   beforeEach(() => {
-    (inject as jest.Mock).mockReturnValue(filter);
-    (inject as jest.Mock).mockReturnValue(orderBy);
+    injectSpy.mockReturnValueOnce(orderBy).mockReturnValueOnce(filter);
     component = new CoursesPageComponent();
-    component.filterPipe = filter;
-    component.orderByPipe = orderBy;
   });
 
   it('should create', () => {
