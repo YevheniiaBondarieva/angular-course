@@ -17,6 +17,7 @@ describe('BreadcrumbsComponent', () => {
   describe('should render', () => {
     it('placeholder with static text "Courses"', () => {
       const link = fixture.container.querySelector('a.link');
+
       expect(link?.textContent).toBe('Courses');
     });
   });

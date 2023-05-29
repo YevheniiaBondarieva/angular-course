@@ -33,12 +33,13 @@
     display: flex;
     justify-content: space-between ;
     flex-direction: row;
-  }
+    }
 
-  .list {
+    .list {
     display: flex;
-  }
-  .list-item {
+    }
+    
+    .list-item {
     margin-left: 20px;
-}
+    }
 }

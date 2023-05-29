@@ -8,6 +8,7 @@ describe('LogoComponent', () => {
   it('should create', async () => {
     fixture = await render(LogoComponent);
     component = fixture.fixture.componentInstance;
+
     expect(component).toBeTruthy();
   });
 });

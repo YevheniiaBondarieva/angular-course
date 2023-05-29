@@ -7,7 +7,7 @@ export const courses: Course[] = [
     description:
       'Learn about where you czn find course description, what information they include, how they work, and details about various components of a course description. Course descriptions report information about a university or college`s class.They`re published both in course catalog.',
     isTopRated: false,
-    date: '2022-09-28',
+    date: '2023-09-28',
     authors: [
       {
         id: '1',
@@ -23,7 +23,7 @@ export const courses: Course[] = [
     description:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, odio!',
     isTopRated: true,
-    date: '2022-09-28',
+    date: '2023-05-23',
     authors: [
       {
         id: '2',
@@ -37,5 +37,21 @@ export const courses: Course[] = [
       },
     ],
     length: 157,
+  },
+  {
+    id: 1,
+    name: 'Hello',
+    description:
+      'Learn about where you czn find course description, what information they include, how they work, and details about various components of a course description. Course descriptions report information about a university or college`s class.They`re published both in course catalog.',
+    isTopRated: true,
+    date: '2023-05-10',
+    authors: [
+      {
+        id: '4',
+        name: 'Kary',
+        lastName: 'Kok',
+      },
+    ],
+    length: 59,
   },
 ];

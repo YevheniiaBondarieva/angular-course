@@ -7,7 +7,9 @@
       class="search-input"
       [(ngModel)]="searchValue"
     />
-    <button class="search-button" (click)="onSearchClick()">Search</button>
+    <button class="search-button" (click)="onSearchClick(searchValue)">
+      Search
+    </button>
   </form>
   <div class="add-course-wrapper">
     <button class="add-course" type="button">

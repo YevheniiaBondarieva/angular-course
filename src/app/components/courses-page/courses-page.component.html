@@ -3,9 +3,11 @@
 </section>
 <section>
   <app-breadcrumbs></app-breadcrumbs>
-  <app-section></app-section>
+  <app-section (filterCourses)="onSearchItem($event)"></app-section>
   <app-courses
     (deleteCouseItem)="onDeleteCourseItem($event)"
-    [coursesList]="coursesArray"
+    [coursesList]="
+      filteredCoursesArray.length > 0 ? filteredCoursesArray : coursesArray
+    "
   ></app-courses>
 </section>

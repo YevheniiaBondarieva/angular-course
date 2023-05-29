@@ -1,14 +1,26 @@
-<div class="course-item">
+<div
+  class="course-item"
+  appCourseCreationDate
+  [creationDate]="courseItem?.date"
+  [class.topRated]="courseItem?.isTopRated"
+>
   <div class="course-info">
     <div class="course-header">
-      <h2>Video Course {{ courseItem?.id }}.{{ courseItem?.name }}</h2>
+      <h2>
+        Video Course {{ courseItem?.id }}.{{ courseItem?.name | uppercase }}
+        <i
+          *ngIf="courseItem?.isTopRated"
+          class="fa-sharp fa-solid fa-star fa-xs"
+        ></i>
+      </h2>
       <ul class="duration-and-date">
         <li class="length">
           <i class="fa-regular fa-clock fa-rotate-270"></i
-          >{{ courseItem?.length }}
+          >{{ courseItem?.length | duration }}
         </li>
         <li class="date">
-          <i class="fa-regular fa-calendar-days"></i>{{ courseItem?.date }}
+          <i class="fa-regular fa-calendar-days"></i
+          >{{ courseItem?.date | date : 'dd MMM, yyyy' }}
         </li>
       </ul>
     </div>

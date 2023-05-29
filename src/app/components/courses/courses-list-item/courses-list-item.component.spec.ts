@@ -12,7 +12,7 @@ describe('CoursesListItemComponent', () => {
           id: 2,
           name: 'Test Course 1',
           description: 'Course descriptions',
-          isTopRated: false,
+          isTopRated: true,
           date: '2022-09-28',
           authors: [
             {
@@ -35,28 +35,40 @@ describe('CoursesListItemComponent', () => {
   it('should emit deleteCourse event on delete button click', async () => {
     jest.spyOn(component.deleteCourse, 'emit');
     const deleteButton = fixture.getByText('Delete');
+
     await fireEvent.click(deleteButton);
+
     expect(component.deleteCourse.emit).toHaveBeenCalledWith(2);
   });
 
   describe('should render', () => {
     it('should render course title correctly', () => {
-      const courseTitle = fixture.getByText('Video Course 2.Test Course 1');
+      const courseTitle = fixture.getByText('Video Course 2.TEST COURSE 1');
+
       expect(courseTitle).toBeTruthy();
     });
 
+    it('should render star icon correctly', () => {
+      const star = fixture.container.querySelector('i.fa-star');
+
+      expect(star).toBeTruthy();
+    });
+
     it('should render course duration correctly', () => {
-      const duration = fixture.getByText(157);
+      const duration = fixture.getByText('28 Sep, 2022');
+
       expect(duration).toBeTruthy();
     });
 
     it('should render course date correctly', () => {
-      const date = fixture.getByText('2022-09-28');
+      const date = fixture.getByText('28 Sep, 2022');
+
       expect(date).toBeTruthy();
     });
 
     it('should render course description correctly', () => {
       const description = fixture.getByText('Course descriptions');
+
       expect(description).toBeTruthy();
     });
   });

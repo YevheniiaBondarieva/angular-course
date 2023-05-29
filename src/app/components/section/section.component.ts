@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -11,8 +11,11 @@ import { FormsModule } from '@angular/forms';
 })
 export class SectionComponent {
   searchValue: string | undefined = undefined;
+  @Output() filterCourses = new EventEmitter<string | undefined>();
 
-  onSearchClick(): void {
-    console.log(this.searchValue);
+  onSearchClick(searchValue: string | undefined): void {
+    if (searchValue !== undefined) {
+      this.filterCourses.emit(searchValue);
+    }
   }
 }
