@@ -11,15 +11,6 @@ describe('CoursesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit deleteCouseItem event on course delete', () => {
-    jest.spyOn(component.deleteCouseItem, 'emit');
-    const courseId = 1;
-
-    component.onCouseDelete(courseId);
-
-    expect(component.deleteCouseItem.emit).toHaveBeenCalledWith(courseId);
-  });
-
   it('should call onLoadMoreClick method on Load More button click', () => {
     jest.spyOn(component, 'onLoadMoreClick');
 

@@ -1,14 +1,15 @@
 import { inject } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { HeaderComponent } from '../header/header.component';
 import { BreadcrumbsComponent } from '../breadcrumbs/breadcrumbs.component';
 import { CoursesComponent } from '../courses/courses.component';
 import { SectionComponent } from '../section/section.component';
-import { courses } from './../../shared/data/courses.data';
-import { Course } from 'src/app/shared/models/course.models';
+import { Course } from '../../shared/models/course.models';
 import { FilterPipe } from '../../shared/pipes/filter/filter.pipe';
 import { OrderByPipe } from '../../shared/pipes/order-by/order-by.pipe';
+import { CoursesService } from '../../shared/services/courses.service';
 
 @Component({
   selector: 'app-courses-page',
@@ -20,7 +21,7 @@ import { OrderByPipe } from '../../shared/pipes/order-by/order-by.pipe';
     BreadcrumbsComponent,
     CoursesComponent,
   ],
-  providers: [OrderByPipe, FilterPipe],
+  providers: [OrderByPipe, FilterPipe, CoursesService],
   templateUrl: './courses-page.component.html',
   styleUrls: ['./courses-page.component.scss'],
 })
@@ -31,14 +32,15 @@ export class CoursesPageComponent implements OnInit {
   orderByPipe = inject(OrderByPipe);
   filterPipe = inject(FilterPipe);
 
+  constructor(private coursesService: CoursesService) {}
+
   ngOnInit(): void {
     console.log('ngOnInit');
-    this.coursesArray = courses;
+    this.coursesArray = this.coursesService.getCourses();
+    this.coursesService.coursesChanged.subscribe((courses: Course[]) => {
+      this.coursesArray = courses;
+    });
     this.coursesArray = this.orderByPipe.transform(this.coursesArray);
-  }
-
-  onDeleteCourseItem(id: number | string | undefined): void {
-    console.log(id);
   }
 
   onSearchItem(searchValue: string | undefined): void {

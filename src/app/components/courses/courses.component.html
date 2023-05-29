@@ -6,7 +6,6 @@
     <app-courses-list-item
       *ngFor="let course of coursesList; trackBy: trackByCourseId"
       [courseItem]="course"
-      (deleteCourse)="onCouseDelete($event)"
     ></app-courses-list-item>
     <button type="button" class="load-more" (click)="onLoadMoreClick()">
       LOAD MORE

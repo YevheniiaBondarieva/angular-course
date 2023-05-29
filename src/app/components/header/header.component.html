@@ -1,13 +1,13 @@
 <header class="header">
   <app-logo></app-logo>
-  <ul class="list">
+  <ul class="list" *ngIf="isAuthenticated">
     <li class="list-item">
       <a href="javascript:void(0)" class="link">
         <i class="fa fa-user icon" aria-hidden="true"></i> User Login</a
       >
     </li>
     <li class="list-item">
-      <button class="log-off">
+      <button class="log-off" (click)="onLogout()">
         <a href="javascript:void(0)" class="link">
           <i class="fa fa-sign-out icon" aria-hidden="true"></i> Log off</a
         >

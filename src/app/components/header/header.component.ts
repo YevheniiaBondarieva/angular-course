@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { LogoComponent } from '../logo/logo.component';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -9,4 +11,16 @@ import { LogoComponent } from '../logo/logo.component';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {}
+export class HeaderComponent implements OnInit {
+  isAuthenticated = false;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    this.isAuthenticated = this.authService.isAuthenticated();
+  }
+
+  onLogout() {
+    this.authService.logout();
+  }
+}

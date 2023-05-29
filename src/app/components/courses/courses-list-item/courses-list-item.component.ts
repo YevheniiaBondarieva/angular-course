@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { Course } from 'src/app/shared/models/course.models';
 import { CreationDateDirective } from '../../../shared/directives/creation-date/creation-date.directive';
 import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
+import { CoursesService } from '../../../shared/services/courses.service';
 
 @Component({
   selector: 'app-courses-list-item',
@@ -13,12 +15,13 @@ import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
 })
 export class CoursesListItemComponent {
   @Input() courseItem: Course | undefined = undefined;
-  @Output() deleteCourse = new EventEmitter<string | number>();
 
-  onDeleteCouse(course: Course | undefined): void {
-    const id = course?.id;
-    if (id !== undefined) {
-      this.deleteCourse.emit(id);
+  constructor(private coursesService: CoursesService) {}
+
+  onDeleteCouse(id: string | number | undefined): void {
+    const confirmation = confirm('Do you really want to delete this course?');
+    if (confirmation && id) {
+      this.coursesService.removeCourseItem(id);
     }
   }
 }

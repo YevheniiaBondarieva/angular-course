@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { CoursesListItemComponent } from './courses-list-item/courses-list-item.component';
-import { Course } from 'src/app/shared/models/course.models';
+import { Course } from '../../shared/models/course.models';
 
 @Component({
   selector: 'app-courses',
@@ -12,13 +13,6 @@ import { Course } from 'src/app/shared/models/course.models';
 })
 export class CoursesComponent {
   @Input() coursesList: Course[] = [];
-  @Output() deleteCouseItem = new EventEmitter<string | number>();
-
-  onCouseDelete(id: number | string | null): void {
-    if (id !== null) {
-      this.deleteCouseItem.emit(id);
-    }
-  }
 
   onLoadMoreClick(): void {
     console.log('Load More');

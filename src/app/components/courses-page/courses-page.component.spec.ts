@@ -1,8 +1,10 @@
+import * as angularCore from '@angular/core';
+
 import { courses } from '../../shared/data/courses.data';
 import { CoursesPageComponent } from './courses-page.component';
 import { FilterPipe } from '../../shared/pipes/filter/filter.pipe';
 import { OrderByPipe } from '../../shared/pipes/order-by/order-by.pipe';
-import * as angularCore from '@angular/core';
+import { CoursesService } from '../../shared/services/courses.service';
 
 const injectSpy = jest.spyOn(angularCore, 'inject');
 
@@ -10,23 +12,19 @@ describe('CoursesPageComponent', () => {
   let component: CoursesPageComponent;
   const filter = { transform: jest.fn() } as FilterPipe;
   const orderBy = { transform: jest.fn(() => courses) } as OrderByPipe;
+  let coursesService: CoursesService;
 
   beforeEach(() => {
+    coursesService = {
+      getCourses: jest.fn(),
+      coursesChanged: { subscribe: jest.fn() },
+    } as unknown as CoursesService;
     injectSpy.mockReturnValueOnce(orderBy).mockReturnValueOnce(filter);
-    component = new CoursesPageComponent();
+    component = new CoursesPageComponent(coursesService);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should log the deleted course id on onDeleteCourseItem', () => {
-    jest.spyOn(console, 'log');
-    const courseId = 2;
-
-    component.onDeleteCourseItem(courseId);
-
-    expect(console.log).toHaveBeenCalledWith(courseId);
   });
 
   it('should have a coursesArray property with a default value of an empty array', () => {
@@ -34,6 +32,9 @@ describe('CoursesPageComponent', () => {
   });
 
   it('should initialize coursesArray on ngOnInit', () => {
+    const getCoursesMock = jest.fn(() => courses);
+    coursesService.getCourses = getCoursesMock;
+
     component.ngOnInit();
 
     expect(component.coursesArray).toEqual(courses);
