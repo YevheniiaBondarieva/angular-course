@@ -1,8 +1,5 @@
-<app-header></app-header>
-<div *ifAuthenticated="false">
-  <app-login></app-login>
-</div>
-<div *ifAuthenticated="true">
-  <app-courses-page></app-courses-page>
-</div>
-<app-footer></app-footer>
+<app-header />
+<app-login *ifAuthenticated="false" />
+<app-breadcrumbs *ifAuthenticated="true" />
+<app-courses-page *ifAuthenticated="true" />
+<app-footer />

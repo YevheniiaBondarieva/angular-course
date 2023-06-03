@@ -43,12 +43,14 @@ describe('FilterPipe', () => {
   it('create an instance', () => {
     expect(pipe).toBeTruthy();
   });
+
   it('should return all courses items if filter string is undefined', () => {
     const filterString: string | undefined = undefined;
     const transformedValue = pipe.transform(coursesItems, filterString);
 
     expect(transformedValue).toEqual(coursesItems);
   });
+
   it('filter course items based on the filter string', () => {
     const filterString: string | undefined = 'hello';
     const expectedValue: Course[] = [

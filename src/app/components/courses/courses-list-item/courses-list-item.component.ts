@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Course } from 'src/app/shared/models/course.models';
@@ -15,8 +15,7 @@ import { CoursesService } from '../../../shared/services/courses.service';
 })
 export class CoursesListItemComponent {
   @Input() courseItem: Course | undefined = undefined;
-
-  constructor(private coursesService: CoursesService) {}
+  coursesService = inject(CoursesService);
 
   onDeleteCouse(id: string | number | undefined): void {
     const confirmation = confirm('Do you really want to delete this course?');

@@ -1,9 +1,4 @@
 <section>
-  <app-breadcrumbs></app-breadcrumbs>
   <app-section (filterCourses)="onSearchItem($event)"></app-section>
-  <app-courses
-    [coursesList]="
-      filteredCoursesArray.length > 0 ? filteredCoursesArray : coursesArray
-    "
-  ></app-courses>
+  <app-courses [searchValue]="searchValue"></app-courses>
 </section>

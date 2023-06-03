@@ -9,6 +9,7 @@ describe('SectionComponent', () => {
     fixture = await render(SectionComponent);
     component = fixture.fixture.componentInstance;
   });
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

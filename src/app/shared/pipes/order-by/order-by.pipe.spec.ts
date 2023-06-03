@@ -10,6 +10,7 @@ describe('OrderByPipe', () => {
   it('create an instance', () => {
     expect(pipe).toBeTruthy();
   });
+
   it('should return the courses items sorted by date in descending order', () => {
     const coursesItems = [
       {

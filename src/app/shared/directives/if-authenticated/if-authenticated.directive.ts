@@ -5,7 +5,9 @@ import {
   OnInit,
   TemplateRef,
   ViewContainerRef,
+  inject,
 } from '@angular/core';
+
 import { AuthService } from './../../services/auth.service';
 import { Subscription } from 'rxjs';
 
@@ -15,18 +17,22 @@ import { Subscription } from 'rxjs';
   standalone: true,
 })
 export class IfAuthenticatedDirective implements OnInit, OnDestroy {
+  @Input() set ifAuthenticated(authenticated: boolean) {
+    this.value = authenticated;
+    this.updateView();
+  }
+  authService = inject(AuthService);
+  templateRef = inject(TemplateRef<unknown>);
+  vcRef = inject(ViewContainerRef);
+  value: boolean | undefined;
+  status: boolean = this.authService.isAuthenticated();
   private subscription: Subscription | undefined;
-
-  constructor(
-    private authService: AuthService,
-    private templateRef: TemplateRef<unknown>,
-    private vcRef: ViewContainerRef,
-  ) {}
 
   ngOnInit() {
     this.subscription = this.authService.statusChanged.subscribe(
       (authenticated: boolean) => {
-        this.updateView(authenticated);
+        this.status = authenticated;
+        this.updateView();
       },
     );
   }
@@ -35,15 +41,10 @@ export class IfAuthenticatedDirective implements OnInit, OnDestroy {
     this.subscription?.unsubscribe();
   }
 
-  @Input() set ifAuthenticated(condition: boolean) {
-    this.updateView(this.authService.isAuthenticated() === condition);
-  }
-
-  updateView(condition: boolean) {
-    if (condition) {
+  updateView() {
+    this.vcRef.clear();
+    if (this.value === this.status) {
       this.vcRef.createEmbeddedView(this.templateRef);
-    } else {
-      this.vcRef.clear();
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -12,10 +12,9 @@ import { AuthService } from '../../shared/services/auth.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+  authService = inject(AuthService);
   email = '';
   password = '';
-
-  constructor(private authService: AuthService) {}
 
   onLogin() {
     if (this.email && this.password) {

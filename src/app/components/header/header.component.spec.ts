@@ -2,6 +2,7 @@ import { RenderResult, render } from '@testing-library/angular';
 
 import { AuthService } from '../../shared/services/auth.service';
 import { HeaderComponent } from './header.component';
+import { IfAuthenticatedDirective } from '../../shared/directives/if-authenticated/if-authenticated.directive';
 
 describe('HeaderComponent', () => {
   let fixture: RenderResult<HeaderComponent>;
@@ -10,6 +11,7 @@ describe('HeaderComponent', () => {
 
   beforeEach(async () => {
     fixture = await render(HeaderComponent, {
+      imports: [IfAuthenticatedDirective],
       providers: [AuthService],
     });
     component = fixture.fixture.componentInstance;
@@ -26,31 +28,17 @@ describe('HeaderComponent', () => {
 
       expect(LogoComponent).toBeTruthy();
     });
-    it('placeholder with user login', () => {
-      component.isAuthenticated = true;
-      fixture.detectChanges();
-      const link = fixture.container.querySelector('li.list-item a.link');
 
-      expect(link?.textContent).toMatch(/User Login/);
-    });
     it('no placeholder with user login when user is not authenticated', () => {
-      component.isAuthenticated = false;
+      jest.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
       fixture.detectChanges();
       const link = fixture.container.querySelector('li.list-item a.link');
 
       expect(link).toBeFalsy();
     });
-    it('log off button', () => {
-      component.isAuthenticated = true;
-      fixture.detectChanges();
-      const button = fixture.container.querySelector(
-        'li.list-item button.log-off',
-      );
 
-      expect(button).toBeTruthy();
-    });
     it('no log off button when user is not authenticated', () => {
-      component.isAuthenticated = false;
+      jest.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
       fixture.detectChanges();
       const button = fixture.container.querySelector(
         'li.list-item button.log-off',

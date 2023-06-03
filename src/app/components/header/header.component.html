@@ -1,6 +1,6 @@
 <header class="header">
   <app-logo></app-logo>
-  <ul class="list" *ngIf="isAuthenticated">
+  <ul class="list" *ifAuthenticated="true">
     <li class="list-item">
       <a href="javascript:void(0)" class="link">
         <i class="fa fa-user icon" aria-hidden="true"></i> User Login</a

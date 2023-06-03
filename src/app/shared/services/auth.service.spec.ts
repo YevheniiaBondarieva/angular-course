@@ -1,17 +1,12 @@
-import { EventEmitter } from '@angular/core';
-
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   let service: AuthService;
   let localStorageMock: { [key: string]: string | null };
-  let statusChangedEmitterMock: EventEmitter<boolean>;
 
   beforeEach(() => {
     localStorageMock = {};
-    statusChangedEmitterMock = new EventEmitter<boolean>();
     service = new AuthService();
-
     Object.defineProperty(window, 'localStorage', {
       value: {
         getItem: (key: string) => localStorageMock[key],
@@ -25,11 +20,7 @@ describe('AuthService', () => {
       writable: true,
     });
 
-    jest.spyOn(statusChangedEmitterMock, 'emit');
-    Object.defineProperty(service, 'statusChanged', {
-      value: statusChangedEmitterMock,
-      writable: true,
-    });
+    jest.spyOn(service.statusChanged, 'emit');
   });
 
   it('should be created', () => {
@@ -39,13 +30,13 @@ describe('AuthService', () => {
   it('should emit true when login is called', () => {
     service.login('test@example.com', 'password');
 
-    expect(statusChangedEmitterMock.emit).toHaveBeenCalledWith(true);
+    expect(service.statusChanged.emit).toHaveBeenCalledWith(true);
   });
 
   it('should emit false when logout is called', () => {
     service.logout();
 
-    expect(statusChangedEmitterMock.emit).toHaveBeenCalledWith(false);
+    expect(service.statusChanged.emit).toHaveBeenCalledWith(false);
   });
 
   it('should return true when isAuthenticated and token exists in localStorage', () => {

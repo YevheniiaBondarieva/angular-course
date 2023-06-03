@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TemplateRef, ViewContainerRef } from '@angular/core';
+import { EventEmitter, TemplateRef, ViewContainerRef } from '@angular/core';
+import * as angularCore from '@angular/core';
 
 import { IfAuthenticatedDirective } from './if-authenticated.directive';
 import { AuthService } from '../../services/auth.service';
@@ -11,24 +12,25 @@ describe('IfAuthenticatedDirective', () => {
   let directive: IfAuthenticatedDirective;
 
   beforeEach(() => {
+    const injectSpy = jest.spyOn(angularCore, 'inject');
     authService = {
-      statusChanged: {
-        subscribe: jest.fn(),
-      },
-      isAuthenticated: jest.fn(),
-    } as unknown as AuthService;
-
+      isAuthenticated: () => true,
+      statusChanged: new EventEmitter<boolean>(),
+      login: jest.fn(),
+      logout: jest.fn(),
+      getUserInfo: jest.fn(),
+    } as AuthService;
     templateRef = {} as TemplateRef<any>;
     viewContainerRef = {
       createEmbeddedView: jest.fn(),
       clear: jest.fn(),
     } as unknown as ViewContainerRef;
 
-    directive = new IfAuthenticatedDirective(
-      authService,
-      templateRef,
-      viewContainerRef,
-    );
+    injectSpy.mockReturnValueOnce(authService);
+    injectSpy.mockReturnValueOnce(templateRef);
+    injectSpy.mockReturnValueOnce(viewContainerRef);
+
+    directive = new IfAuthenticatedDirective();
   });
 
   it('should create an instance', () => {
@@ -44,13 +46,8 @@ describe('IfAuthenticatedDirective', () => {
   });
 
   it('should update view when condition is true', () => {
-    const isAuthenticatedSpy = jest
-      .spyOn(authService, 'isAuthenticated')
-      .mockReturnValue(true);
-
     directive.ifAuthenticated = true;
 
-    expect(isAuthenticatedSpy).toHaveBeenCalled();
     expect(viewContainerRef.createEmbeddedView).toHaveBeenCalledWith(
       templateRef,
     );
