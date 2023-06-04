@@ -10,7 +10,6 @@
     padding: 0px;
 }
 
-
 .add-course-section{
     background-color: map-get($colors, 'white');
     border-radius: 3px;
@@ -26,13 +25,11 @@
     height: 30px;
     border-radius: 4px;
     padding-left: 10px;
-    width: 67vw;
     grid-column-start: 1;
     grid-column-end: 3;
 }
 
 .textarea{
-    width: 67vw;
     height: 12vh;
     border: 2px solid map-get($colors, 'signal-white');
     border-radius: 4px;
@@ -44,20 +41,11 @@
 }
 
 .title-section,
-.description-section,
-.date-section,
-.duration-section,
-.autors-section{
+.description-section
+{
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
-}
-
-.duration-result{
-    grid-column-start: 2;
-    grid-row-start: 1;
-    text-align: center;
-    margin-top: 40px;
 }
 
 .required{
@@ -71,16 +59,16 @@
     margin-left: -50px;
 }
 
-.date-required, .duration-required,
-.authors-required{
-    text-align: start;
-}
-
 .label{
     display: block;
     font-weight:600;
     height: 30px;
     margin-top: 10px;
+}
+
+.buttons{
+    display: flex;
+    justify-content: end;
 }
 
 .button{
@@ -93,7 +81,6 @@
     margin-top: 30px;
     background-color: map-get($colors, 'agate-grey');
     color: map-get($colors, 'bright-grey');
-    float: right;
 }
 
 .save{

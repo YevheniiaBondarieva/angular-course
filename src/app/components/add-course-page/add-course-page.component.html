@@ -25,42 +25,12 @@
       ></textarea>
       <span class="required">* required</span>
     </div>
-    <div class="duration-section">
-      <app-text-input
-        inputType="number"
-        inputId="duration"
-        label="Duration:"
-        inputPlaceholder="minutes"
-        labelClass="label"
-        inputClass="input"
-        (inputValueChange)="onInputValueChange($event)"
-      ></app-text-input>
-      <span class="required duration-required">* required</span>
-      <span class="duration-result">{{ inputValue | duration }}</span>
+    <app-duration-input></app-duration-input>
+    <app-date-input></app-date-input>
+    <app-authors-input></app-authors-input>
+    <div class="buttons">
+      <button (click)="onSave()" class="button save">Save</button>
+      <button (click)="onCancel()" class="button">Cancel</button>
     </div>
-    <div class="date-section">
-      <app-text-input
-        inputType="date"
-        inputId="date"
-        label="Date:"
-        inputPlaceholder="MM/DD/YYYY"
-        labelClass="label"
-        inputClass="input"
-      ></app-text-input>
-      <span class="required date-required">* required</span>
-    </div>
-    <div class="autors-section">
-      <app-text-input
-        inputType="text"
-        inputId="authors"
-        label="Authors:"
-        inputPlaceholder="Start typing"
-        labelClass="label"
-        inputClass="input"
-      ></app-text-input>
-      <span class="required authors-required">* required</span>
-    </div>
-    <button (click)="onSave()" class="button save">Save</button>
-    <button (click)="onCancel()" class="button">Cancel</button>
   </div>
 </form>

@@ -1,0 +1,45 @@
+@use '../../../../styles/variables' as *;
+
+.duration-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+}
+
+.input {
+    border: 2px solid map-get($colors, 'signal-white');
+    height: 30px;
+    border-radius: 4px;
+    padding-left: 10px;
+    width: 100%;
+}
+
+.label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
+
+.duration-result {
+    grid-column-start: 2;
+    grid-row-start: 1;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.duration-required {
+    text-align: start;
+}
+
+.required {
+    display: block;
+    margin-right: 20px;
+    grid-column-start: 2;
+    grid-row-start: 1;
+    height: 20px;
+    text-align: end;
+    margin-top: 10px;
+    margin-left: -50px;
+    text-align: left;
+}
