@@ -10,12 +10,19 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./section.component.scss'],
 })
 export class SectionComponent {
-  searchValue: string | undefined = undefined;
   @Output() filterCourses = new EventEmitter<string | undefined>();
+  searchValue: string | undefined = undefined;
 
   onSearchClick(searchValue: string | undefined): void {
     if (searchValue !== undefined) {
       this.filterCourses.emit(searchValue);
+    }
+  }
+
+  onSearchChange(value: string): void {
+    if (value === '') {
+      this.searchValue = undefined;
+      this.filterCourses.emit(undefined);
     }
   }
 }

@@ -1,13 +1,21 @@
-import { HeaderComponent } from './header.component';
 import { RenderResult, render } from '@testing-library/angular';
+
+import { AuthService } from '../../shared/services/auth.service';
+import { HeaderComponent } from './header.component';
+import { IfAuthenticatedDirective } from '../../shared/directives/if-authenticated/if-authenticated.directive';
 
 describe('HeaderComponent', () => {
   let fixture: RenderResult<HeaderComponent>;
   let component: HeaderComponent;
+  let authService: AuthService;
 
   beforeEach(async () => {
-    fixture = await render(HeaderComponent);
+    fixture = await render(HeaderComponent, {
+      imports: [IfAuthenticatedDirective],
+      providers: [AuthService],
+    });
     component = fixture.fixture.componentInstance;
+    authService = fixture.fixture.componentRef.injector.get(AuthService);
   });
 
   it('should create', () => {
@@ -15,22 +23,36 @@ describe('HeaderComponent', () => {
   });
 
   describe('should render', () => {
-    it('the CoursesPageComponent', () => {
+    it('the LogoComponent', () => {
       const LogoComponent = fixture.container.querySelector('app-logo');
 
       expect(LogoComponent).toBeTruthy();
     });
-    it('placeholder with user login', () => {
+
+    it('no placeholder with user login when user is not authenticated', () => {
+      jest.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
+      fixture.detectChanges();
       const link = fixture.container.querySelector('li.list-item a.link');
 
-      expect(link?.textContent).toMatch(/User Login/);
+      expect(link).toBeFalsy();
     });
-    it('log off button', () => {
+
+    it('no log off button when user is not authenticated', () => {
+      jest.spyOn(authService, 'isAuthenticated').mockReturnValue(false);
+      fixture.detectChanges();
       const button = fixture.container.querySelector(
         'li.list-item button.log-off',
       );
 
-      expect(button).toBeTruthy();
+      expect(button).toBeFalsy();
     });
+  });
+
+  it('should call authService.logout() on onLogout', () => {
+    jest.spyOn(authService, 'logout');
+
+    component.onLogout();
+
+    expect(authService.logout).toHaveBeenCalled();
   });
 });

@@ -6,6 +6,7 @@
       placeholder="Text to search"
       class="search-input"
       [(ngModel)]="searchValue"
+      (ngModelChange)="onSearchChange($event)"
     />
     <button class="search-button" (click)="onSearchClick(searchValue)">
       Search

@@ -1,1 +1,43 @@
-<p>login works!</p>
+<div>
+  <form class="login-form">
+    <div class="login-section">
+      <h2 class="login-title">Login</h2>
+      <div class="form-group">
+        <div class="label-info">
+          <label for="email" class="label">Email:</label>
+          <span class="required"> required</span>
+        </div>
+        <input
+          class="input"
+          type="email"
+          id="email"
+          placeholder="Enter e-mail"
+          name="email"
+          [(ngModel)]="email"
+          autocomplete="email"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <div class="label-info">
+          <label for="password" class="label">Password:</label>
+          <span class="required"> required</span>
+        </div>
+        <input
+          class="input"
+          type="password"
+          id="password"
+          placeholder="Enter password"
+          name="password"
+          [(ngModel)]="password"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+      <div class="link-and-button">
+        <a href="" class="link">Forgot password?</a>
+        <button type="submit" class="button" (click)="onLogin()">Login</button>
+      </div>
+    </div>
+  </form>
+</div>

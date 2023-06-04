@@ -1,5 +1,6 @@
-import { FooterComponent } from './footer.component';
 import { RenderResult, render } from '@testing-library/angular';
+
+import { FooterComponent } from './footer.component';
 
 describe('FooterComponent', () => {
   let fixture: RenderResult<FooterComponent>;

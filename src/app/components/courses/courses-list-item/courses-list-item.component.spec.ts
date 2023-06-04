@@ -1,12 +1,19 @@
-import { CoursesListItemComponent } from './courses-list-item.component';
 import { RenderResult, fireEvent, render } from '@testing-library/angular';
+
+import { CoursesService } from '../../../shared/services/courses.service';
+import { CoursesListItemComponent } from './courses-list-item.component';
 
 describe('CoursesListItemComponent', () => {
   let fixture: RenderResult<CoursesListItemComponent>;
   let component: CoursesListItemComponent;
+  let coursesService: CoursesService;
 
   beforeEach(async () => {
+    coursesService = {
+      removeCourseItem: jest.fn(),
+    } as unknown as CoursesService;
     fixture = await render(CoursesListItemComponent, {
+      providers: [{ provide: CoursesService, useValue: coursesService }],
       componentProperties: {
         courseItem: {
           id: 2,
@@ -26,19 +33,20 @@ describe('CoursesListItemComponent', () => {
       },
     });
     component = fixture.fixture.componentInstance;
+
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should emit deleteCourse event on delete button click', async () => {
-    jest.spyOn(component.deleteCourse, 'emit');
+  it('should call removeCourseItem method on delete button click', async () => {
     const deleteButton = fixture.getByText('Delete');
 
     await fireEvent.click(deleteButton);
 
-    expect(component.deleteCourse.emit).toHaveBeenCalledWith(2);
+    expect(coursesService.removeCourseItem).toHaveBeenCalledWith(2);
   });
 
   describe('should render', () => {

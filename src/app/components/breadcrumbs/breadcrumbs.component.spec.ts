@@ -1,5 +1,6 @@
-import { BreadcrumbsComponent } from './breadcrumbs.component';
 import { RenderResult, render } from '@testing-library/angular';
+
+import { BreadcrumbsComponent } from './breadcrumbs.component';
 
 describe('BreadcrumbsComponent', () => {
   let fixture: RenderResult<BreadcrumbsComponent>;

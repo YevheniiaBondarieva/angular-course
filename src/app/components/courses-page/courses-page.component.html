@@ -1,13 +1,4 @@
 <section>
-  <app-header></app-header>
-</section>
-<section>
-  <app-breadcrumbs></app-breadcrumbs>
   <app-section (filterCourses)="onSearchItem($event)"></app-section>
-  <app-courses
-    (deleteCouseItem)="onDeleteCourseItem($event)"
-    [coursesList]="
-      filteredCoursesArray.length > 0 ? filteredCoursesArray : coursesArray
-    "
-  ></app-courses>
+  <app-courses [searchValue]="searchValue"></app-courses>
 </section>

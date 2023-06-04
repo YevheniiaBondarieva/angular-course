@@ -1,2 +1,5 @@
-<app-courses-page></app-courses-page>
-<app-footer></app-footer>
+<app-header />
+<app-login *ifAuthenticated="false" />
+<app-breadcrumbs *ifAuthenticated="true" />
+<app-courses-page *ifAuthenticated="true" />
+<app-footer />

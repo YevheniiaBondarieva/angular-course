@@ -1,0 +1,80 @@
+@use '../../../styles/variables' as *;
+
+.login-form {
+    background-color: map-get($colors, 'signal-white');
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    justify-content: center;
+    height: 100vh;
+}
+
+.login-section {
+    background-color: map-get($colors, 'white');
+    border-radius: 3px;
+    box-shadow: map-get($colors, 'black') 0px 1px 4px;
+    width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 10px;
+}
+
+.required::before {
+    content: "*";
+    color: map-get($colors, 'red');
+}
+
+.label-info {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.login-title {
+    padding-bottom: 17px;
+}
+
+.form-group {
+    margin: 0px;
+    padding: 0px;
+}
+
+.label {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.link,
+.link:active,
+.link:checked {
+    color: map-get($colors, 'blue');
+}
+
+.button {
+    height: 35px;
+    margin-right: 5px;
+    width: 80px;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    background-color: map-get($colors, 'agate-grey');
+    color: map-get($colors, 'bright-grey')
+}
+
+.link-and-button {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.input {
+    width: 280px;
+    border: 2px solid map-get($colors, 'signal-white');
+    height: 30px;
+    border-radius: 4px;
+    padding-left: 10px;
+}

@@ -27,7 +27,7 @@
     {{ courseItem?.description }}
   </div>
   <button class="course-button"><i class="fa fa-pencil"></i>Edit</button>
-  <button class="course-button" (click)="onDeleteCouse(courseItem)">
+  <button class="course-button" (click)="onDeleteCouse(courseItem?.id)">
     <i class="fa fa-trash"></i>Delete
   </button>
 </div>
