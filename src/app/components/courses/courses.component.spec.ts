@@ -19,6 +19,7 @@ describe('CoursesComponent', () => {
   const coursesService = {
     getCourses: jest.fn(),
     coursesChanged: { subscribe: jest.fn() },
+    removeCourseItem: jest.fn(),
   };
 
   beforeEach(() => {
@@ -136,5 +137,14 @@ describe('CoursesComponent', () => {
     component.onSearchItem();
 
     expect(component.coursesArray).toEqual(component.originalCoursesArray);
+  });
+
+  it('should call coursesService.removeCourseItem on onDeleteCourse confirmation', () => {
+    const courseId = 2;
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
+
+    component.onDeleteCourse(courseId);
+
+    expect(coursesService.removeCourseItem).toHaveBeenCalledWith(courseId);
   });
 });

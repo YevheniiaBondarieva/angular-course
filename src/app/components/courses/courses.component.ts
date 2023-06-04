@@ -28,6 +28,7 @@ export class CoursesComponent implements OnInit, OnChanges {
     this.originalCoursesArray = this.coursesService.getCourses();
     this.coursesService.coursesChanged.subscribe((courses: Course[]) => {
       this.originalCoursesArray = courses;
+      this.onSearchItem();
     });
     this.coursesArray = this.orderByPipe.transform(this.originalCoursesArray);
   }
@@ -56,5 +57,12 @@ export class CoursesComponent implements OnInit, OnChanges {
 
   trackByCourseId(index: number, course: Course): number | string {
     return course.id;
+  }
+
+  onDeleteCourse(id: string | number): void {
+    const confirmation = confirm('Do you really want to delete this course?');
+    if (confirmation) {
+      this.coursesService.removeCourseItem(id);
+    }
   }
 }

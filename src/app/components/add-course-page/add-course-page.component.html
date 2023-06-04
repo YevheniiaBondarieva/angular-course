@@ -1,0 +1,66 @@
+<form class="add-course-form">
+  <div class="add-course-section">
+    <h2>New course</h2>
+    <div class="title-section">
+      <label for="title" class="label">Title:</label>
+      <input
+        type="text"
+        id="title"
+        placeholder="Text input"
+        name="title"
+        class="input"
+        required
+      />
+      <span class="required">* required</span>
+    </div>
+    <div class="description-section">
+      <label for="description" class="label">Description:</label>
+      <textarea
+        type="text"
+        id="description"
+        placeholder="Add description"
+        name="description"
+        class="textarea"
+        required
+      ></textarea>
+      <span class="required">* required</span>
+    </div>
+    <div class="duration-section">
+      <app-text-input
+        inputType="number"
+        inputId="duration"
+        label="Duration:"
+        inputPlaceholder="minutes"
+        labelClass="label"
+        inputClass="input"
+        (inputValueChange)="onInputValueChange($event)"
+      ></app-text-input>
+      <span class="required duration-required">* required</span>
+      <span class="duration-result">{{ inputValue | duration }}</span>
+    </div>
+    <div class="date-section">
+      <app-text-input
+        inputType="date"
+        inputId="date"
+        label="Date:"
+        inputPlaceholder="MM/DD/YYYY"
+        labelClass="label"
+        inputClass="input"
+      ></app-text-input>
+      <span class="required date-required">* required</span>
+    </div>
+    <div class="autors-section">
+      <app-text-input
+        inputType="text"
+        inputId="authors"
+        label="Authors:"
+        inputPlaceholder="Start typing"
+        labelClass="label"
+        inputClass="input"
+      ></app-text-input>
+      <span class="required authors-required">* required</span>
+    </div>
+    <button (click)="onSave()" class="button save">Save</button>
+    <button (click)="onCancel()" class="button">Cancel</button>
+  </div>
+</form>

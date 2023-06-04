@@ -1,0 +1,16 @@
+@use '../../../../styles/variables' as *;
+
+.input {
+    border: 2px solid map-get($colors, 'signal-white');
+    height: 30px;
+    border-radius: 4px;
+    padding-left: 10px;
+    width: 100%;
+}
+
+.label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 5px;
+}
