@@ -1,0 +1,36 @@
+<form class="add-course-form">
+  <div class="add-course-section">
+    <h2>New course</h2>
+    <div class="title-section">
+      <label for="title" class="label">Title:</label>
+      <input
+        type="text"
+        id="title"
+        placeholder="Text input"
+        name="title"
+        class="input"
+        required
+      />
+      <span class="required">* required</span>
+    </div>
+    <div class="description-section">
+      <label for="description" class="label">Description:</label>
+      <textarea
+        type="text"
+        id="description"
+        placeholder="Add description"
+        name="description"
+        class="textarea"
+        required
+      ></textarea>
+      <span class="required">* required</span>
+    </div>
+    <app-duration-input></app-duration-input>
+    <app-date-input></app-date-input>
+    <app-authors-input></app-authors-input>
+    <div class="buttons">
+      <button (click)="onSave()" class="button save">Save</button>
+      <button (click)="onCancel()" class="button">Cancel</button>
+    </div>
+  </div>
+</form>

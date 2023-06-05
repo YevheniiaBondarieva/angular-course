@@ -1,19 +1,13 @@
 import { RenderResult, fireEvent, render } from '@testing-library/angular';
 
-import { CoursesService } from '../../../shared/services/courses.service';
 import { CoursesListItemComponent } from './courses-list-item.component';
 
 describe('CoursesListItemComponent', () => {
   let fixture: RenderResult<CoursesListItemComponent>;
   let component: CoursesListItemComponent;
-  let coursesService: CoursesService;
 
   beforeEach(async () => {
-    coursesService = {
-      removeCourseItem: jest.fn(),
-    } as unknown as CoursesService;
     fixture = await render(CoursesListItemComponent, {
-      providers: [{ provide: CoursesService, useValue: coursesService }],
       componentProperties: {
         courseItem: {
           id: 2,
@@ -41,12 +35,16 @@ describe('CoursesListItemComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call removeCourseItem method on delete button click', async () => {
+  it('should emit deleteCourse event on delete button click', () => {
     const deleteButton = fixture.getByText('Delete');
+    let emittedId: string | number | undefined;
 
-    await fireEvent.click(deleteButton);
+    component.deleteCourse.subscribe((id: string | number | undefined) => {
+      emittedId = id;
+    });
+    fireEvent.click(deleteButton);
 
-    expect(coursesService.removeCourseItem).toHaveBeenCalledWith(2);
+    expect(emittedId).toBe(2);
   });
 
   describe('should render', () => {
