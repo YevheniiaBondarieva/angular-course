@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { LogoComponent } from '../logo/logo.component';
 import { AuthService } from '../../shared/services/auth.service';
@@ -12,10 +13,17 @@ import { IfAuthenticatedDirective } from '../../shared/directives/if-authenticat
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   authService = inject(AuthService);
+  router = inject(Router);
+  userInfo: string | undefined;
+
+  ngOnInit(): void {
+    this.userInfo = this.authService.getUserInfo()?.email;
+  }
 
   onLogout() {
     this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

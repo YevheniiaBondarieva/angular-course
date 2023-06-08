@@ -1,5 +1,12 @@
 <div class="date-section">
   <label for="date" class="label">Date: </label>
-  <input type="date" id="date" placeholder="MM/DD/YYYY" class="input" />
+  <input
+    type="date"
+    id="date"
+    placeholder="MM/DD/YYYY"
+    class="input"
+    [(ngModel)]="date"
+    (ngModelChange)="dateChange.emit(date)"
+  />
   <span class="required date-required">* required</span>
 </div>

@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { CoursesListItemComponent } from './courses-list-item/courses-list-item.component';
 import { Course } from '../../shared/models/course.models';
@@ -20,6 +21,8 @@ export class CoursesComponent implements OnInit, OnChanges {
   orderByPipe = inject(OrderByPipe);
   coursesService = inject(CoursesService);
   filterPipe = inject(FilterPipe);
+  router = inject(Router);
+  route = inject(ActivatedRoute);
   originalCoursesArray: Course[] = [];
   coursesArray: Course[] = [];
   filteredCoursesArray: Course[] = [];
@@ -64,5 +67,11 @@ export class CoursesComponent implements OnInit, OnChanges {
     if (confirmation) {
       this.coursesService.removeCourseItem(id);
     }
+  }
+
+  onEditCourse(id: string | number): void {
+    this.router.navigate([id], {
+      relativeTo: this.route,
+    });
   }
 }

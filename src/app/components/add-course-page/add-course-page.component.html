@@ -1,4 +1,5 @@
-<form class="add-course-form">
+<router-outlet></router-outlet>
+<form class="add-course-form" #courseForm="ngForm">
   <div class="add-course-section">
     <h2>New course</h2>
     <div class="title-section">
@@ -9,6 +10,7 @@
         placeholder="Text input"
         name="title"
         class="input"
+        [(ngModel)]="courseTitle"
         required
       />
       <span class="required">* required</span>
@@ -21,13 +23,23 @@
         placeholder="Add description"
         name="description"
         class="textarea"
+        [(ngModel)]="courseDescription"
         required
       ></textarea>
       <span class="required">* required</span>
     </div>
-    <app-duration-input></app-duration-input>
-    <app-date-input></app-date-input>
-    <app-authors-input></app-authors-input>
+    <app-duration-input
+      [(duration)]="courseDuration"
+      (durationChange)="onDurationChange($event)"
+    ></app-duration-input>
+    <app-date-input
+      [date]="courseDate"
+      (dateChange)="onDateChange($event)"
+    ></app-date-input>
+    <app-authors-input
+      [authors]="courseAuthors"
+      (authorsChange)="onAuthorsChange($event)"
+    ></app-authors-input>
     <div class="buttons">
       <button (click)="onSave()" class="button save">Save</button>
       <button (click)="onCancel()" class="button">Cancel</button>

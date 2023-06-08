@@ -4,10 +4,12 @@ import {
   EventEmitter,
   Input,
   Output,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { Course } from 'src/app/shared/models/course.models';
+import { Course } from '../../../shared/models/course.models';
 import { CreationDateDirective } from '../../../shared/directives/creation-date/creation-date.directive';
 import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
 
@@ -24,10 +26,21 @@ export class CoursesListItemComponent {
   @Output() deleteCourse: EventEmitter<string | number> = new EventEmitter<
     string | number
   >();
+  @Output() editCourse: EventEmitter<string | number> = new EventEmitter<
+    string | number
+  >();
+  router = inject(Router);
+  route = inject(ActivatedRoute);
 
   onDeleteCouse(id: string | number | undefined): void {
     if (id) {
       this.deleteCourse.emit(id);
+    }
+  }
+
+  onEditCourse(id: string | number | undefined): void {
+    if (id) {
+      this.editCourse.emit(id);
     }
   }
 }

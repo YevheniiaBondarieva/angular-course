@@ -1,5 +1,12 @@
 <div class="autors-section">
   <label for="authors" class="label">Authors: </label>
-  <input type="text" id="authors" placeholder="Start typing" class="input" />
+  <input
+    type="text"
+    id="authors"
+    placeholder="Start typing"
+    class="input"
+    [(ngModel)]="authors"
+    (ngModelChange)="authorsChange.emit(authors)"
+  />
   <span class="required authors-required">* required</span>
 </div>

@@ -1,25 +1,44 @@
-import { RenderResult, render } from '@testing-library/angular';
+import * as angularCore from '@angular/core';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 import { BreadcrumbsComponent } from './breadcrumbs.component';
+import { CoursesService } from '../../shared/services/courses.service';
+
+const injectSpy = jest.spyOn(angularCore, 'inject');
 
 describe('BreadcrumbsComponent', () => {
-  let fixture: RenderResult<BreadcrumbsComponent>;
   let component: BreadcrumbsComponent;
+  const coursesService = {
+    getCourses: jest.fn(),
+    coursesChanged: { subscribe: jest.fn() },
+    removeCourseItem: jest.fn(),
+    updateCoureItem: jest.fn(),
+    createCourse: jest.fn(),
+    getCourseItemById: jest.fn(),
+  };
+  const router = { navigate: jest.fn() } as unknown as Router;
+  const route = { params: of({ id: 123 }) };
 
-  beforeEach(async () => {
-    fixture = await render(BreadcrumbsComponent);
-    component = fixture.fixture.componentInstance;
+  beforeEach(() => {
+    injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
+    injectSpy.mockReturnValueOnce(router);
+    injectSpy.mockReturnValueOnce(route);
+    component = new BreadcrumbsComponent();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('should render', () => {
-    it('placeholder with static text "Courses"', () => {
-      const link = fixture.container.querySelector('a.link');
+  it('should set courseName when id is provided', () => {
+    const courseName = 'Course Name';
+    coursesService.getCourseItemById = jest
+      .fn()
+      .mockReturnValue({ name: courseName });
 
-      expect(link?.textContent).toBe('Courses');
-    });
+    component.ngOnInit();
+
+    expect(component.courseName).toBe(courseName);
   });
 });

@@ -56,17 +56,8 @@ describe('AuthService', () => {
     const email = 'test@example.com';
     const password = 'password';
     localStorageMock['user'] = JSON.stringify({ email, password });
-    const userInfo = service.getUserInfo(email);
+    const userInfo = service.getUserInfo();
 
     expect(userInfo).toEqual({ email, password });
-  });
-
-  it('should return undefined when getUserInfo is called with non-matching email', () => {
-    const email = 'test@example.com';
-    const password = 'password';
-    localStorageMock['user'] = JSON.stringify({ email, password });
-    const userInfo = service.getUserInfo('another@example.com');
-
-    expect(userInfo).toBeUndefined();
   });
 });

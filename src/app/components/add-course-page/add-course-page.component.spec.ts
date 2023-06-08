@@ -1,13 +1,124 @@
+import * as angularCore from '@angular/core';
+import { Router } from '@angular/router';
+
 import { AddCoursePageComponent } from './add-course-page.component';
+import { CoursesService } from '../../shared/services/courses.service';
+
+const injectSpy = jest.spyOn(angularCore, 'inject');
 
 describe('AddCoursePageComponent', () => {
   let component: AddCoursePageComponent;
+  const coursesService = {
+    getCourses: jest.fn(),
+    coursesChanged: { subscribe: jest.fn() },
+    removeCourseItem: jest.fn(),
+    updateCoureItem: jest.fn(),
+    createCourse: jest.fn(),
+    getCourseItemById: jest.fn(),
+  };
+  const router = { navigate: jest.fn() } as unknown as Router;
+  const route = { params: { subscribe: jest.fn() } };
 
   beforeEach(() => {
+    injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
+    injectSpy.mockReturnValueOnce(router);
+    injectSpy.mockReturnValueOnce(route);
     component = new AddCoursePageComponent();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should update course duration', () => {
+    const duration = 120;
+    component.onDurationChange(duration);
+
+    expect(component.courseDuration).toEqual(duration);
+  });
+
+  it('should update course date', () => {
+    const date = '2023-06-03';
+    component.onDateChange(date);
+
+    expect(component.courseDate).toEqual(date);
+  });
+
+  it('should update course authors', () => {
+    const authors = [
+      { id: 1, name: 'Author 1', lastName: 'LastName 1' },
+      { id: 2, name: 'Author 2', lastName: 'LastName 2' },
+    ];
+    component.onAuthorsChange(authors);
+
+    expect(component.courseAuthors).toEqual(authors);
+  });
+
+  it('should navigate to courses on cancel', () => {
+    const navigateSpy = jest.spyOn(component.router, 'navigate');
+
+    component.onCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/courses']);
+  });
+
+  it('should initialize properties in edit mode', () => {
+    const courseId = '123';
+    const course = {
+      id: courseId,
+      name: 'Test',
+      description: 'Test',
+      isTopRated: true,
+      date: '08/06/2023',
+      authors: [],
+      length: 156,
+    };
+
+    jest
+      .spyOn(component.coursesService, 'getCourseItemById')
+      .mockReturnValue(course);
+    component.editMode = true;
+    component.id = courseId;
+    component.ngOnInit();
+
+    expect(component.IsExist).toBe(true);
+  });
+
+  it('should initialize properties in create mode', () => {
+    component.editMode = false;
+
+    component.ngOnInit();
+
+    expect(component.course).toBeUndefined();
+  });
+
+  it('should update course when saving in edit mode', () => {
+    component.editMode = true;
+    component.id = 12;
+    component.courseTitle = 'Test';
+    component.courseDescription = 'Test';
+    component.courseDate = '08/06/2023';
+    component.courseAuthors = [{ id: 1, name: 'Liza', lastName: 'Ki' }];
+    component.courseDuration = 156;
+    component.IsExist = true;
+
+    component.onSave();
+
+    expect(component.coursesService.updateCoureItem).toHaveBeenCalledTimes(1);
+  });
+
+  it('should create new course when saving in create mode', () => {
+    component.editMode = false;
+    component.id = 12;
+    component.courseTitle = 'Test';
+    component.courseDescription = 'Test';
+    component.courseDate = '08/06/2023';
+    component.courseAuthors = [{ id: 1, name: 'Liza', lastName: 'Ki' }];
+    component.courseDuration = 156;
+    component.IsExist = true;
+
+    component.onSave();
+
+    expect(component.coursesService.createCourse).toHaveBeenCalledTimes(1);
   });
 });

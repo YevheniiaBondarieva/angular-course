@@ -7,9 +7,9 @@ import {
   ViewContainerRef,
   inject,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { AuthService } from './../../services/auth.service';
-import { Subscription } from 'rxjs';
 
 @Directive({
   // eslint-disable-next-line @angular-eslint/directive-selector

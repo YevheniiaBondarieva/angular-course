@@ -1,7 +1,8 @@
 <nav>
   <ul class="list">
     <li>
-      <a href="javascript:void(0)" class="link">Courses</a>
+      <a [routerLink]="['/courses']" class="link">Courses</a
+      ><span *ngIf="courseName" class="course-name"> / {{ courseName }}</span>
     </li>
   </ul>
 </nav>
