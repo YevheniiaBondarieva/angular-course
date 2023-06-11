@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Params, Router, RouterModule } from '@angular/router';
-
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { CoursesService } from '../../shared/services/courses.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-breadcrumbs',
@@ -14,18 +14,19 @@ import { CoursesService } from '../../shared/services/courses.service';
 export class BreadcrumbsComponent implements OnInit {
   coursesService = inject(CoursesService);
   router = inject(Router);
-  route = inject(ActivatedRoute);
-  id!: number | string;
   courseName: string | undefined;
 
   ngOnInit() {
-    console.log('init');
-    this.route.params.subscribe((params: Params) => {
-      console.log('init2');
-      this.id = params['id'];
-    });
-    if (this.id) {
-      this.courseName = this.coursesService.getCourseItemById(+this.id)?.name;
-    }
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          const urlSegments = event.url.split('/');
+          const courseId = urlSegments[urlSegments.length - 1];
+          this.courseName = this.coursesService.getCourseItemById(
+            Number(courseId),
+          )?.name;
+        }
+      });
   }
 }

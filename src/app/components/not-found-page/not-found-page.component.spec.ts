@@ -1,4 +1,4 @@
-import { NotFoundPageComponent } from './not-found-page.component';
+import NotFoundPageComponent from './not-found-page.component';
 
 describe('NotFoundPageComponent', () => {
   let component: NotFoundPageComponent;

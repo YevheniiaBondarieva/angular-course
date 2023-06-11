@@ -12,7 +12,7 @@ import { AuthService } from '../../shared/services/auth.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export default class LoginComponent {
   authService = inject(AuthService);
   router = inject(Router);
   status!: boolean;

@@ -1,9 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-import { DurationInputComponent } from './duration-input/duration-input.component';
-import { DateInputComponent } from './date-input/date-input.component';
-import { AuthorsInputComponent } from './authors-input/authors-input.component';
 import {
   ActivatedRoute,
   Params,
@@ -11,10 +7,18 @@ import {
   Router,
   RouterOutlet,
 } from '@angular/router';
+
+import { DurationInputComponent } from './duration-input/duration-input.component';
+import { DateInputComponent } from './date-input/date-input.component';
+import { AuthorsInputComponent } from './authors-input/authors-input.component';
 import { CoursesService } from '../../shared/services/courses.service';
 import { Course } from '../../shared/models/course.models';
 import { Author } from '../../shared/models/author.models';
 import { CustomRouteReuseStrategy } from '../../shared/strategy/custom-route-reuse.strategy';
+import { StrategyFacade } from '../../shared/services/strategy-facade.service';
+import { Strategy } from '../../shared/models/course-form.model';
+import { CreateCourseService } from '../../shared/services/create-course.service';
+import { EditCourseService } from '../../shared/services/edit-course.service';
 
 @Component({
   selector: 'app-add-course-page',
@@ -30,12 +34,16 @@ import { CustomRouteReuseStrategy } from '../../shared/strategy/custom-route-reu
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
+    CreateCourseService,
+    EditCourseService,
+    StrategyFacade,
   ],
 })
-export class AddCoursePageComponent implements OnInit {
+export default class AddCoursePageComponent implements OnInit {
   coursesService = inject(CoursesService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  strategyFacade = inject(StrategyFacade);
   course: Course | undefined;
   id!: number | string;
   editMode = false;
@@ -49,6 +57,9 @@ export class AddCoursePageComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
+      const path = this.route.snapshot.url.join('/');
+      const strategy = path.includes('new') ? Strategy.Create : Strategy.Edit;
+      this.strategyFacade.registerStrategy(strategy);
       this.id = params['id'];
       this.editMode = params['id'] != null;
     });
@@ -80,7 +91,7 @@ export class AddCoursePageComponent implements OnInit {
 
   onSave(): void {
     this.course = {
-      id: +this.id,
+      id: Number(this.id),
       name: this.courseTitle || '',
       description: this.courseDescription || '',
       isTopRated: this.CourseIsTopRated,
@@ -88,12 +99,7 @@ export class AddCoursePageComponent implements OnInit {
       authors: this.courseAuthors || [],
       length: this.courseDuration || 0,
     };
-    if (this.editMode && this.IsExist && this.course !== undefined) {
-      this.coursesService.updateCoureItem(this.course);
-    } else if (this.course !== undefined) {
-      this.coursesService.createCourse(this.course);
-    }
-    this.router.navigate(['/courses']);
+    this.strategyFacade.submit(this.course);
   }
 
   onCancel(): void {

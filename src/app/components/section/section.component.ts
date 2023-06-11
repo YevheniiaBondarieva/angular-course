@@ -29,9 +29,7 @@ export class SectionComponent {
     }
   }
 
-  onAddCourse() {
-    this.router.navigate(['new'], {
-      relativeTo: this.route,
-    });
+  onAddCourse(): void {
+    this.router.navigate(['courses/new']);
   }
 }

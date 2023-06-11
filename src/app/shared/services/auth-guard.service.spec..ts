@@ -1,17 +1,12 @@
 import * as angularCore from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { Router } from '@angular/router';
 
-import { AuthGuard } from './auth-guard.service';
+import { authGuard } from './auth-guard.service';
 import { AuthService } from './auth.service';
 
 const injectSpy = jest.spyOn(angularCore, 'inject');
 
 describe('AuthGuard', () => {
-  let authGuard: AuthGuard;
   let authService: jest.Mocked<AuthService>;
   let router: jest.Mocked<Router>;
 
@@ -27,30 +22,21 @@ describe('AuthGuard', () => {
 
     injectSpy.mockReturnValueOnce(authService);
     injectSpy.mockReturnValueOnce(router);
-    authGuard = new AuthGuard();
   });
 
-  it('should create', () => {
-    expect(authGuard).toBeTruthy();
-  });
-
-  it('should allow access when user is authenticated', () => {
+  it('should return true when user is authenticated', () => {
     authService.isAuthenticated.mockReturnValue(true);
 
-    const route = {} as ActivatedRouteSnapshot;
-    const state = {} as RouterStateSnapshot;
-    const canActivate = authGuard.canActivate(route, state);
+    const result = authGuard();
 
-    expect(canActivate).toBe(true);
+    expect(result).toBe(true);
   });
 
-  it('should deny access and redirect to login when user is not authenticated', () => {
+  it('should return false and navigate to login when user is not authenticated', () => {
     authService.isAuthenticated.mockReturnValue(false);
 
-    const route = {} as ActivatedRouteSnapshot;
-    const state = {} as RouterStateSnapshot;
-    const canActivate = authGuard.canActivate(route, state);
+    const result = authGuard();
 
-    expect(canActivate).toBe(false);
+    expect(result).toBe(false);
   });
 });

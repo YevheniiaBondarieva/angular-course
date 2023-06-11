@@ -18,6 +18,6 @@ import { Author } from '../../../shared/models/author.models';
   imports: [FormsModule],
 })
 export class AuthorsInputComponent {
-  @Input() authors: Author[] | undefined;
+  @Input({ required: true }) authors: Author[] | undefined;
   @Output() authorsChange = new EventEmitter<Author[]>();
 }

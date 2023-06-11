@@ -1,8 +1,9 @@
 import * as angularCore from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AddCoursePageComponent } from './add-course-page.component';
+import AddCoursePageComponent from './add-course-page.component';
 import { CoursesService } from '../../shared/services/courses.service';
+import { StrategyFacade } from '../../shared/services/strategy-facade.service';
 
 const injectSpy = jest.spyOn(angularCore, 'inject');
 
@@ -18,11 +19,16 @@ describe('AddCoursePageComponent', () => {
   };
   const router = { navigate: jest.fn() } as unknown as Router;
   const route = { params: { subscribe: jest.fn() } };
+  const strategyFacade = {
+    registerStrategy: jest.fn(),
+    submit: jest.fn(),
+  } as unknown as StrategyFacade;
 
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(router);
     injectSpy.mockReturnValueOnce(route);
+    injectSpy.mockReturnValueOnce(strategyFacade);
     component = new AddCoursePageComponent();
   });
 
@@ -32,6 +38,7 @@ describe('AddCoursePageComponent', () => {
 
   it('should update course duration', () => {
     const duration = 120;
+
     component.onDurationChange(duration);
 
     expect(component.courseDuration).toEqual(duration);
@@ -39,6 +46,7 @@ describe('AddCoursePageComponent', () => {
 
   it('should update course date', () => {
     const date = '2023-06-03';
+
     component.onDateChange(date);
 
     expect(component.courseDate).toEqual(date);
@@ -49,6 +57,7 @@ describe('AddCoursePageComponent', () => {
       { id: 1, name: 'Author 1', lastName: 'LastName 1' },
       { id: 2, name: 'Author 2', lastName: 'LastName 2' },
     ];
+
     component.onAuthorsChange(authors);
 
     expect(component.courseAuthors).toEqual(authors);
@@ -92,33 +101,11 @@ describe('AddCoursePageComponent', () => {
     expect(component.course).toBeUndefined();
   });
 
-  it('should update course when saving in edit mode', () => {
-    component.editMode = true;
-    component.id = 12;
-    component.courseTitle = 'Test';
-    component.courseDescription = 'Test';
-    component.courseDate = '08/06/2023';
-    component.courseAuthors = [{ id: 1, name: 'Liza', lastName: 'Ki' }];
-    component.courseDuration = 156;
-    component.IsExist = true;
+  it('should call strategyFacade.submit when onSave is called', () => {
+    const submitSpy = jest.spyOn(component.strategyFacade, 'submit');
 
     component.onSave();
 
-    expect(component.coursesService.updateCoureItem).toHaveBeenCalledTimes(1);
-  });
-
-  it('should create new course when saving in create mode', () => {
-    component.editMode = false;
-    component.id = 12;
-    component.courseTitle = 'Test';
-    component.courseDescription = 'Test';
-    component.courseDate = '08/06/2023';
-    component.courseAuthors = [{ id: 1, name: 'Liza', lastName: 'Ki' }];
-    component.courseDuration = 156;
-    component.IsExist = true;
-
-    component.onSave();
-
-    expect(component.coursesService.createCourse).toHaveBeenCalledTimes(1);
+    expect(submitSpy).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,5 +1,5 @@
 import * as angularCore from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { of } from 'rxjs';
 
 import { BreadcrumbsComponent } from './breadcrumbs.component';
@@ -17,13 +17,13 @@ describe('BreadcrumbsComponent', () => {
     createCourse: jest.fn(),
     getCourseItemById: jest.fn(),
   };
-  const router = { navigate: jest.fn() } as unknown as Router;
-  const route = { params: of({ id: 123 }) };
+  const router = {
+    events: of(new NavigationEnd(0, '', '')),
+  } as unknown as Router;
 
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(router);
-    injectSpy.mockReturnValueOnce(route);
     component = new BreadcrumbsComponent();
   });
 
@@ -33,9 +33,7 @@ describe('BreadcrumbsComponent', () => {
 
   it('should set courseName when id is provided', () => {
     const courseName = 'Course Name';
-    coursesService.getCourseItemById = jest
-      .fn()
-      .mockReturnValue({ name: courseName });
+    coursesService.getCourseItemById.mockReturnValue({ name: courseName });
 
     component.ngOnInit();
 

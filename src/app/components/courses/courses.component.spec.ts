@@ -156,13 +156,9 @@ describe('CoursesComponent', () => {
 
   it('should navigate to the correct route when onEditCourse is called', () => {
     const id = '123';
-    const relativeTo = { path: 'courses', snapshot: { url: ['courses'] } };
-    component.route = relativeTo as any;
 
     component.onEditCourse(id);
 
-    expect(router.navigate).toHaveBeenCalledWith([id], {
-      relativeTo: relativeTo,
-    });
+    expect(router.navigate).toHaveBeenCalledWith([`courses/${id}`]);
   });
 });

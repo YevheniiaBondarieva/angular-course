@@ -19,6 +19,6 @@ import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
   imports: [CommonModule, FormsModule, DurationPipe],
 })
 export class DurationInputComponent {
-  @Input() duration: number | undefined;
+  @Input({ required: true }) duration: number | undefined;
   @Output() durationChange = new EventEmitter<number>();
 }

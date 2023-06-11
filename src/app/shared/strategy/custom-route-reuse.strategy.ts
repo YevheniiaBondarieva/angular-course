@@ -5,7 +5,7 @@ import {
 } from '@angular/router';
 
 export class CustomRouteReuseStrategy implements RouteReuseStrategy {
-  private cache: { [key: string]: DetachedRouteHandle } = {};
+  private cache = new Map<string, DetachedRouteHandle>();
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
     return (
@@ -15,15 +15,15 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
-    this.cache[route.routeConfig?.path || ''] = handle;
+    this.cache.set(route.routeConfig?.path || '', handle);
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    return !!route.routeConfig && !!this.cache[route.routeConfig.path || ''];
+    return !!route.routeConfig && this.cache.has(route.routeConfig.path || '');
   }
 
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle | null {
-    return this.cache[route.routeConfig?.path || ''] || null;
+    return this.cache.get(route.routeConfig?.path || '') || null;
   }
 
   shouldReuseRoute(

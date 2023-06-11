@@ -33,14 +33,12 @@ export class CoursesListItemComponent {
   route = inject(ActivatedRoute);
 
   onDeleteCouse(id: string | number | undefined): void {
-    if (id) {
-      this.deleteCourse.emit(id);
-    }
+    if (id === undefined) return;
+    this.deleteCourse.emit(id);
   }
 
   onEditCourse(id: string | number | undefined): void {
-    if (id) {
-      this.editCourse.emit(id);
-    }
+    if (id === undefined) return;
+    this.editCourse.emit(id);
   }
 }

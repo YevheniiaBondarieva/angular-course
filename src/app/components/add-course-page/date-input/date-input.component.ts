@@ -16,6 +16,6 @@ import { FormsModule } from '@angular/forms';
   imports: [FormsModule],
 })
 export class DateInputComponent {
-  @Input() date: string | undefined;
+  @Input({ required: true }) date: string | undefined;
   @Output() dateChange = new EventEmitter<string>();
 }

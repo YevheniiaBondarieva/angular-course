@@ -15,7 +15,7 @@ import { FilterPipe } from '../../shared/pipes/filter/filter.pipe';
   styleUrls: ['./courses-page.component.scss'],
   providers: [OrderByPipe, FilterPipe],
 })
-export class CoursesPageComponent {
+export default class CoursesPageComponent {
   searchValue: string | undefined;
 
   onSearchItem(searchValue: string | undefined): void {

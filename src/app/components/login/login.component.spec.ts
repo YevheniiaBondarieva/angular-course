@@ -1,6 +1,6 @@
 import { RenderResult, render } from '@testing-library/angular';
 
-import { LoginComponent } from './login.component';
+import LoginComponent from './login.component';
 import { AuthService } from '../../shared/services/auth.service';
 import { Router } from '@angular/router';
 

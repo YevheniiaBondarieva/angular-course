@@ -1,73 +1,36 @@
 import { Routes } from '@angular/router';
 
-import { AuthGuard } from './shared/services/auth-guard.service';
+import { authGuard } from './shared/services/auth-guard.service';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
   {
     path: 'courses',
-    loadComponent: async () =>
-      (await import('./components/courses-page/courses-page.component'))
-        .CoursesPageComponent,
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: '',
-        loadComponent: async () =>
-          (await import('./components/breadcrumbs/breadcrumbs.component'))
-            .BreadcrumbsComponent,
-      },
-    ],
+    loadComponent: () =>
+      import('./components/courses-page/courses-page.component'),
+    canActivate: [authGuard],
   },
   {
     path: 'courses/new',
-    canActivate: [AuthGuard],
-    loadComponent: async () =>
-      (await import('./components/add-course-page/add-course-page.component'))
-        .AddCoursePageComponent,
-    children: [
-      {
-        path: '',
-        loadComponent: async () =>
-          (await import('./components/breadcrumbs/breadcrumbs.component'))
-            .BreadcrumbsComponent,
-      },
-    ],
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/add-course-page/add-course-page.component'),
   },
   {
     path: 'courses/:id',
-    canActivate: [AuthGuard],
-    loadComponent: async () =>
-      (await import('./components/add-course-page/add-course-page.component'))
-        .AddCoursePageComponent,
-    children: [
-      {
-        path: '',
-        loadComponent: async () =>
-          (await import('./components/breadcrumbs/breadcrumbs.component'))
-            .BreadcrumbsComponent,
-      },
-    ],
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/add-course-page/add-course-page.component'),
   },
   {
     path: 'login',
-    loadComponent: async () =>
-      (await import('./components/login/login.component')).LoginComponent,
+    loadComponent: () => import('./components/login/login.component'),
   },
   {
     path: '404',
-    canActivate: [AuthGuard],
-    loadComponent: async () =>
-      (await import('./components/not-found-page/not-found-page.component'))
-        .NotFoundPageComponent,
-    children: [
-      {
-        path: '',
-        loadComponent: async () =>
-          (await import('./components/breadcrumbs/breadcrumbs.component'))
-            .BreadcrumbsComponent,
-      },
-    ],
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/not-found-page/not-found-page.component'),
   },
   { path: '**', redirectTo: '/404' },
 ];

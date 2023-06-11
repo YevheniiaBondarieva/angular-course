@@ -8,4 +8,4 @@ import { RouterOutlet } from '@angular/router';
   styleUrls: ['./not-found-page.component.scss'],
   imports: [RouterOutlet],
 })
-export class NotFoundPageComponent {}
+export default class NotFoundPageComponent {}

@@ -70,8 +70,6 @@ export class CoursesComponent implements OnInit, OnChanges {
   }
 
   onEditCourse(id: string | number): void {
-    this.router.navigate([id], {
-      relativeTo: this.route,
-    });
+    this.router.navigate([`courses/${id}`]);
   }
 }

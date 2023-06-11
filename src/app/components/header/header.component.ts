@@ -22,8 +22,8 @@ export class HeaderComponent implements OnInit {
     this.userInfo = this.authService.getUserInfo()?.email;
   }
 
-  onLogout() {
+  onLogout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    void this.router.navigate(['/login']);
   }
 }
