@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
@@ -13,5 +19,6 @@ import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
   imports: [CommonModule, FormsModule, DurationPipe],
 })
 export class DurationInputComponent {
-  inputValue: number | undefined;
+  @Input({ required: true }) duration: number | undefined;
+  @Output() durationChange = new EventEmitter<number>();
 }

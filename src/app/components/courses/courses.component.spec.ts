@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as angularCore from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { courses } from '../../shared/data/courses.data';
 import { CoursesComponent } from './courses.component';
@@ -21,11 +23,15 @@ describe('CoursesComponent', () => {
     coursesChanged: { subscribe: jest.fn() },
     removeCourseItem: jest.fn(),
   };
+  const router = { navigate: jest.fn() } as unknown as Router;
+  const route = {} as ActivatedRoute;
 
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(orderBy);
     injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(filter);
+    injectSpy.mockReturnValueOnce(router);
+    injectSpy.mockReturnValueOnce(route);
     coursesService.getCourses.mockReturnValue(courses);
     component = new CoursesComponent();
   });
@@ -146,5 +152,13 @@ describe('CoursesComponent', () => {
     component.onDeleteCourse(courseId);
 
     expect(coursesService.removeCourseItem).toHaveBeenCalledWith(courseId);
+  });
+
+  it('should navigate to the correct route when onEditCourse is called', () => {
+    const id = '123';
+
+    component.onEditCourse(id);
+
+    expect(router.navigate).toHaveBeenCalledWith([`courses/${id}`]);
   });
 });

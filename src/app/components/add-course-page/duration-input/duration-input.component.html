@@ -5,8 +5,9 @@
     id="duration"
     placeholder="minutes"
     class="input"
-    [(ngModel)]="inputValue"
+    [(ngModel)]="duration"
+    (ngModelChange)="durationChange.emit(duration)"
   />
   <span class="required duration-required">* required</span>
-  <span class="duration-result">{{ inputValue | duration }}</span>
+  <span class="duration-result">{{ duration | duration }}</span>
 </div>

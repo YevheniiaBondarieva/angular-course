@@ -72,7 +72,7 @@ describe('CoursesService', () => {
       length: 200,
     };
 
-    service.updateCoureItem(updatedCourse);
+    service.updateCourseItem(updatedCourse);
 
     expect(service['courses'][1]).toEqual(updatedCourse);
   });

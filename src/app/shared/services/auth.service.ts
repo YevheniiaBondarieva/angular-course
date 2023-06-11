@@ -1,6 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class AuthService {
   statusChanged = new EventEmitter<boolean>();
 
@@ -24,10 +26,8 @@ export class AuthService {
     return !!token;
   }
 
-  getUserInfo(
-    email: string,
-  ): { email?: string; password?: string } | undefined {
+  getUserInfo(): { email?: string; password?: string } | undefined {
     const loginUser = JSON.parse(localStorage.getItem('user') || '{}');
-    return loginUser.email === email ? loginUser : undefined;
+    return loginUser;
   }
 }
