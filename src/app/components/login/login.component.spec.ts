@@ -1,8 +1,8 @@
 import { RenderResult, render } from '@testing-library/angular';
+import { Router } from '@angular/router';
 
 import LoginComponent from './login.component';
 import { AuthService } from '../../shared/services/auth.service';
-import { Router } from '@angular/router';
 
 describe('LoginComponent', () => {
   let fixture: RenderResult<LoginComponent>;
@@ -48,15 +48,5 @@ describe('LoginComponent', () => {
     component.onLogin();
 
     expect(authService.login).not.toHaveBeenCalled();
-  });
-
-  it('should navigate to "/courses" when onLogin is called and authentication is successful', () => {
-    component.email = 'test@example.com';
-    component.password = 'password';
-    authService.isAuthenticated.mockReturnValue(true);
-
-    component.onLogin();
-
-    expect(router.navigate).toHaveBeenCalledWith(['/courses']);
   });
 });

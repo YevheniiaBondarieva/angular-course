@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 
 import CoursesPageComponent from './components/courses-page/courses-page.component';
 import { FooterComponent } from './components/footer/footer.component';
-import { AuthService } from './shared/services/auth.service';
 import { HeaderComponent } from './components/header/header.component';
 import LoginComponent from './components/login/login.component';
 import { IfAuthenticatedDirective } from './shared/directives/if-authenticated/if-authenticated.directive';
@@ -26,6 +25,6 @@ import { CoursesService } from './shared/services/courses.service';
     BreadcrumbsComponent,
     IfAuthenticatedDirective,
   ],
-  providers: [AuthService, CoursesService],
+  providers: [CoursesService],
 })
 export class AppComponent {}

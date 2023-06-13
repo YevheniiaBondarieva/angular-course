@@ -19,11 +19,26 @@ export class HeaderComponent implements OnInit {
   userInfo: string | undefined;
 
   ngOnInit(): void {
-    this.userInfo = this.authService.getUserInfo()?.email;
+    this.authService.statusChanged.subscribe((status: boolean) => {
+      if (status) {
+        this.authService.getUserInfo().subscribe((response) => {
+          this.userInfo = response;
+        });
+      } else {
+        this.userInfo = undefined;
+      }
+    });
+
+    const status = this.authService.isAuthenticated();
+    if (status) {
+      this.authService.getUserInfo().subscribe((response) => {
+        this.userInfo = response;
+      });
+    }
   }
 
-  onLogout(): void {
+  onLogout() {
     this.authService.logout();
-    void this.router.navigate(['/login']);
+    this.router.navigate(['/login']);
   }
 }

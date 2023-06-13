@@ -19,7 +19,7 @@ describe('IfAuthenticatedDirective', () => {
       login: jest.fn(),
       logout: jest.fn(),
       getUserInfo: jest.fn(),
-    } as AuthService;
+    } as unknown as AuthService;
     templateRef = {} as TemplateRef<any>;
     viewContainerRef = {
       createEmbeddedView: jest.fn(),

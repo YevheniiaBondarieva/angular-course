@@ -1,94 +1,46 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import { Course } from '../models/course.models';
 
 @Injectable()
 export class CoursesService {
   coursesChanged = new EventEmitter<Course[]>();
-  private courses: Course[] = [
-    {
-      id: 1,
-      name: 'Test Course 1',
-      description:
-        'Learn about where you czn find course description, what information they include, how they work, and details about various components of a course description. Course descriptions report information about a university or college`s class.They`re published both in course catalog.',
-      isTopRated: false,
-      date: '2023-09-28',
-      authors: [
-        {
-          id: '1',
-          name: 'Polly',
-          lastName: 'Sosa',
-        },
-      ],
-      length: 157,
-    },
-    {
-      id: 2,
-      name: 'Test Course 2',
-      description:
-        'Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque, odio!',
-      isTopRated: true,
-      date: '2023-05-23',
-      authors: [
-        {
-          id: '2',
-          name: 'Kira',
-          lastName: 'Bruce',
-        },
-        {
-          id: '3',
-          name: 'Olha',
-          lastName: 'Kosa',
-        },
-      ],
-      length: 157,
-    },
-    {
-      id: 3,
-      name: 'Hello',
-      description:
-        'Learn about where you czn find course description, what information they include, how they work, and details about various components of a course description. Course descriptions report information about a university or college`s class.They`re published both in course catalog.',
-      isTopRated: true,
-      date: '2023-05-10',
-      authors: [
-        {
-          id: '4',
-          name: 'Kary',
-          lastName: 'Kok',
-        },
-      ],
-      length: 59,
-    },
-  ];
+  http = inject(HttpClient);
+  private apiBaseUrl = 'http://localhost:3004/courses';
 
-  getCourses(): Course[] | [] {
-    return this.courses.slice();
+  getCourses(
+    start: number,
+    count: number,
+    sort?: string,
+  ): Observable<Course[]> {
+    const url = `${this.apiBaseUrl}?start=${start}&count=${count}&sort=${sort}`;
+    return this.http.get<Course[]>(url);
   }
 
-  createCourse(course: Course): void {
-    this.courses.push(course);
-    this.coursesChanged.emit(this.courses.slice());
+  getCoursesByFragment(fragment: string, sort?: string): Observable<Course[]> {
+    const url = `${this.apiBaseUrl}?textFragment=${fragment}&sort=${sort}`;
+    return this.http.get<Course[]>(url);
   }
 
-  getCourseItemById(id: number | string): Course | undefined {
-    return this.courses.find((course) => course.id === id);
+  createCourse(course: Course): Observable<Course> {
+    const url = `${this.apiBaseUrl}`;
+    return this.http.post<Course>(url, course);
   }
 
-  updateCourseItem(courseItem: Course): void {
-    const index = this.courses.findIndex(
-      (course) => course.id === courseItem.id,
-    );
-    if (index !== -1) {
-      this.courses[index] = courseItem;
-      this.coursesChanged.emit(this.courses.slice());
-    }
+  getCourseItemById(id: number | string): Observable<Course> {
+    const url = `${this.apiBaseUrl}/${id}`;
+    return this.http.get<Course>(url);
   }
 
-  removeCourseItem(id: number | string): void {
-    const index = this.courses.findIndex((course) => course.id === id);
-    if (index !== -1) {
-      this.courses.splice(index, 1);
-      this.coursesChanged.emit(this.courses.slice());
-    }
+  updateCourseItem(courseItem: Course): Observable<Course> {
+    const url = `${this.apiBaseUrl}/${courseItem.id}`;
+    return this.http.patch<Course>(url, courseItem);
+  }
+
+  removeCourseItem(id: number | string): Observable<void> {
+    const url = `${this.apiBaseUrl}/${id}`;
+    return this.http.delete<void>(url);
   }
 }

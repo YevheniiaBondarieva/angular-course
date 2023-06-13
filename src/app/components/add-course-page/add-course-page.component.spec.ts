@@ -1,5 +1,6 @@
 import * as angularCore from '@angular/core';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 import AddCoursePageComponent from './add-course-page.component';
 import { CoursesService } from '../../shared/services/courses.service';
@@ -85,7 +86,8 @@ describe('AddCoursePageComponent', () => {
 
     jest
       .spyOn(component.coursesService, 'getCourseItemById')
-      .mockReturnValue(course);
+      .mockReturnValue(of(course));
+
     component.editMode = true;
     component.id = courseId;
     component.ngOnInit();

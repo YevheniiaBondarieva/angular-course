@@ -1,4 +1,11 @@
+import * as angularCore from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { of } from 'rxjs';
+
 import { AuthService } from './auth.service';
+
+const injectSpy = jest.spyOn(angularCore, 'inject');
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -6,6 +13,13 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     localStorageMock = {};
+    const router = { navigate: jest.fn() } as unknown as Router;
+    const http = {
+      post: jest.fn().mockReturnValue(of(null)),
+    } as unknown as HttpClient;
+
+    injectSpy.mockReturnValueOnce(http);
+    injectSpy.mockReturnValueOnce(router);
     service = new AuthService();
     Object.defineProperty(window, 'localStorage', {
       value: {
@@ -28,15 +42,21 @@ describe('AuthService', () => {
   });
 
   it('should emit true when login is called', () => {
-    service.login('test@example.com', 'password');
+    jest.fn(service.http.post).mockReturnValue(of({}));
 
-    expect(service.statusChanged.emit).toHaveBeenCalledWith(true);
+    service.statusChanged.subscribe((value) => {
+      expect(value).toBe(true);
+    });
+
+    service.login('test@example.com', 'password');
   });
 
   it('should emit false when logout is called', () => {
-    service.logout();
+    service.statusChanged.subscribe((value) => {
+      expect(value).toBe(false);
+    });
 
-    expect(service.statusChanged.emit).toHaveBeenCalledWith(false);
+    service.logout();
   });
 
   it('should return true when isAuthenticated and token exists in localStorage', () => {
@@ -56,8 +76,13 @@ describe('AuthService', () => {
     const email = 'test@example.com';
     const password = 'password';
     localStorageMock['user'] = JSON.stringify({ email, password });
-    const userInfo = service.getUserInfo();
 
-    expect(userInfo).toEqual({ email, password });
+    jest
+      .fn(service.http.post)
+      .mockReturnValue(of({ name: { first: 'John', last: 'Doe' } }));
+
+    service.getUserInfo().subscribe((userInfo) => {
+      expect(userInfo).toEqual('John Doe');
+    });
   });
 });

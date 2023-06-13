@@ -1,12 +1,11 @@
 import { Component, Input, OnChanges, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { CoursesListItemComponent } from './courses-list-item/courses-list-item.component';
 import { Course } from '../../shared/models/course.models';
 import { CoursesService } from '../../shared/services/courses.service';
-import { FilterPipe } from '../../shared/pipes/filter/filter.pipe';
-import { OrderByPipe } from '../../shared/pipes/order-by/order-by.pipe';
 import { SectionComponent } from '../section/section.component';
 
 @Component({
@@ -18,44 +17,54 @@ import { SectionComponent } from '../section/section.component';
 })
 export class CoursesComponent implements OnInit, OnChanges {
   @Input() searchValue: string | undefined;
-  orderByPipe = inject(OrderByPipe);
   coursesService = inject(CoursesService);
-  filterPipe = inject(FilterPipe);
   router = inject(Router);
   route = inject(ActivatedRoute);
   originalCoursesArray: Course[] = [];
   coursesArray: Course[] = [];
-  filteredCoursesArray: Course[] = [];
+  start = 0;
+  count = 3;
 
   ngOnInit(): void {
-    this.originalCoursesArray = this.coursesService.getCourses();
-    this.coursesService.coursesChanged.subscribe((courses: Course[]) => {
-      this.originalCoursesArray = courses;
-      this.onSearchItem();
-    });
-    this.coursesArray = this.orderByPipe.transform(this.originalCoursesArray);
+    this.loadCourses();
   }
 
   ngOnChanges(): void {
     this.onSearchItem();
   }
 
+  loadCourses(): void {
+    this.coursesService.getCourses(this.start, this.count, 'date').subscribe({
+      next: (courses: Course[]) => {
+        this.originalCoursesArray = courses;
+        this.coursesArray = [...this.originalCoursesArray];
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error.message);
+      },
+    });
+  }
+
   onSearchItem(): void {
     if (this.searchValue) {
-      this.filteredCoursesArray = this.filterPipe.transform(
-        this.coursesArray,
-        this.searchValue,
-      );
-      if (this.filteredCoursesArray.length > 0) {
-        this.coursesArray = [...this.filteredCoursesArray];
-      }
+      this.coursesService
+        .getCoursesByFragment(this.searchValue, 'date')
+        .subscribe({
+          next: (courses: Course[]) => {
+            this.coursesArray = courses;
+          },
+          error: (error: HttpErrorResponse) => {
+            console.log(error.message);
+          },
+        });
     } else {
       this.coursesArray = [...this.originalCoursesArray];
     }
   }
 
   onLoadMoreClick(): void {
-    console.log('Load More');
+    this.start += this.count;
+    this.loadCourses();
   }
 
   trackByCourseId(index: number, course: Course): number | string {
@@ -65,7 +74,14 @@ export class CoursesComponent implements OnInit, OnChanges {
   onDeleteCourse(id: string | number): void {
     const confirmation = confirm('Do you really want to delete this course?');
     if (confirmation) {
-      this.coursesService.removeCourseItem(id);
+      this.coursesService.removeCourseItem(id).subscribe({
+        next: () => {
+          this.loadCourses();
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error.message);
+        },
+      });
     }
   }
 
