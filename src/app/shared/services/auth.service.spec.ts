@@ -41,22 +41,21 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should emit true when login is called', () => {
-    jest.fn(service.http.post).mockReturnValue(of({}));
+  it('should emit true when login is called', async () => {
+    jest.spyOn(service.http, 'post').mockReturnValue(of({}));
+    const statusChangedSpy = jest.spyOn(service.statusChanged, 'emit');
 
-    service.statusChanged.subscribe((value) => {
-      expect(value).toBe(true);
-    });
+    await service.login('test@example.com', 'password').toPromise();
 
-    service.login('test@example.com', 'password');
+    expect(statusChangedSpy).toHaveBeenCalledWith(true);
   });
 
   it('should emit false when logout is called', () => {
-    service.statusChanged.subscribe((value) => {
-      expect(value).toBe(false);
-    });
+    const statusChangedSpy = jest.spyOn(service.statusChanged, 'emit');
 
     service.logout();
+
+    expect(statusChangedSpy).toHaveBeenCalledWith(false);
   });
 
   it('should return true when isAuthenticated and token exists in localStorage', () => {
@@ -72,17 +71,16 @@ describe('AuthService', () => {
     expect(isAuthenticated).toBe(false);
   });
 
-  it('should return user info when getUserInfo is called with matching email', () => {
+  it('should return user info when getUserInfo is called with matching email', async () => {
     const email = 'test@example.com';
     const password = 'password';
     localStorageMock['user'] = JSON.stringify({ email, password });
 
     jest
-      .fn(service.http.post)
+      .spyOn(service.http, 'post')
       .mockReturnValue(of({ name: { first: 'John', last: 'Doe' } }));
+    const userInfo = await service.getUserInfo().toPromise();
 
-    service.getUserInfo().subscribe((userInfo) => {
-      expect(userInfo).toEqual('John Doe');
-    });
+    expect(userInfo).toEqual('John Doe');
   });
 });

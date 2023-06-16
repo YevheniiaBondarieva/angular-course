@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { filter } from 'rxjs';
+import { catchError, filter, throwError } from 'rxjs';
 
 import { Course } from '../../shared/models/course.models';
 import { CoursesService } from '../../shared/services/courses.service';
@@ -30,15 +30,18 @@ export class BreadcrumbsComponent implements OnInit {
             this.courseName = undefined;
             return;
           }
-          this.coursesService.getCourseItemById(courseId).subscribe({
-            next: (course: Course) => {
+          this.coursesService
+            .getCourseItemById(courseId)
+            .pipe(
+              catchError((error: HttpErrorResponse) => {
+                console.log(error.message);
+                this.courseName = undefined;
+                return throwError(() => error);
+              }),
+            )
+            .subscribe((course: Course) => {
               this.courseName = course.name;
-            },
-            error: (error: HttpErrorResponse) => {
-              console.log(error.message);
-              this.courseName = undefined;
-            },
-          });
+            });
         }
       });
   }

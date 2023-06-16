@@ -19,7 +19,7 @@ export default class LoginComponent {
 
   onLogin() {
     if (this.email && this.password) {
-      this.authService.login(this.email, this.password);
+      this.authService.login(this.email, this.password).subscribe();
     }
   }
 }

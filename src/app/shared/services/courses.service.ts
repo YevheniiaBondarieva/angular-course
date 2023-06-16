@@ -8,7 +8,7 @@ import { Course } from '../models/course.models';
 export class CoursesService {
   coursesChanged = new EventEmitter<Course[]>();
   http = inject(HttpClient);
-  private apiBaseUrl = 'http://localhost:3004/courses';
+  private readonly apiBaseUrl = 'http://localhost:3004/courses';
 
   getCourses(
     start: number,
@@ -25,8 +25,7 @@ export class CoursesService {
   }
 
   createCourse(course: Course): Observable<Course> {
-    const url = `${this.apiBaseUrl}`;
-    return this.http.post<Course>(url, course);
+    return this.http.post<Course>(this.apiBaseUrl, course);
   }
 
   getCourseItemById(id: number | string): Observable<Course> {

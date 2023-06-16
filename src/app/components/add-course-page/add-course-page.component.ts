@@ -8,6 +8,8 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 import { DurationInputComponent } from './duration-input/duration-input.component';
 import { DateInputComponent } from './date-input/date-input.component';
@@ -65,16 +67,19 @@ export default class AddCoursePageComponent implements OnInit {
       this.editMode = params['id'] != null;
     });
     if (this.editMode) {
-      this.coursesService.getCourseItemById(Number(this.id)).subscribe({
-        next: (response) => {
+      this.coursesService
+        .getCourseItemById(Number(this.id))
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.log(error.message);
+            return throwError(() => error);
+          }),
+        )
+        .subscribe((response: Course) => {
           console.log(response);
           this.course = response;
           this.fillFormFields();
-        },
-        error: (error: HttpErrorResponse) => {
-          console.log(error.message);
-        },
-      });
+        });
     }
   }
 

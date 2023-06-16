@@ -2,6 +2,8 @@ import { Component, Input, OnChanges, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 import { CoursesListItemComponent } from './courses-list-item/courses-list-item.component';
 import { Course } from '../../shared/models/course.models';
@@ -22,8 +24,8 @@ export class CoursesComponent implements OnInit, OnChanges {
   route = inject(ActivatedRoute);
   originalCoursesArray: Course[] = [];
   coursesArray: Course[] = [];
-  start = 0;
-  count = 3;
+  startItemIndex = 0;
+  itemsPerPage = 3;
 
   ngOnInit(): void {
     this.loadCourses();
@@ -34,28 +36,32 @@ export class CoursesComponent implements OnInit, OnChanges {
   }
 
   loadCourses(): void {
-    this.coursesService.getCourses(this.start, this.count, 'date').subscribe({
-      next: (courses: Course[]) => {
+    this.coursesService
+      .getCourses(this.startItemIndex, this.itemsPerPage, 'date')
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.log(error.message);
+          return throwError(() => error);
+        }),
+      )
+      .subscribe((courses: Course[]) => {
         this.originalCoursesArray = courses;
         this.coursesArray = [...this.originalCoursesArray];
-      },
-      error: (error: HttpErrorResponse) => {
-        console.log(error.message);
-      },
-    });
+      });
   }
 
   onSearchItem(): void {
     if (this.searchValue) {
       this.coursesService
         .getCoursesByFragment(this.searchValue, 'date')
-        .subscribe({
-          next: (courses: Course[]) => {
-            this.coursesArray = courses;
-          },
-          error: (error: HttpErrorResponse) => {
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
             console.log(error.message);
-          },
+            return throwError(() => error);
+          }),
+        )
+        .subscribe((courses: Course[]) => {
+          this.coursesArray = courses;
         });
     } else {
       this.coursesArray = [...this.originalCoursesArray];
@@ -63,7 +69,7 @@ export class CoursesComponent implements OnInit, OnChanges {
   }
 
   onLoadMoreClick(): void {
-    this.start += this.count;
+    this.startItemIndex += this.itemsPerPage;
     this.loadCourses();
   }
 
@@ -74,14 +80,17 @@ export class CoursesComponent implements OnInit, OnChanges {
   onDeleteCourse(id: string | number): void {
     const confirmation = confirm('Do you really want to delete this course?');
     if (confirmation) {
-      this.coursesService.removeCourseItem(id).subscribe({
-        next: () => {
+      this.coursesService
+        .removeCourseItem(id)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.log(error.message);
+            return throwError(() => error);
+          }),
+        )
+        .subscribe(() => {
           this.loadCourses();
-        },
-        error: (error: HttpErrorResponse) => {
-          console.log(error.message);
-        },
-      });
+        });
     }
   }
 

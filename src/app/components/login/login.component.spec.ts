@@ -1,5 +1,6 @@
 import { RenderResult, render } from '@testing-library/angular';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 import LoginComponent from './login.component';
 import { AuthService } from '../../shared/services/auth.service';
@@ -12,7 +13,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     authService = {
-      login: jest.fn(),
+      login: jest.fn().mockReturnValue(of()),
       isAuthenticated: jest.fn(),
     } as unknown as jest.Mocked<AuthService>;
     router = { navigate: jest.fn() } as unknown as jest.Mocked<Router>;

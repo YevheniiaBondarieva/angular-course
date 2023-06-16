@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpRequest, HttpHandler, HttpHeaders } from '@angular/common/http';
-import { AuthInterceptor } from './auth.interceptor.service';
 import { of } from 'rxjs';
+import { HttpRequest, HttpHandler, HttpHeaders } from '@angular/common/http';
+
+import { AuthInterceptor } from './auth.interceptor.service';
 
 describe('AuthInterceptor', () => {
   let interceptor: AuthInterceptor;
@@ -25,14 +26,14 @@ describe('AuthInterceptor', () => {
       url: '/auth/login',
     } as unknown as HttpRequest<any>;
 
+    const expectedHandlerResult = handlerMock.handle(loginRequestMock);
     const result = interceptor.intercept(loginRequestMock, handlerMock);
 
-    expect(result).toBe(handlerMock.handle(loginRequestMock));
+    expect(result).toBe(expectedHandlerResult);
   });
 
   it('should add "Authorization" header for non-login request', () => {
     const token = 'testToken';
-    localStorage.setItem('token', token);
     const expectedHeaders = new HttpHeaders().append('Authorization', token);
     const expectedRequestMock = {
       clone: expect.any(Function),
@@ -40,13 +41,13 @@ describe('AuthInterceptor', () => {
       url: '/courses',
     } as unknown as HttpRequest<any>;
 
+    const expectedHandlerResult = handlerMock.handle(expectedRequestMock);
     const result = interceptor.intercept(requestMock, handlerMock);
 
-    expect(result).toBe(handlerMock.handle(expectedRequestMock));
+    expect(result).toBe(expectedHandlerResult);
   });
 
   it('should not add "Authorization" header for request without token in localStorage', () => {
-    localStorage.removeItem('token');
     const expectedHeaders = new HttpHeaders();
     const expectedRequestMock = {
       clone: expect.any(Function),
@@ -54,8 +55,9 @@ describe('AuthInterceptor', () => {
       url: '/courses',
     } as unknown as HttpRequest<any>;
 
+    const expectedHandlerResult = handlerMock.handle(expectedRequestMock);
     const result = interceptor.intercept(requestMock, handlerMock);
 
-    expect(result).toBe(handlerMock.handle(expectedRequestMock));
+    expect(result).toBe(expectedHandlerResult);
   });
 });

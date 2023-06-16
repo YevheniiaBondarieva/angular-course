@@ -14,22 +14,23 @@ export class AuthService {
   router = inject(Router);
 
   login(email?: string, password?: string) {
-    this.http
+    return this.http
       .post<{ [key: string]: string }>('http://localhost:3004/auth/login', {
         login: email,
         password,
       })
-      .subscribe({
-        next: (response) => {
-          console.log(`logged in successfully`);
+      .pipe(
+        map((response) => {
+          console.log('logged in successfully');
           localStorage.setItem('token', response['token']);
           this.statusChanged.emit(true);
           this.router.navigate(['/courses']);
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error(error.error);
-        },
-      });
+        }),
+        catchError((error: HttpErrorResponse) => {
+          console.error(error.message);
+          return throwError(() => error);
+        }),
+      );
   }
 
   logout(): void {
@@ -48,10 +49,10 @@ export class AuthService {
     return this.http
       .post<User>('http://localhost:3004/auth/userinfo', { token })
       .pipe(
-        map((responseData) => {
-          const name = `${responseData.name.first} ${responseData.name.last}`;
-          return name;
-        }),
+        map(
+          (responseData) =>
+            `${responseData.name.first} ${responseData.name.last}`,
+        ),
         catchError((errorRes) => {
           return throwError(() => errorRes);
         }),
