@@ -33,7 +33,7 @@ describe('BreadcrumbsComponent', () => {
 
   it('should set courseName when id is provided', () => {
     const courseName = 'Course Name';
-    coursesService.getCourseItemById.mockReturnValue({ name: courseName });
+    coursesService.getCourseItemById.mockReturnValue(of({ name: courseName }));
 
     component.ngOnInit();
 

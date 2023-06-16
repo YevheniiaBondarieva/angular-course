@@ -1,9 +1,25 @@
+import * as angularCore from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { of } from 'rxjs';
+
 import { CoursesService } from './courses.service';
+import { Course } from '../models/course.models';
+
+const injectSpy = jest.spyOn(angularCore, 'inject');
 
 describe('CoursesService', () => {
   let service: CoursesService;
+  let http: HttpClient;
 
   beforeEach(() => {
+    http = {
+      get: jest.fn().mockReturnValue(of(null)),
+      post: jest.fn().mockReturnValue(of(null)),
+      patch: jest.fn().mockReturnValue(of(null)),
+      delete: jest.fn().mockReturnValue(of(null)),
+    } as unknown as HttpClient;
+
+    injectSpy.mockReturnValueOnce(http);
     service = new CoursesService();
 
     jest.spyOn(service.coursesChanged, 'emit');
@@ -14,13 +30,34 @@ describe('CoursesService', () => {
   });
 
   it('should return the list of courses', () => {
-    const courses = service.getCourses();
+    const mockCourses: Course[] = [
+      {
+        id: 1,
+        name: 'Course 1',
+        description: 'Description 1',
+        isTopRated: false,
+        date: '2023-01-01',
+        authors: [],
+        length: 60,
+      },
+      {
+        id: 2,
+        name: 'Course 2',
+        description: 'Description 2',
+        isTopRated: true,
+        date: '2023-02-02',
+        authors: [],
+        length: 90,
+      },
+    ];
 
-    expect(courses).toEqual(service['courses']);
+    service.getCourses(0, 10).subscribe((courses) => {
+      expect(courses).toEqual(mockCourses);
+    });
   });
 
   it('should add a new course', () => {
-    const course = {
+    const newCourse: Course = {
       id: 3,
       name: 'New Course',
       description: 'New course description',
@@ -30,39 +67,30 @@ describe('CoursesService', () => {
       length: 120,
     };
 
-    service.createCourse(course);
-
-    expect(service['courses']).toContain(course);
-  });
-
-  it('should emit the changes', () => {
-    const course = {
-      id: 3,
-      name: 'New Course',
-      description: 'New course description',
-      isTopRated: false,
-      date: '2023-09-30',
-      authors: [],
-      length: 120,
-    };
-
-    service.createCourse(course);
-
-    expect(service.coursesChanged.emit).toHaveBeenCalledWith(
-      service['courses'],
-    );
+    service.createCourse(newCourse).subscribe((createdCourse) => {
+      expect(createdCourse).toEqual(newCourse);
+    });
   });
 
   it('should return a course by ID', () => {
     const courseId = 2;
-    const expectedCourse = service['courses'][1];
-    const course = service.getCourseItemById(courseId);
+    const expectedCourse: Course = {
+      id: 2,
+      name: 'Course 2',
+      description: 'Description 2',
+      isTopRated: true,
+      date: '2023-02-02',
+      authors: [],
+      length: 90,
+    };
 
-    expect(course).toEqual(expectedCourse);
+    service.getCourseItemById(courseId).subscribe((course) => {
+      expect(course).toEqual(expectedCourse);
+    });
   });
 
   it('should update a course item', () => {
-    const updatedCourse = {
+    const updatedCourse: Course = {
       id: 2,
       name: 'Updated Course',
       description: 'Updated course description',
@@ -72,19 +100,16 @@ describe('CoursesService', () => {
       length: 200,
     };
 
-    service.updateCourseItem(updatedCourse);
-
-    expect(service['courses'][1]).toEqual(updatedCourse);
+    service.updateCourseItem(updatedCourse).subscribe((updated) => {
+      expect(updated).toEqual(updatedCourse);
+    });
   });
 
   it('should remove a course item', () => {
     const courseId = 1;
-    const expectedCourses = service['courses'].filter(
-      (course) => course.id !== courseId,
-    );
 
-    service.removeCourseItem(courseId);
-
-    expect(service['courses']).toEqual(expectedCourses);
+    service.removeCourseItem(courseId).subscribe((course) => {
+      expect(course).toBeUndefined();
+    });
   });
 });

@@ -7,6 +7,9 @@ import {
   Router,
   RouterOutlet,
 } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 import { DurationInputComponent } from './duration-input/duration-input.component';
 import { DateInputComponent } from './date-input/date-input.component';
@@ -64,16 +67,31 @@ export default class AddCoursePageComponent implements OnInit {
       this.editMode = params['id'] != null;
     });
     if (this.editMode) {
-      this.course = this.coursesService.getCourseItemById(+this.id);
-      if (this.course !== undefined) {
-        this.IsExist = true;
-        this.courseTitle = this.course.name;
-        this.CourseIsTopRated = this.course.isTopRated;
-        this.courseDescription = this.course.description;
-        this.courseDuration = this.course.length;
-        this.courseDate = this.course.date;
-        this.courseAuthors = this.course.authors;
-      }
+      this.coursesService
+        .getCourseItemById(Number(this.id))
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.log(error.message);
+            return throwError(() => error);
+          }),
+        )
+        .subscribe((response: Course) => {
+          console.log(response);
+          this.course = response;
+          this.fillFormFields();
+        });
+    }
+  }
+
+  fillFormFields(): void {
+    if (this.course !== undefined) {
+      this.IsExist = true;
+      this.courseTitle = this.course.name;
+      this.CourseIsTopRated = this.course.isTopRated;
+      this.courseDescription = this.course.description;
+      this.courseDuration = this.course.length;
+      this.courseDate = this.course.date;
+      this.courseAuthors = this.course.authors;
     }
   }
 

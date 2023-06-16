@@ -1,22 +1,40 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable, inject } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { catchError, map, throwError } from 'rxjs';
+
+import { User } from '../models/user.models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   statusChanged = new EventEmitter<boolean>();
+  http = inject(HttpClient);
+  router = inject(Router);
 
   login(email?: string, password?: string) {
-    const token = Math.random().toString(36).substring(2);
-    localStorage.setItem('user', JSON.stringify({ email, password }));
-    localStorage.setItem('token', token);
-    console.log(`logged in successfully`);
-    this.statusChanged.emit(true);
+    return this.http
+      .post<{ [key: string]: string }>('http://localhost:3004/auth/login', {
+        login: email,
+        password,
+      })
+      .pipe(
+        map((response) => {
+          console.log('logged in successfully');
+          localStorage.setItem('token', response['token']);
+          this.statusChanged.emit(true);
+          this.router.navigate(['/courses']);
+        }),
+        catchError((error: HttpErrorResponse) => {
+          console.error(error.message);
+          return throwError(() => error);
+        }),
+      );
   }
 
   logout(): void {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
     console.log('Logout');
     this.statusChanged.emit(false);
   }
@@ -26,8 +44,18 @@ export class AuthService {
     return !!token;
   }
 
-  getUserInfo(): { email?: string; password?: string } | undefined {
-    const loginUser = JSON.parse(localStorage.getItem('user') || '{}');
-    return loginUser;
+  getUserInfo() {
+    const token = localStorage.getItem('token');
+    return this.http
+      .post<User>('http://localhost:3004/auth/userinfo', { token })
+      .pipe(
+        map(
+          (responseData) =>
+            `${responseData.name.first} ${responseData.name.last}`,
+        ),
+        catchError((errorRes) => {
+          return throwError(() => errorRes);
+        }),
+      );
   }
 }

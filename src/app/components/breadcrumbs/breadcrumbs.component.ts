@@ -1,8 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { catchError, filter, throwError } from 'rxjs';
+
+import { Course } from '../../shared/models/course.models';
 import { CoursesService } from '../../shared/services/courses.service';
-import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-breadcrumbs',
@@ -23,9 +26,22 @@ export class BreadcrumbsComponent implements OnInit {
         if (event instanceof NavigationEnd) {
           const urlSegments = event.url.split('/');
           const courseId = urlSegments[urlSegments.length - 1];
-          this.courseName = this.coursesService.getCourseItemById(
-            Number(courseId),
-          )?.name;
+          if (isNaN(Number(courseId))) {
+            this.courseName = undefined;
+            return;
+          }
+          this.coursesService
+            .getCourseItemById(courseId)
+            .pipe(
+              catchError((error: HttpErrorResponse) => {
+                console.log(error.message);
+                this.courseName = undefined;
+                return throwError(() => error);
+              }),
+            )
+            .subscribe((course: Course) => {
+              this.courseName = course.name;
+            });
         }
       });
   }

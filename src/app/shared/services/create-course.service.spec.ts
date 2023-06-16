@@ -1,5 +1,6 @@
 import * as angularCore from '@angular/core';
 import { Router } from '@angular/router';
+import { of } from 'rxjs';
 
 import { CreateCourseService } from './create-course.service';
 import { CoursesService } from './courses.service';
@@ -14,7 +15,7 @@ describe('CreateCourseService', () => {
 
   beforeEach(() => {
     coursesService = {
-      createCourse: jest.fn(),
+      createCourse: jest.fn().mockReturnValue(of(null)), // Mock the return value of updateCourseItem with an Observable,
     } as unknown as CoursesService;
     router = {
       navigate: jest.fn(),

@@ -1,4 +1,5 @@
 import { RenderResult, render } from '@testing-library/angular';
+import { HttpClient } from '@angular/common/http';
 
 import { AuthService } from '../../shared/services/auth.service';
 import { HeaderComponent } from './header.component';
@@ -12,7 +13,7 @@ describe('HeaderComponent', () => {
   beforeEach(async () => {
     fixture = await render(HeaderComponent, {
       imports: [IfAuthenticatedDirective],
-      providers: [AuthService],
+      providers: [AuthService, { provide: HttpClient, useValue: {} }],
     });
     component = fixture.fixture.componentInstance;
     authService = fixture.fixture.componentRef.injector.get(AuthService);

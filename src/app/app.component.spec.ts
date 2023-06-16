@@ -1,4 +1,5 @@
 import { RenderResult, render } from '@testing-library/angular';
+import { HttpClient } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 
@@ -7,7 +8,9 @@ describe('AppComponent', () => {
   let component: AppComponent;
 
   beforeEach(async () => {
-    fixture = await render(AppComponent);
+    fixture = await render(AppComponent, {
+      providers: [{ provide: HttpClient, useValue: {} }],
+    });
     component = fixture.fixture.componentInstance;
   });
 
