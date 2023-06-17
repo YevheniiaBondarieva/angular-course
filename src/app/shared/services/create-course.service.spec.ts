@@ -15,7 +15,7 @@ describe('CreateCourseService', () => {
 
   beforeEach(() => {
     coursesService = {
-      createCourse: jest.fn().mockReturnValue(of(null)), // Mock the return value of updateCourseItem with an Observable,
+      createCourse: jest.fn().mockReturnValue(of(null)),
     } as unknown as CoursesService;
     router = {
       navigate: jest.fn(),

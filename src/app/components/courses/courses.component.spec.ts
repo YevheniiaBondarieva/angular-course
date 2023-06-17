@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as angularCore from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { courses } from '../../shared/data/courses.data';
 import { CoursesComponent } from './courses.component';
 import { CoursesService } from '../../shared/services/courses.service';
-import { Course } from 'src/app/shared/models/course.models';
+import { Course } from '../../shared/models/course.models';
+import { LoadingBlockService } from '../../shared/services/loading-block.service';
 
 const injectSpy = jest.spyOn(angularCore, 'inject');
 
@@ -19,12 +20,14 @@ describe('CoursesComponent', () => {
     removeCourseItem: jest.fn().mockReturnValue(of(null)),
   };
   const router = { navigate: jest.fn() } as unknown as Router;
+  const loadingBlockService = jest.fn() as unknown as LoadingBlockService;
   const route = {} as ActivatedRoute;
 
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(router);
     injectSpy.mockReturnValueOnce(route);
+    injectSpy.mockReturnValueOnce(loadingBlockService);
     coursesService.getCourses.mockReturnValue(of(courses));
     component = new CoursesComponent();
   });
@@ -35,6 +38,14 @@ describe('CoursesComponent', () => {
 
   it('should have a coursesArray property with a default value of an empty array', () => {
     expect(component.coursesArray).toEqual([]);
+  });
+
+  it('should call loadCourses on ngOnInit', () => {
+    jest.spyOn(component, 'loadCourses');
+
+    component.ngOnInit();
+
+    expect(component.loadCourses).toHaveBeenCalledTimes(1);
   });
 
   it('should update coursesArray on onSearchItem', () => {
@@ -71,7 +82,9 @@ describe('CoursesComponent', () => {
     component.searchValue = searchValue;
     jest.spyOn(component, 'onSearchItem');
 
-    component.ngOnChanges();
+    component.ngOnChanges({
+      searchValue: { currentValue: searchValue },
+    } as unknown as angularCore.SimpleChanges);
 
     expect(component.onSearchItem).toHaveBeenCalledTimes(1);
   });
@@ -133,6 +146,46 @@ describe('CoursesComponent', () => {
     component.onDeleteCourse(courseId);
 
     expect(coursesService.removeCourseItem).toHaveBeenCalledWith(courseId);
+  });
+
+  it('should load courses and update arrays', () => {
+    const mockCourses: Course[] = [
+      {
+        id: 1,
+        name: 'Course 1',
+        description: 'Description 1',
+        isTopRated: false,
+        date: '2023-01-01',
+        authors: [],
+        length: 60,
+      },
+      {
+        id: 2,
+        name: 'Course 2',
+        description: 'Description 2',
+        isTopRated: true,
+        date: '2023-02-02',
+        authors: [],
+        length: 90,
+      },
+    ];
+    coursesService.getCourses.mockReturnValue(of(mockCourses));
+
+    component.loadCourses();
+
+    expect(component.coursesArray).toEqual(mockCourses);
+  });
+
+  it('should handle error in loadCourses()', () => {
+    const errorMessage = 'Error message';
+    coursesService.getCourses.mockReturnValue(
+      throwError({ message: errorMessage }),
+    );
+    jest.spyOn(console, 'log');
+
+    component.loadCourses();
+
+    expect(console.log).toHaveBeenCalledWith(errorMessage);
   });
 
   it('should navigate to the correct route when onEditCourse is called', () => {

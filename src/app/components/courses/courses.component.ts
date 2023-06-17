@@ -1,4 +1,11 @@
-import { Component, Input, OnChanges, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  SimpleChanges,
+  OnChanges,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -9,19 +16,28 @@ import { CoursesListItemComponent } from './courses-list-item/courses-list-item.
 import { Course } from '../../shared/models/course.models';
 import { CoursesService } from '../../shared/services/courses.service';
 import { SectionComponent } from '../section/section.component';
+import { LoadingBlockComponent } from '../loading-block/loading-block.component';
+import { LoadingBlockService } from '../../shared/services/loading-block.service';
 
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [CommonModule, CoursesListItemComponent, SectionComponent],
+  imports: [
+    CommonModule,
+    CoursesListItemComponent,
+    LoadingBlockComponent,
+    SectionComponent,
+  ],
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.scss'],
+  providers: [LoadingBlockService],
 })
 export class CoursesComponent implements OnInit, OnChanges {
   @Input() searchValue: string | undefined;
   coursesService = inject(CoursesService);
   router = inject(Router);
   route = inject(ActivatedRoute);
+  loadingBlockService = inject(LoadingBlockService);
   originalCoursesArray: Course[] = [];
   coursesArray: Course[] = [];
   startItemIndex = 0;
@@ -31,40 +47,49 @@ export class CoursesComponent implements OnInit, OnChanges {
     this.loadCourses();
   }
 
-  ngOnChanges(): void {
-    this.onSearchItem();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['searchValue']) {
+      this.onSearchItem();
+    }
   }
 
   loadCourses(): void {
+    this.loadingBlockService.show = true;
     this.coursesService
       .getCourses(this.startItemIndex, this.itemsPerPage, 'date')
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.log(error.message);
+          this.loadingBlockService.show = false;
           return throwError(() => error);
         }),
       )
       .subscribe((courses: Course[]) => {
         this.originalCoursesArray = courses;
         this.coursesArray = [...this.originalCoursesArray];
+        this.loadingBlockService.show = false;
       });
   }
 
   onSearchItem(): void {
+    this.loadingBlockService.show = true;
     if (this.searchValue) {
       this.coursesService
         .getCoursesByFragment(this.searchValue, 'date')
         .pipe(
           catchError((error: HttpErrorResponse) => {
             console.log(error.message);
+            this.loadingBlockService.show = false;
             return throwError(() => error);
           }),
         )
         .subscribe((courses: Course[]) => {
           this.coursesArray = courses;
+          this.loadingBlockService.show = false;
         });
     } else {
       this.coursesArray = [...this.originalCoursesArray];
+      this.loadingBlockService.show = false;
     }
   }
 
@@ -79,17 +104,20 @@ export class CoursesComponent implements OnInit, OnChanges {
 
   onDeleteCourse(id: string | number): void {
     const confirmation = confirm('Do you really want to delete this course?');
+    this.loadingBlockService.show = true;
     if (confirmation) {
       this.coursesService
         .removeCourseItem(id)
         .pipe(
           catchError((error: HttpErrorResponse) => {
             console.log(error.message);
+            this.loadingBlockService.show = false;
             return throwError(() => error);
           }),
         )
         .subscribe(() => {
           this.loadCourses();
+          this.loadingBlockService.show = false;
         });
     }
   }

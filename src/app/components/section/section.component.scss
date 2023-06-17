@@ -30,16 +30,6 @@
     color: map-get($colors, 'black');
 }
 
-.search-button {
-    background-color: map-get($colors, 'yellow-green');
-    border: none;
-    border-radius: 3px;
-    height: 40px;
-    width: 90px;
-    font-size: 16px;
-    color: map-get($colors, 'white');
-}
-
 .add-course-wrapper {
     display: flex;
     justify-content: flex-end;

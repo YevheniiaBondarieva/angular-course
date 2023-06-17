@@ -1,3 +1,5 @@
+import { fakeAsync, tick } from '@angular/core/testing';
+
 import { SectionComponent } from './section.component';
 import { RenderResult, fireEvent, render } from '@testing-library/angular';
 
@@ -22,17 +24,15 @@ describe('SectionComponent', () => {
     expect(component.searchValue).toBe('test');
   });
 
-  it('should emit filterCourses event on onSearchClick', async () => {
-    jest.spyOn(component.filterCourses, 'emit');
-    component.searchValue = 'hello';
-    const searchButton = fixture.container.querySelector(
-      'button.search-button',
-    );
+  it('emits filtered value through filterCourses', fakeAsync(() => {
+    const filterValue = 'test';
+    component.ngOnInit();
 
-    await fireEvent.click(searchButton as Element);
+    component.filterCourses.subscribe((value) => {
+      expect(value).toBe(filterValue);
+    });
+    component.onSearchChange(filterValue);
 
-    expect(component.filterCourses.emit).toHaveBeenCalledWith(
-      component.searchValue,
-    );
-  });
+    tick(300);
+  }));
 });

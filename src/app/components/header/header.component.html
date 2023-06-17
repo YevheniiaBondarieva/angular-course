@@ -1,5 +1,7 @@
 <header class="header">
   <app-logo></app-logo>
+   <app-loading-block *ngIf="this.loadingBlockService.show" />
+    <div *ngIf="!this.loadingBlockService.show">
   <ul class="list" *ifAuthenticated="true">
     <li class="list-item">
       <a href="javascript:void(0)" class="link">
@@ -14,4 +16,5 @@
       </button>
     </li>
   </ul>
+  </div>
 </header>

@@ -1,0 +1,41 @@
+@use '../../../styles/variables' as *;
+
+.loading-block{
+    display: flex;
+    margin-top: 20px;
+    background-color: map-get($colors, 'signal-white');
+    padding: 20px;
+    border-radius: 3px;
+    box-shadow: map-get($colors, 'black') 0px 1px 4px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid map-get($colors, 'white');
+    border-color: map-get($colors, 'white') transparent map-get($colors, 'white') transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

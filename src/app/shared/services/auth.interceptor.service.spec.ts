@@ -17,47 +17,49 @@ describe('AuthInterceptor', () => {
       url: '/courses',
     } as unknown as HttpRequest<any>;
     handlerMock = { handle: jest.fn().mockReturnValue(of({})) } as HttpHandler;
+
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: jest.fn(),
+        setItem: jest.fn(),
+        removeItem: jest.fn(),
+      },
+    });
   });
 
   it('should not modify request for "/auth/login" URL', () => {
-    const loginRequestMock = {
-      clone: jest.fn(),
-      headers: new HttpHeaders(),
-      url: '/auth/login',
-    } as unknown as HttpRequest<any>;
+    requestMock = new HttpRequest<any>('GET', '/auth/login');
 
-    const expectedHandlerResult = handlerMock.handle(loginRequestMock);
-    const result = interceptor.intercept(loginRequestMock, handlerMock);
+    interceptor.intercept(requestMock, handlerMock).subscribe();
 
-    expect(result).toBe(expectedHandlerResult);
+    expect(handlerMock.handle).toHaveBeenCalledWith(requestMock);
   });
-
   it('should add "Authorization" header for non-login request', () => {
-    const token = 'testToken';
-    const expectedHeaders = new HttpHeaders().append('Authorization', token);
-    const expectedRequestMock = {
-      clone: expect.any(Function),
+    Object.defineProperty(window.localStorage, 'getItem', {
+      value: jest.fn().mockReturnValue('example-token'),
+    });
+
+    interceptor.intercept(requestMock, handlerMock).subscribe();
+    const expectedHeaders = requestMock.headers.append(
+      'Authorization',
+      'example-token',
+    );
+
+    expect(requestMock.clone).toHaveBeenCalledWith({
       headers: expectedHeaders,
-      url: '/courses',
-    } as unknown as HttpRequest<any>;
-
-    const expectedHandlerResult = handlerMock.handle(expectedRequestMock);
-    const result = interceptor.intercept(requestMock, handlerMock);
-
-    expect(result).toBe(expectedHandlerResult);
+    });
   });
 
-  it('should not add "Authorization" header for request without token in localStorage', () => {
-    const expectedHeaders = new HttpHeaders();
-    const expectedRequestMock = {
-      clone: expect.any(Function),
+  it('should add empty "Authorization" header for request without token in localStorage', () => {
+    Object.defineProperty(window.localStorage, 'getItem', {
+      value: jest.fn().mockReturnValue(null),
+    });
+
+    interceptor.intercept(requestMock, handlerMock).subscribe();
+    const expectedHeaders = requestMock.headers.append('Authorization', '');
+
+    expect(requestMock.clone).toHaveBeenCalledWith({
       headers: expectedHeaders,
-      url: '/courses',
-    } as unknown as HttpRequest<any>;
-
-    const expectedHandlerResult = handlerMock.handle(expectedRequestMock);
-    const result = interceptor.intercept(requestMock, handlerMock);
-
-    expect(result).toBe(expectedHandlerResult);
+    });
   });
 });
