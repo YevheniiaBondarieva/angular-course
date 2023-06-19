@@ -1,7 +1,8 @@
 import {
+  ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   EventEmitter,
-  OnDestroy,
   OnInit,
   Output,
   inject,
@@ -16,6 +17,7 @@ import {
   distinctUntilChanged,
   filter,
 } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-section',
@@ -23,10 +25,12 @@ import {
   imports: [CommonModule, FormsModule],
   templateUrl: './section.component.html',
   styleUrls: ['./section.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SectionComponent implements OnInit, OnDestroy {
+export class SectionComponent implements OnInit {
   @Output() filterCourses = new EventEmitter<string | undefined>();
   private searchSubject = new Subject<string | undefined>();
+  destroyRef = inject(DestroyRef);
   router = inject(Router);
   searchValue: string | undefined = undefined;
   private subscription!: Subscription;
@@ -36,9 +40,8 @@ export class SectionComponent implements OnInit, OnDestroy {
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
-        filter(
-          (value) => value === undefined || value.length >= 3 || value === '',
-        ),
+        filter((value) => !value?.length || value.length >= 3),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((value) => {
         this.filterCourses.emit(value);
@@ -51,9 +54,5 @@ export class SectionComponent implements OnInit, OnDestroy {
 
   onAddCourse(): void {
     this.router.navigate(['courses/new']);
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 }

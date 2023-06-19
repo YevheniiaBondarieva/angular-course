@@ -1,6 +1,5 @@
 <div class="main">
-   <app-loading-block *ngIf="this.loadingBlockService.show" />
-  <div *ngIf="!this.loadingBlockService.show">
+  <div *ngIf="(loadingBlockService.show | async) === false">
   <div class="no-data" *ngIf="coursesArray.length === 0">
     NO DATA. FEEL FREE TO ADD NEW COURSE
   </div>

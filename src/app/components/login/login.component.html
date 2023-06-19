@@ -1,6 +1,5 @@
 <div>
-   <app-loading-block *ngIf="this.loadingBlockService.show" />
-  <form class="login-form" *ngIf="!this.loadingBlockService.show">
+  <form class="login-form" *ngIf="(loadingBlockService.show | async) === false">
     <div class="login-section">
       <h2 class="login-title">Login</h2>
       <div class="form-group">

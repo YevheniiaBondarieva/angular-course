@@ -76,13 +76,11 @@ describe('AuthService', () => {
     const email = 'test@example.com';
     const password = 'password';
     localStorageMock['user'] = JSON.stringify({ email, password });
-
-    jest
-      .spyOn(service.http, 'post')
-      .mockReturnValue(of({ name: { first: 'John', last: 'Doe' } }));
+    const name = { name: { first: 'John', last: 'Doe' } };
+    jest.spyOn(service.http, 'post').mockReturnValue(of(name));
 
     service.getUserInfo().subscribe((userInfo) => {
-      expect(userInfo).toEqual('John Doe');
+      expect(userInfo).toEqual(name);
       done();
     });
   });

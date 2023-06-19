@@ -5,7 +5,6 @@ import { of, throwError } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
 import { HeaderComponent } from './header.component';
 import { IfAuthenticatedDirective } from '../../shared/directives/if-authenticated/if-authenticated.directive';
-import { LoadingBlockService } from '../../shared/services/loading-block.service';
 
 describe('HeaderComponent', () => {
   let fixture: RenderResult<HeaderComponent>;
@@ -15,11 +14,7 @@ describe('HeaderComponent', () => {
   beforeEach(async () => {
     fixture = await render(HeaderComponent, {
       imports: [IfAuthenticatedDirective],
-      providers: [
-        AuthService,
-        LoadingBlockService,
-        { provide: HttpClient, useValue: {} },
-      ],
+      providers: [AuthService, { provide: HttpClient, useValue: {} }],
     });
     component = fixture.fixture.componentInstance;
     authService = fixture.fixture.componentRef.injector.get(AuthService);
@@ -64,17 +59,24 @@ describe('HeaderComponent', () => {
   });
 
   it('should update userInfo and loadingBlockService.show when status is true', () => {
-    const mockResponse = 'user info';
-
+    const mockResponse = {
+      id: 1,
+      token: 'token',
+      login: 'test',
+      name: { first: 'FirstName', last: 'LastName' },
+      password: 'test',
+    };
+    const fullName = 'FirstName LastName';
     jest
       .spyOn(authService.statusChanged, 'subscribe')
       .mockImplementation((callback) => {
         return callback(true);
       });
     jest.spyOn(authService, 'getUserInfo').mockReturnValue(of(mockResponse));
+
     component.ngOnInit();
 
-    expect(component.userInfo).toEqual(mockResponse);
+    expect(component.fullName()).toEqual(fullName);
   });
 
   it('should set userInfo to undefined when status is false', () => {
@@ -83,43 +85,43 @@ describe('HeaderComponent', () => {
       .mockImplementation((callback) => {
         return callback(false);
       });
+
     component.ngOnInit();
 
-    expect(component.userInfo).toBeUndefined();
+    expect(component.fullName()).toEqual('undefined undefined');
   });
 
   it('should call authService.isAuthenticated()', () => {
     jest.spyOn(authService, 'isAuthenticated');
+
     component.ngOnInit();
 
     expect(authService.isAuthenticated).toHaveBeenCalled();
   });
 
   it('should update userInfo when status is true and getUserInfo() returns a response', () => {
-    const mockResponse = 'user info';
-
+    const mockResponse = {
+      id: 1,
+      token: 'token',
+      login: 'test',
+      name: { first: 'firstName', last: 'lastName' },
+      password: 'test',
+    };
+    const fullName = 'firstName lastName';
     jest.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
     jest.spyOn(authService, 'getUserInfo').mockReturnValue(of(mockResponse));
+
     component.ngOnInit();
 
-    expect(component.userInfo).toEqual(mockResponse);
-  });
-
-  it('should update loadingBlockService.show when status is true and getUserInfo() returns a response', () => {
-    const mockResponse = 'user info';
-
-    jest.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
-    jest.spyOn(authService, 'getUserInfo').mockReturnValue(of(mockResponse));
-    component.ngOnInit();
-
-    expect(component.loadingBlockService.show).toBe(false);
+    expect(component.fullName()).toEqual(fullName);
   });
 
   it('should set userInfo to undefined when status is true and getUserInfo() returns an error', () => {
     jest.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
     jest.spyOn(authService, 'getUserInfo').mockReturnValue(throwError('error'));
+
     component.ngOnInit();
 
-    expect(component.userInfo).toBeUndefined();
+    expect(component.fullName()).toEqual('undefined undefined');
   });
 });

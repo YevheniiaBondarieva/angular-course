@@ -20,7 +20,10 @@ describe('CoursesComponent', () => {
     removeCourseItem: jest.fn().mockReturnValue(of(null)),
   };
   const router = { navigate: jest.fn() } as unknown as Router;
-  const loadingBlockService = jest.fn() as unknown as LoadingBlockService;
+  const loadingBlockService = {
+    showLoading: jest.fn(),
+    hideLoading: jest.fn(),
+  } as unknown as LoadingBlockService;
   const route = {} as ActivatedRoute;
 
   beforeEach(() => {

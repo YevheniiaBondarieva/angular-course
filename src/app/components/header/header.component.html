@@ -1,11 +1,10 @@
 <header class="header">
   <app-logo></app-logo>
-   <app-loading-block *ngIf="this.loadingBlockService.show" />
-    <div *ngIf="!this.loadingBlockService.show">
+    <div>
   <ul class="list" *ifAuthenticated="true">
     <li class="list-item">
       <a href="javascript:void(0)" class="link">
-        <i class="fa fa-user icon" aria-hidden="true"></i> {{ userInfo }}</a
+        <i class="fa fa-user icon" aria-hidden="true"></i> {{ fullName() }}</a
       >
     </li>
     <li class="list-item">

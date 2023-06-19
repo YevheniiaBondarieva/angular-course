@@ -45,7 +45,7 @@ describe('CoursesService', () => {
       get: jest.fn().mockReturnValue(of(mockCoursesArray)),
       post: jest.fn().mockReturnValue(of(mockCoursesArray[1])),
       patch: jest.fn().mockReturnValue(of(updatedCourse)),
-      delete: jest.fn().mockReturnValue(of()),
+      delete: jest.fn().mockReturnValue(of(undefined)),
     } as unknown as HttpClient;
 
     injectSpy.mockReturnValueOnce(http);
@@ -58,8 +58,7 @@ describe('CoursesService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return the list of courses', () => {
-    let courses: Course[] = [];
+  it('should return the list of courses', (done) => {
     const mockCourses: Course[] = [
       {
         id: 1,
@@ -80,16 +79,15 @@ describe('CoursesService', () => {
         length: 90,
       },
     ];
+    jest.spyOn(service, 'getCourses');
 
     service.getCourses(0, 2).subscribe((coursesResult) => {
-      courses = coursesResult;
+      expect(coursesResult).toEqual(mockCourses);
+      done();
     });
-
-    expect(courses).toEqual(mockCourses);
   });
 
-  it('should add a new course', () => {
-    let courses: Course | undefined = undefined;
+  it('should add a new course', (done) => {
     const newCourse: Course = {
       id: 2,
       name: 'Course 2',
@@ -99,16 +97,15 @@ describe('CoursesService', () => {
       authors: [],
       length: 90,
     };
+    jest.spyOn(service, 'createCourse');
 
     service.createCourse(newCourse).subscribe((coursesResult) => {
-      courses = coursesResult;
+      expect(coursesResult).toEqual(newCourse);
+      done();
     });
-
-    expect(courses).toEqual(newCourse);
   });
 
-  it('should update a course item', () => {
-    let course: Course | undefined = undefined;
+  it('should update a course item', (done) => {
     const updatedCourse: Course = {
       id: 2,
       name: 'Updated Course',
@@ -118,22 +115,21 @@ describe('CoursesService', () => {
       authors: [],
       length: 200,
     };
+    jest.spyOn(service, 'updateCourseItem');
 
     service.updateCourseItem(updatedCourse).subscribe((updated) => {
-      course = updated;
+      expect(updated).toEqual(updatedCourse);
+      done();
     });
-
-    expect(course).toEqual(updatedCourse);
   });
 
-  it('should remove a course item', () => {
+  it('should remove a course item', (done) => {
     const courseId = 1;
-    let result;
+    jest.spyOn(service, 'removeCourseItem');
 
     service.removeCourseItem(courseId).subscribe((course) => {
-      result = course;
+      expect(course).toBeUndefined();
+      done();
     });
-
-    expect(result).toBeUndefined();
   });
 });
