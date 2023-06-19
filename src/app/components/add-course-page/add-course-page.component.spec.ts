@@ -19,7 +19,6 @@ describe('AddCoursePageComponent', () => {
     getCourseItemById: jest.fn(),
   };
   const router = { navigate: jest.fn() } as unknown as Router;
-  const route = { params: { subscribe: jest.fn() } };
   const strategyFacade = {
     registerStrategy: jest.fn(),
     submit: jest.fn(),
@@ -28,7 +27,6 @@ describe('AddCoursePageComponent', () => {
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(router);
-    injectSpy.mockReturnValueOnce(route);
     injectSpy.mockReturnValueOnce(strategyFacade);
     component = new AddCoursePageComponent();
   });

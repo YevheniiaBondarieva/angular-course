@@ -1,12 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  ActivatedRoute,
-  Params,
-  RouteReuseStrategy,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
+import { RouteReuseStrategy, Router, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -43,12 +37,11 @@ import { EditCourseService } from '../../shared/services/edit-course.service';
   ],
 })
 export default class AddCoursePageComponent implements OnInit {
+  @Input() id!: number | string;
   coursesService = inject(CoursesService);
   router = inject(Router);
-  route = inject(ActivatedRoute);
   strategyFacade = inject(StrategyFacade);
   course: Course | undefined;
-  id!: number | string;
   editMode = false;
   IsExist = false;
   courseTitle: string | undefined;
@@ -59,13 +52,9 @@ export default class AddCoursePageComponent implements OnInit {
   CourseIsTopRated = false;
 
   ngOnInit() {
-    this.route.params.subscribe((params: Params) => {
-      const path = this.route.snapshot.url.join('/');
-      const strategy = path.includes('new') ? Strategy.Create : Strategy.Edit;
-      this.strategyFacade.registerStrategy(strategy);
-      this.id = params['id'];
-      this.editMode = params['id'] != null;
-    });
+    const strategy = this.id ? Strategy.Edit : Strategy.Create;
+    this.strategyFacade.registerStrategy(strategy);
+    this.editMode = this.id != null;
     if (this.editMode) {
       this.coursesService
         .getCourseItemById(Number(this.id))
