@@ -49,10 +49,6 @@ export class AuthService {
     return this.http
       .post<User>('http://localhost:3004/auth/userinfo', { token })
       .pipe(
-        map(
-          (responseData) =>
-            `${responseData.name.first} ${responseData.name.last}`,
-        ),
         catchError((errorRes) => {
           return throwError(() => errorRes);
         }),

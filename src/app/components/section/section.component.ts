@@ -1,7 +1,23 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  EventEmitter,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import {
+  Subject,
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+} from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-section',
@@ -9,24 +25,31 @@ import { ActivatedRoute, Router } from '@angular/router';
   imports: [CommonModule, FormsModule],
   templateUrl: './section.component.html',
   styleUrls: ['./section.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SectionComponent {
+export class SectionComponent implements OnInit {
   @Output() filterCourses = new EventEmitter<string | undefined>();
+  private searchSubject = new Subject<string | undefined>();
+  destroyRef = inject(DestroyRef);
   router = inject(Router);
-  route = inject(ActivatedRoute);
   searchValue: string | undefined = undefined;
+  private subscription!: Subscription;
 
-  onSearchClick(searchValue: string | undefined): void {
-    if (searchValue !== undefined) {
-      this.filterCourses.emit(searchValue);
-    }
+  ngOnInit(): void {
+    this.subscription = this.searchSubject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter((value) => !value?.length || value.length >= 3),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((value) => {
+        this.filterCourses.emit(value);
+      });
   }
 
-  onSearchChange(value: string): void {
-    if (value === '') {
-      this.searchValue = undefined;
-      this.filterCourses.emit(undefined);
-    }
+  onSearchChange(value: string | undefined): void {
+    this.searchSubject.next(value || '');
   }
 
   onAddCourse(): void {

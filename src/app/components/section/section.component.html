@@ -6,11 +6,8 @@
       placeholder="Text to search"
       class="search-input"
       [(ngModel)]="searchValue"
-      (ngModelChange)="onSearchChange($event)"
+      (keyup)="onSearchChange(searchValue)"
     />
-    <button class="search-button" (click)="onSearchClick(searchValue)">
-      Search
-    </button>
   </form>
   <div class="add-course-wrapper">
     <button class="add-course" type="button" (click)="onAddCourse()">

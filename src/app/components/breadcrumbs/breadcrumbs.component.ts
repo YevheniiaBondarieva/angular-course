@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -6,6 +6,7 @@ import { catchError, filter, throwError } from 'rxjs';
 
 import { Course } from '../../shared/models/course.models';
 import { CoursesService } from '../../shared/services/courses.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-breadcrumbs',
@@ -17,6 +18,7 @@ import { CoursesService } from '../../shared/services/courses.service';
 export class BreadcrumbsComponent implements OnInit {
   coursesService = inject(CoursesService);
   router = inject(Router);
+  destroyRef = inject(DestroyRef);
   courseName: string | undefined;
 
   ngOnInit() {
@@ -38,6 +40,7 @@ export class BreadcrumbsComponent implements OnInit {
                 this.courseName = undefined;
                 return throwError(() => error);
               }),
+              takeUntilDestroyed(this.destroyRef),
             )
             .subscribe((course: Course) => {
               this.courseName = course.name;

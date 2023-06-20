@@ -1,4 +1,5 @@
 <div class="main">
+  <div *ngIf="(loadingBlockService.show$ | async) === false">
   <div class="no-data" *ngIf="coursesArray.length === 0">
     NO DATA. FEEL FREE TO ADD NEW COURSE
   </div>
@@ -12,5 +13,6 @@
     <button type="button" class="load-more" (click)="onLoadMoreClick()">
       LOAD MORE
     </button>
+  </div>
   </div>
 </div>

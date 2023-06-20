@@ -1,5 +1,6 @@
 import { RenderResult, render } from '@testing-library/angular';
 import { HttpClient } from '@angular/common/http';
+import { of, throwError } from 'rxjs';
 
 import { AuthService } from '../../shared/services/auth.service';
 import { HeaderComponent } from './header.component';
@@ -55,5 +56,72 @@ describe('HeaderComponent', () => {
     component.onLogout();
 
     expect(authService.logout).toHaveBeenCalled();
+  });
+
+  it('should update userInfo and loadingBlockService.show when status is true', () => {
+    const mockResponse = {
+      id: 1,
+      token: 'token',
+      login: 'test',
+      name: { first: 'FirstName', last: 'LastName' },
+      password: 'test',
+    };
+    const fullName = 'FirstName LastName';
+    jest
+      .spyOn(authService.statusChanged, 'subscribe')
+      .mockImplementation((callback) => {
+        return callback(true);
+      });
+    jest.spyOn(authService, 'getUserInfo').mockReturnValue(of(mockResponse));
+
+    component.ngOnInit();
+
+    expect(component.fullName()).toEqual(fullName);
+  });
+
+  it('should set userInfo to undefined when status is false', () => {
+    jest
+      .spyOn(authService.statusChanged, 'subscribe')
+      .mockImplementation((callback) => {
+        return callback(false);
+      });
+
+    component.ngOnInit();
+
+    expect(component.fullName()).toEqual('undefined undefined');
+  });
+
+  it('should call authService.isAuthenticated()', () => {
+    jest.spyOn(authService, 'isAuthenticated');
+
+    component.ngOnInit();
+
+    expect(authService.isAuthenticated).toHaveBeenCalled();
+  });
+
+  it('should update userInfo when status is true and getUserInfo() returns a response', () => {
+    const mockResponse = {
+      id: 1,
+      token: 'token',
+      login: 'test',
+      name: { first: 'firstName', last: 'lastName' },
+      password: 'test',
+    };
+    const fullName = 'firstName lastName';
+    jest.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
+    jest.spyOn(authService, 'getUserInfo').mockReturnValue(of(mockResponse));
+
+    component.ngOnInit();
+
+    expect(component.fullName()).toEqual(fullName);
+  });
+
+  it('should set userInfo to undefined when status is true and getUserInfo() returns an error', () => {
+    jest.spyOn(authService, 'isAuthenticated').mockReturnValue(true);
+    jest.spyOn(authService, 'getUserInfo').mockReturnValue(throwError('error'));
+
+    component.ngOnInit();
+
+    expect(component.fullName()).toEqual('undefined undefined');
   });
 });

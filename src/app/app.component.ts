@@ -9,6 +9,7 @@ import LoginComponent from './components/login/login.component';
 import { IfAuthenticatedDirective } from './shared/directives/if-authenticated/if-authenticated.directive';
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
 import { CoursesService } from './shared/services/courses.service';
+import { LoadingBlockComponent } from './components/loading-block/loading-block.component';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,7 @@ import { CoursesService } from './shared/services/courses.service';
     HeaderComponent,
     LoginComponent,
     BreadcrumbsComponent,
+    LoadingBlockComponent,
     IfAuthenticatedDirective,
   ],
   providers: [CoursesService],

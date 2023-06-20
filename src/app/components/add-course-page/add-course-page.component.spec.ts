@@ -19,17 +19,19 @@ describe('AddCoursePageComponent', () => {
     getCourseItemById: jest.fn(),
   };
   const router = { navigate: jest.fn() } as unknown as Router;
-  const route = { params: { subscribe: jest.fn() } };
   const strategyFacade = {
     registerStrategy: jest.fn(),
     submit: jest.fn(),
   } as unknown as StrategyFacade;
+  const destroyRef = {
+    onDestroy: jest.fn(),
+  } as unknown as angularCore.DestroyRef;
 
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(router);
-    injectSpy.mockReturnValueOnce(route);
     injectSpy.mockReturnValueOnce(strategyFacade);
+    injectSpy.mockReturnValueOnce(destroyRef);
     component = new AddCoursePageComponent();
   });
 
@@ -88,7 +90,6 @@ describe('AddCoursePageComponent', () => {
       .spyOn(component.coursesService, 'getCourseItemById')
       .mockReturnValue(of(course));
 
-    component.editMode = true;
     component.id = courseId;
     component.ngOnInit();
 
@@ -96,8 +97,6 @@ describe('AddCoursePageComponent', () => {
   });
 
   it('should initialize properties in create mode', () => {
-    component.editMode = false;
-
     component.ngOnInit();
 
     expect(component.course).toBeUndefined();

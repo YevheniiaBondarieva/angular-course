@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
@@ -10,6 +10,7 @@ import { FilterPipe } from '../../shared/pipes/filter/filter.pipe';
 @Component({
   selector: 'app-courses-page',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, SectionComponent, CoursesComponent, RouterOutlet],
   templateUrl: './courses-page.component.html',
   styleUrls: ['./courses-page.component.scss'],

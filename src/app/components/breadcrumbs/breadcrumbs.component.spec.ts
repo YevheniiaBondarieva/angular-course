@@ -20,10 +20,14 @@ describe('BreadcrumbsComponent', () => {
   const router = {
     events: of(new NavigationEnd(0, '', '')),
   } as unknown as Router;
+  const destroyRef = {
+    onDestroy: jest.fn(),
+  } as unknown as angularCore.DestroyRef;
 
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(router);
+    injectSpy.mockReturnValueOnce(destroyRef);
     component = new BreadcrumbsComponent();
   });
 

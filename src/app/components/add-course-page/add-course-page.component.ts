@@ -1,12 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  ActivatedRoute,
-  Params,
-  RouteReuseStrategy,
-  Router,
-  RouterOutlet,
-} from '@angular/router';
+import { RouteReuseStrategy, Router, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -22,6 +16,7 @@ import { StrategyFacade } from '../../shared/services/strategy-facade.service';
 import { Strategy } from '../../shared/models/course-form.model';
 import { CreateCourseService } from '../../shared/services/create-course.service';
 import { EditCourseService } from '../../shared/services/edit-course.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-add-course-page',
@@ -43,13 +38,12 @@ import { EditCourseService } from '../../shared/services/edit-course.service';
   ],
 })
 export default class AddCoursePageComponent implements OnInit {
+  @Input() id!: number | string;
   coursesService = inject(CoursesService);
   router = inject(Router);
-  route = inject(ActivatedRoute);
   strategyFacade = inject(StrategyFacade);
+  destroyRef = inject(DestroyRef);
   course: Course | undefined;
-  id!: number | string;
-  editMode = false;
   IsExist = false;
   courseTitle: string | undefined;
   courseDescription: string | undefined;
@@ -59,14 +53,9 @@ export default class AddCoursePageComponent implements OnInit {
   CourseIsTopRated = false;
 
   ngOnInit() {
-    this.route.params.subscribe((params: Params) => {
-      const path = this.route.snapshot.url.join('/');
-      const strategy = path.includes('new') ? Strategy.Create : Strategy.Edit;
-      this.strategyFacade.registerStrategy(strategy);
-      this.id = params['id'];
-      this.editMode = params['id'] != null;
-    });
-    if (this.editMode) {
+    const strategy = this.id ? Strategy.Edit : Strategy.Create;
+    this.strategyFacade.registerStrategy(strategy);
+    if (this.id) {
       this.coursesService
         .getCourseItemById(Number(this.id))
         .pipe(
@@ -74,6 +63,7 @@ export default class AddCoursePageComponent implements OnInit {
             console.log(error.message);
             return throwError(() => error);
           }),
+          takeUntilDestroyed(this.destroyRef),
         )
         .subscribe((response: Course) => {
           console.log(response);

@@ -12,17 +12,22 @@ describe('CreateCourseService', () => {
   let createCourseService: CreateCourseService;
   let coursesService: CoursesService;
   let router: Router;
+  let destroyRef: angularCore.DestroyRef;
 
   beforeEach(() => {
     coursesService = {
-      createCourse: jest.fn().mockReturnValue(of(null)), // Mock the return value of updateCourseItem with an Observable,
+      createCourse: jest.fn().mockReturnValue(of(null)),
     } as unknown as CoursesService;
     router = {
       navigate: jest.fn(),
     } as unknown as Router;
+    destroyRef = {
+      onDestroy: jest.fn(),
+    } as unknown as angularCore.DestroyRef;
 
     injectSpy.mockReturnValueOnce(coursesService);
     injectSpy.mockReturnValueOnce(router);
+    injectSpy.mockReturnValueOnce(destroyRef);
     createCourseService = new CreateCourseService();
   });
 
