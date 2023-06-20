@@ -12,6 +12,7 @@ describe('EditCourseService', () => {
   let editCourseService: EditCourseService;
   let coursesService: CoursesService;
   let router: Router;
+  let destroyRef: angularCore.DestroyRef;
 
   beforeEach(() => {
     coursesService = {
@@ -20,9 +21,13 @@ describe('EditCourseService', () => {
     router = {
       navigate: jest.fn(),
     } as unknown as Router;
+    destroyRef = {
+      onDestroy: jest.fn(),
+    } as unknown as angularCore.DestroyRef;
 
     injectSpy.mockReturnValueOnce(coursesService);
     injectSpy.mockReturnValueOnce(router);
+    injectSpy.mockReturnValueOnce(destroyRef);
     editCourseService = new EditCourseService();
   });
 

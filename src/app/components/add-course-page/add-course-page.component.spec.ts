@@ -23,11 +23,15 @@ describe('AddCoursePageComponent', () => {
     registerStrategy: jest.fn(),
     submit: jest.fn(),
   } as unknown as StrategyFacade;
+  const destroyRef = {
+    onDestroy: jest.fn(),
+  } as unknown as angularCore.DestroyRef;
 
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(router);
     injectSpy.mockReturnValueOnce(strategyFacade);
+    injectSpy.mockReturnValueOnce(destroyRef);
     component = new AddCoursePageComponent();
   });
 

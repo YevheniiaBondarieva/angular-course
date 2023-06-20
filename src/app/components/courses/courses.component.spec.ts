@@ -25,12 +25,16 @@ describe('CoursesComponent', () => {
     hideLoading: jest.fn(),
   } as unknown as LoadingBlockService;
   const route = {} as ActivatedRoute;
+  const destroyRef = {
+    onDestroy: jest.fn(),
+  } as unknown as angularCore.DestroyRef;
 
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(router);
     injectSpy.mockReturnValueOnce(route);
     injectSpy.mockReturnValueOnce(loadingBlockService);
+    injectSpy.mockReturnValueOnce(destroyRef);
     coursesService.getCourses.mockReturnValue(of(courses));
     component = new CoursesComponent();
   });

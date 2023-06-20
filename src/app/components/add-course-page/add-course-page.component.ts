@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouteReuseStrategy, Router, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -16,6 +16,7 @@ import { StrategyFacade } from '../../shared/services/strategy-facade.service';
 import { Strategy } from '../../shared/models/course-form.model';
 import { CreateCourseService } from '../../shared/services/create-course.service';
 import { EditCourseService } from '../../shared/services/edit-course.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-add-course-page',
@@ -41,6 +42,7 @@ export default class AddCoursePageComponent implements OnInit {
   coursesService = inject(CoursesService);
   router = inject(Router);
   strategyFacade = inject(StrategyFacade);
+  destroyRef = inject(DestroyRef);
   course: Course | undefined;
   IsExist = false;
   courseTitle: string | undefined;
@@ -61,6 +63,7 @@ export default class AddCoursePageComponent implements OnInit {
             console.log(error.message);
             return throwError(() => error);
           }),
+          takeUntilDestroyed(this.destroyRef),
         )
         .subscribe((response: Course) => {
           console.log(response);

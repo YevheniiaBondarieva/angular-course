@@ -5,6 +5,7 @@ import {
   OnChanges,
   OnInit,
   inject,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,6 +18,7 @@ import { Course } from '../../shared/models/course.models';
 import { CoursesService } from '../../shared/services/courses.service';
 import { SectionComponent } from '../section/section.component';
 import { LoadingBlockService } from '../../shared/services/loading-block.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-courses',
@@ -31,6 +33,7 @@ export class CoursesComponent implements OnInit, OnChanges {
   router = inject(Router);
   route = inject(ActivatedRoute);
   loadingBlockService = inject(LoadingBlockService);
+  destroyRef = inject(DestroyRef);
   originalCoursesArray: Course[] = [];
   coursesArray: Course[] = [];
   startItemIndex = 0;
@@ -51,6 +54,7 @@ export class CoursesComponent implements OnInit, OnChanges {
     this.coursesService
       .getCourses(this.startItemIndex, this.itemsPerPage, 'date')
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         catchError((error: HttpErrorResponse) => {
           console.log(error.message);
           return throwError(() => error);
@@ -78,6 +82,7 @@ export class CoursesComponent implements OnInit, OnChanges {
           finalize(() => {
             this.loadingBlockService.hideLoading();
           }),
+          takeUntilDestroyed(this.destroyRef),
         )
         .subscribe((courses: Course[]) => {
           this.coursesArray = courses;
@@ -111,6 +116,7 @@ export class CoursesComponent implements OnInit, OnChanges {
           finalize(() => {
             this.loadingBlockService.hideLoading();
           }),
+          takeUntilDestroyed(this.destroyRef),
         )
         .subscribe(() => {
           this.originalCoursesArray = this.originalCoursesArray.filter(
