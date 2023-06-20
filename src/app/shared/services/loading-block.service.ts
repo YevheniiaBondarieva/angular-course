@@ -6,7 +6,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class LoadingBlockService {
   private showSubject = new BehaviorSubject<boolean>(false);
-  show: Observable<boolean> = this.showSubject.asObservable();
+  show$: Observable<boolean> = this.showSubject.asObservable();
 
   showLoading(): void {
     this.showSubject.next(true);

@@ -86,7 +86,6 @@ describe('AddCoursePageComponent', () => {
       .spyOn(component.coursesService, 'getCourseItemById')
       .mockReturnValue(of(course));
 
-    component.editMode = true;
     component.id = courseId;
     component.ngOnInit();
 
@@ -94,8 +93,6 @@ describe('AddCoursePageComponent', () => {
   });
 
   it('should initialize properties in create mode', () => {
-    component.editMode = false;
-
     component.ngOnInit();
 
     expect(component.course).toBeUndefined();

@@ -42,7 +42,6 @@ export default class AddCoursePageComponent implements OnInit {
   router = inject(Router);
   strategyFacade = inject(StrategyFacade);
   course: Course | undefined;
-  editMode = false;
   IsExist = false;
   courseTitle: string | undefined;
   courseDescription: string | undefined;
@@ -54,8 +53,7 @@ export default class AddCoursePageComponent implements OnInit {
   ngOnInit() {
     const strategy = this.id ? Strategy.Edit : Strategy.Create;
     this.strategyFacade.registerStrategy(strategy);
-    this.editMode = this.id != null;
-    if (this.editMode) {
+    if (this.id) {
       this.coursesService
         .getCourseItemById(Number(this.id))
         .pipe(
