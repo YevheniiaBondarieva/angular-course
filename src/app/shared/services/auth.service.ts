@@ -1,7 +1,7 @@
 import { EventEmitter, Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { catchError, map, throwError } from 'rxjs';
+import { catchError, map, take, throwError } from 'rxjs';
 
 import { User } from '../models/user.models';
 
@@ -20,11 +20,13 @@ export class AuthService {
         password,
       })
       .pipe(
-        map((response) => {
+        take(1),
+        map((response): string => {
           console.log('logged in successfully');
           localStorage.setItem('token', response['token']);
           this.statusChanged.emit(true);
           this.router.navigate(['/courses']);
+          return response['token'];
         }),
         catchError((error: HttpErrorResponse) => {
           console.error(error.message);
