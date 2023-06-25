@@ -1,6 +1,6 @@
 import * as angularCore from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { of, take } from 'rxjs';
+import { of } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { BreadcrumbsComponent } from './breadcrumbs.component';
@@ -27,7 +27,7 @@ describe('BreadcrumbsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update course$ after selecting course', (done) => {
+  it('should update course$ after selecting course', () => {
     const courseId = 123;
     const mockCourse: Course = {
       id: 123,
@@ -44,14 +44,13 @@ describe('BreadcrumbsComponent', () => {
     jest.spyOn(store, 'select').mockReturnValue(of(mockCourse));
 
     component.ngOnInit();
+    const courseSpy = jest.fn();
+    component.course$?.subscribe(courseSpy);
 
-    component.course$?.pipe(take(1)).subscribe((course) => {
-      expect(course).toEqual(mockCourse);
-      done();
-    });
+    expect(courseSpy).toHaveBeenCalledWith(mockCourse);
   });
 
-  it('should set course$ to undefined if course is not found', (done) => {
+  it('should set course$ to undefined if course is not found', () => {
     const courseId = 123;
     jest
       .spyOn(router.events, 'pipe')
@@ -59,14 +58,13 @@ describe('BreadcrumbsComponent', () => {
     jest.spyOn(store, 'select').mockReturnValue(of(undefined));
 
     component.ngOnInit();
+    const courseSpy = jest.fn();
+    component.course$?.subscribe(courseSpy);
 
-    component.course$?.pipe(take(1)).subscribe((course) => {
-      expect(course).toBeUndefined();
-      done();
-    });
+    expect(courseSpy).toHaveBeenCalledWith(undefined);
   });
 
-  it('should return null when courseId is not a valid number', (done) => {
+  it('should return null when courseId is not a valid number', () => {
     const courseId = 'invalid';
     const expectedCourse = null;
     jest
@@ -75,10 +73,9 @@ describe('BreadcrumbsComponent', () => {
     jest.spyOn(store, 'select').mockReturnValue(of(null));
 
     component.ngOnInit();
+    const courseSpy = jest.fn();
+    component.course$?.subscribe(courseSpy);
 
-    component.course$?.pipe(take(1)).subscribe((course) => {
-      expect(course).toEqual(expectedCourse);
-      done();
-    });
+    expect(courseSpy).toHaveBeenCalledWith(expectedCourse);
   });
 });

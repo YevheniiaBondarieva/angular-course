@@ -22,13 +22,11 @@ export default class LoginComponent {
 
   onLogin() {
     if (this.email && this.password) {
-      this.loadingBlockService.showLoading();
       this.store.dispatch(
         UsersApiActions.login({
           payload: { email: this.email, password: this.password },
         }),
       );
-      this.loadingBlockService.hideLoading();
     }
   }
 }

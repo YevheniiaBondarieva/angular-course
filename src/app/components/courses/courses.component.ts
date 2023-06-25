@@ -5,7 +5,6 @@ import {
   OnChanges,
   OnInit,
   inject,
-  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -17,7 +16,7 @@ import { Course } from '../../shared/models/course.models';
 import { SectionComponent } from '../section/section.component';
 import { LoadingBlockService } from '../../shared/services/loading-block.service';
 import { CoursesApiActions } from '../../store/courses/courses.actions';
-import { selectCourses } from '../../store/selectors';
+import { CourseSelectors } from '../../store/selectors';
 
 @Component({
   selector: 'app-courses',
@@ -26,13 +25,13 @@ import { selectCourses } from '../../store/selectors';
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.scss'],
 })
-export class CoursesComponent implements OnInit, OnChanges, OnDestroy {
+export class CoursesComponent implements OnInit, OnChanges {
   @Input() searchValue: string | undefined;
   router = inject(Router);
   private store = inject(Store<{ courses: Course[] }>);
   loadingBlockService = inject(LoadingBlockService);
   private selectCourse$ = this.store
-    .select(selectCourses)
+    .select(CourseSelectors.selectCourses)
     .pipe(takeUntilDestroyed());
   coursesArray: Course[] = [];
   startItemIndex = 0;
@@ -41,8 +40,8 @@ export class CoursesComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
     this.loadCourses();
     this.selectCourse$.subscribe((courses: Course[]) => {
+      console.log(courses);
       this.coursesArray = [...courses];
-      this.loadingBlockService.hideLoading();
     });
   }
 
@@ -53,7 +52,6 @@ export class CoursesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   loadCourses(): void {
-    this.loadingBlockService.showLoading();
     this.store.dispatch(
       CoursesApiActions.getCourses({
         payload: {
@@ -66,7 +64,6 @@ export class CoursesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onSearchItem(): void {
-    this.loadingBlockService.showLoading();
     if (this.searchValue) {
       this.store.dispatch(
         CoursesApiActions.getCoursesByFragment({
@@ -74,7 +71,6 @@ export class CoursesComponent implements OnInit, OnChanges, OnDestroy {
         }),
       );
     } else {
-      this.store.dispatch(CoursesApiActions.destroyCourses());
       this.loadCourses();
     }
   }
@@ -90,7 +86,6 @@ export class CoursesComponent implements OnInit, OnChanges, OnDestroy {
 
   onDeleteCourse(id: string | number): void {
     const confirmation = confirm('Do you really want to delete this course?');
-    this.loadingBlockService.showLoading();
     if (confirmation) {
       this.store.dispatch(CoursesApiActions.deleteCourse({ payload: id }));
     }
@@ -98,9 +93,5 @@ export class CoursesComponent implements OnInit, OnChanges, OnDestroy {
 
   onEditCourse(id: string | number): void {
     this.router.navigate([`courses/${id}`]);
-  }
-
-  ngOnDestroy(): void {
-    this.store.dispatch(CoursesApiActions.destroyCourses());
   }
 }

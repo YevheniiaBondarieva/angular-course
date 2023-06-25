@@ -16,7 +16,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { IfAuthenticatedDirective } from '../../shared/directives/if-authenticated/if-authenticated.directive';
 import { User } from '../../shared/models/user.models';
 import { UsersApiActions } from '../../store/user/user.actions';
-import { selectUserName } from '../../store/selectors';
+import { UserSelectors } from '../../store/selectors';
 
 @Component({
   selector: 'app-header',
@@ -39,7 +39,7 @@ export class HeaderComponent implements OnInit {
       if (status) {
         this.store.dispatch(UsersApiActions.getCurrentUser());
         this.store
-          .select(selectUserName)
+          .select(UserSelectors.selectUserName)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe((user) => {
             this.firstName.set(user?.first);
@@ -55,7 +55,7 @@ export class HeaderComponent implements OnInit {
     if (status) {
       this.store.dispatch(UsersApiActions.getCurrentUser());
       this.store
-        .select(selectUserName)
+        .select(UserSelectors.selectUserName)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((user) => {
           this.firstName.set(user?.first);

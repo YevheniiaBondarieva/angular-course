@@ -129,16 +129,6 @@ describe('CoursesComponent', () => {
     );
   });
 
-  it('should dispatch destroyCourses when onSearchItem is called with empty searchValue', () => {
-    component.searchValue = '';
-
-    component.onSearchItem();
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      CoursesApiActions.destroyCourses(),
-    );
-  });
-
   it('should increase startItemIndex and call loadCourses when onLoadMoreClick is called', () => {
     component.startItemIndex = 0;
 

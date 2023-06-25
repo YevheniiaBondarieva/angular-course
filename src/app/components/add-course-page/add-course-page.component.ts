@@ -1,11 +1,4 @@
-import {
-  Component,
-  DestroyRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouteReuseStrategy, Router, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -22,7 +15,7 @@ import { Strategy } from '../../shared/models/course-form.model';
 import { CreateCourseService } from '../../shared/services/create-course.service';
 import { EditCourseService } from '../../shared/services/edit-course.service';
 import { CoursesApiActions } from '../../store/courses/courses.actions';
-import { selectCourseById } from '../../store/selectors';
+import { CourseSelectors } from '../../store/selectors';
 
 @Component({
   selector: 'app-add-course-page',
@@ -43,7 +36,7 @@ import { selectCourseById } from '../../store/selectors';
     StrategyFacade,
   ],
 })
-export default class AddCoursePageComponent implements OnInit, OnDestroy {
+export default class AddCoursePageComponent implements OnInit {
   @Input() id!: number | string;
   router = inject(Router);
   strategyFacade = inject(StrategyFacade);
@@ -66,7 +59,7 @@ export default class AddCoursePageComponent implements OnInit, OnDestroy {
         CoursesApiActions.getCourseById({ payload: this.id }),
       );
       this.store
-        .select(selectCourseById(Number(this.id)))
+        .select(CourseSelectors.selectCourseById(Number(this.id)))
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((course) => {
           this.course = course;
@@ -114,9 +107,5 @@ export default class AddCoursePageComponent implements OnInit, OnDestroy {
 
   onCancel(): void {
     this.router.navigate(['/courses']);
-  }
-
-  ngOnDestroy(): void {
-    this.store.dispatch(CoursesApiActions.destroyCourses());
   }
 }

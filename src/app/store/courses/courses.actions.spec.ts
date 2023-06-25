@@ -27,10 +27,36 @@ describe('CoursesApiActions', () => {
   });
 
   it('should create addCourseSuccess action', () => {
-    const action = CoursesApiActions.addCourseSuccess();
+    const course: Course = {
+      id: 1,
+      name: 'Test',
+      description: 'Test',
+      isTopRated: true,
+      date: '2023-05-10',
+      authors: [
+        {
+          id: '4',
+          name: 'Kary',
+          lastName: 'Kok',
+        },
+      ],
+      length: 59,
+    };
+    const action = CoursesApiActions.addCourseSuccess({ payload: course });
 
     expect(action).toEqual({
       type: '[Courses API] addCourseSuccess',
+      payload: course,
+    });
+  });
+
+  it('should create addCourseFailure action', () => {
+    const error = new Error('Failed to add course');
+    const action = CoursesApiActions.addCourseFailure({ payload: error });
+
+    expect(action).toEqual({
+      type: '[Courses API] addCourseFailure',
+      payload: error,
     });
   });
 
@@ -53,6 +79,16 @@ describe('CoursesApiActions', () => {
     expect(action).toEqual({
       type: '[Courses API] deleteCourseSuccess',
       payload: courseId,
+    });
+  });
+
+  it('should create deleteCourseFailure action', () => {
+    const error = new Error('Failed to delete course');
+    const action = CoursesApiActions.deleteCourseFailure({ payload: error });
+
+    expect(action).toEqual({
+      type: '[Courses API] deleteCourseFailure',
+      payload: error,
     });
   });
 
@@ -101,6 +137,16 @@ describe('CoursesApiActions', () => {
     expect(action).toEqual({
       type: '[Courses API] updateCourseSuccess',
       payload: course,
+    });
+  });
+
+  it('should create updateCourseFailure action', () => {
+    const error = new Error('Failed to update course');
+    const action = CoursesApiActions.updateCourseFailure({ payload: error });
+
+    expect(action).toEqual({
+      type: '[Courses API] updateCourseFailure',
+      payload: error,
     });
   });
 
@@ -154,6 +200,18 @@ describe('CoursesApiActions', () => {
     });
   });
 
+  it('should create getCoursesByFragmentFailure action', () => {
+    const error = new Error('Failed to get courses by fragment');
+    const action = CoursesApiActions.getCoursesByFragmentFailure({
+      payload: error,
+    });
+
+    expect(action).toEqual({
+      type: '[Courses API] getCoursesByFragmentFailure',
+      payload: error,
+    });
+  });
+
   it('should create getCourseById action', () => {
     const courseId = 1;
     const action = CoursesApiActions.getCourseById({ payload: courseId });
@@ -187,6 +245,16 @@ describe('CoursesApiActions', () => {
     expect(action).toEqual({
       type: '[Courses API] getCourseByIdSuccess',
       payload: course,
+    });
+  });
+
+  it('should create getCourseByIdFailure action', () => {
+    const error = new Error('Failed to get course by ID');
+    const action = CoursesApiActions.getCourseByIdFailure({ payload: error });
+
+    expect(action).toEqual({
+      type: '[Courses API] getCourseByIdFailure',
+      payload: error,
     });
   });
 
@@ -239,11 +307,13 @@ describe('CoursesApiActions', () => {
     });
   });
 
-  it('should create destroyCourses action', () => {
-    const action = CoursesApiActions.destroyCourses();
+  it('should create getCoursesFailure action', () => {
+    const error = new Error('Failed to get courses');
+    const action = CoursesApiActions.getCoursesFailure({ payload: error });
 
     expect(action).toEqual({
-      type: '[Courses API] destroyCourses',
+      type: '[Courses API] getCoursesFailure',
+      payload: error,
     });
   });
 });

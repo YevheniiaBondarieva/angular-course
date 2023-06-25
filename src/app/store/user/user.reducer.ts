@@ -18,9 +18,16 @@ export const userReducer = createReducer(
   initialState,
   on(
     UsersApiActions.loginSuccess,
-    (state, action): User => ({
+    (state): User => ({
       ...state,
-      token: action.payload.token,
+    }),
+  ),
+  on(
+    UsersApiActions.loginFailure,
+    (state): User => ({
+      ...state,
+      login: undefined,
+      password: undefined,
     }),
   ),
   on(
@@ -31,6 +38,13 @@ export const userReducer = createReducer(
       name: action.payload.name,
       login: action.payload.login,
       password: action.payload.password,
+    }),
+  ),
+  on(
+    UsersApiActions.getCurrentUserFailure,
+    (state): User => ({
+      ...state,
+      name: { first: undefined, last: undefined },
     }),
   ),
   on(UsersApiActions.logout, (state): User => {

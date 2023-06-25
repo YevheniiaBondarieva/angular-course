@@ -1,31 +1,43 @@
 import { createReducer, on } from '@ngrx/store';
+import { createEntityAdapter, EntityAdapter } from '@ngrx/entity';
 
 import { Course } from '../../shared/models/course.models';
 import { CoursesApiActions } from './courses.actions';
 
-const initialState: Course[] = [];
+const adapter: EntityAdapter<Course> = createEntityAdapter<Course>({
+  sortComparer: (a, b) =>
+    new Date(b.date).getTime() - new Date(a.date).getTime(),
+});
+
+const initialState = adapter.getInitialState();
 
 export const coursesReducer = createReducer(
   initialState,
-  on(CoursesApiActions.addCourseSuccess, (state): Course[] => state),
-  on(CoursesApiActions.getCourseByIdSuccess, (state, action): Course[] => [
-    action.payload,
-  ]),
-  on(CoursesApiActions.getCoursesSuccess, (state, action): Course[] => [
-    ...state,
-    ...action.payload,
-  ]),
-  on(
-    CoursesApiActions.getCoursesByFragmentSuccess,
-    (state, action): Course[] => action.payload,
+  on(CoursesApiActions.addCourseSuccess, (state, action) =>
+    adapter.addOne(action.payload, state),
   ),
-  on(CoursesApiActions.updateCourseSuccess, (state, action): Course[] => {
-    return state.map((course) =>
-      course.id === action.payload.id ? action.payload : course,
-    ) as Course[];
-  }),
-  on(CoursesApiActions.deleteCourseSuccess, (state, action): Course[] =>
-    state.filter((course) => course.id !== action.payload),
+  on(CoursesApiActions.getCourseByIdSuccess, (state, action) =>
+    adapter.upsertOne(action.payload, state),
   ),
-  on(CoursesApiActions.destroyCourses, (): Course[] => initialState),
+  on(CoursesApiActions.getCoursesSuccess, (state, action) =>
+    adapter.upsertMany(action.payload, state),
+  ),
+  on(CoursesApiActions.getCoursesByFragmentSuccess, (state, action) =>
+    adapter.setAll(action.payload, state),
+  ),
+  on(CoursesApiActions.updateCourseSuccess, (state, action) =>
+    adapter.updateOne(
+      { id: Number(action.payload.id), changes: action.payload },
+      state,
+    ),
+  ),
+  on(CoursesApiActions.deleteCourseSuccess, (state, action) =>
+    adapter.removeOne(Number(action.payload), state),
+  ),
+  on(CoursesApiActions.addCourseFailure, (state, action) => state),
+  on(CoursesApiActions.getCourseByIdFailure, (state, action) => state),
+  on(CoursesApiActions.getCoursesFailure, (state, action) => state),
+  on(CoursesApiActions.getCoursesByFragmentFailure, (state, action) => state),
+  on(CoursesApiActions.updateCourseFailure, (state, action) => state),
+  on(CoursesApiActions.deleteCourseFailure, (state, action) => state),
 );

@@ -15,12 +15,17 @@ describe('userReducer', () => {
   };
 
   it('should update token on login success', () => {
-    const action = UsersApiActions.loginSuccess({
-      payload: { token: 'abc123' },
-    });
+    const action = UsersApiActions.loginSuccess();
     const state = userReducer(initialState, action);
 
-    expect(state.token).toEqual('abc123');
+    expect(state).toEqual(initialState);
+  });
+
+  it('should reset login on login failure', () => {
+    const action = UsersApiActions.loginFailure();
+    const state = userReducer(initialState, action);
+
+    expect(state.login).toBeUndefined();
   });
 
   it('should update user information on get current user success', () => {
@@ -42,5 +47,12 @@ describe('userReducer', () => {
     const state = userReducer(initialState, action);
 
     expect(state).toEqual(initialState);
+  });
+
+  it('should reset first and last name on get current user failure', () => {
+    const action = UsersApiActions.getCurrentUserFailure();
+    const state = userReducer(initialState, action);
+
+    expect(state.name.first && state.name.last).toBeUndefined();
   });
 });

@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Observable, filter, of, switchMap } from 'rxjs';
 
 import { Course } from '../../shared/models/course.models';
-import { selectCourseById } from '../../store/selectors';
+import { CourseSelectors } from '../../store/selectors';
 
 @Component({
   selector: 'app-breadcrumbs',
@@ -26,12 +26,16 @@ export class BreadcrumbsComponent implements OnInit {
         if (event instanceof NavigationEnd) {
           const urlSegments = event.url.split('/');
           const courseId = urlSegments[urlSegments.length - 1];
-          this.course$ = this.store.select(selectCourseById(Number(courseId)));
+          this.course$ = this.store.select(
+            CourseSelectors.selectCourseById(Number(courseId)),
+          );
           switchMap((courseId: number) => {
             if (isNaN(Number(courseId))) {
               return of(null);
             }
-            return this.store.select(selectCourseById(courseId));
+            return this.store.select(
+              CourseSelectors.selectCourseById(courseId),
+            );
           });
         }
       });

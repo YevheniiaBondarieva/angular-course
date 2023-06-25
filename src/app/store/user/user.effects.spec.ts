@@ -4,6 +4,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import * as userEffects from './user.effects';
 import { UsersApiActions } from './user.actions';
 import { User } from '../../shared/models/user.models';
+import { LoadingBlockService } from '../../shared/services/loading-block.service';
 
 describe('effects', () => {
   it('authLogin should loads token successfully', (done) => {
@@ -16,13 +17,17 @@ describe('effects', () => {
     const actionsMock$ = of(
       UsersApiActions.login({ payload: { email, password } }),
     );
+    const loadingBlockService = {
+      showLoading: jest.fn(),
+      hideLoading: jest.fn(),
+    } as unknown as LoadingBlockService;
 
-    userEffects.authLogin(actionsMock$, authServiceMock).subscribe((action) => {
-      expect(action).toEqual(
-        UsersApiActions.loginSuccess({ payload: { token } }),
-      );
-      done();
-    });
+    userEffects
+      .authLogin$(actionsMock$, authServiceMock, loadingBlockService)
+      .subscribe((action) => {
+        expect(action).toEqual(UsersApiActions.loginSuccess());
+        done();
+      });
   });
 
   it('logout should not dispatch another action', (done) => {
@@ -31,7 +36,7 @@ describe('effects', () => {
     } as unknown as AuthService;
     const actionsMock$ = of(UsersApiActions.logout());
 
-    userEffects.logout(actionsMock$, authServiceMock).subscribe((action) => {
+    userEffects.logout$(actionsMock$, authServiceMock).subscribe((action) => {
       expect(action).toEqual(UsersApiActions.logout());
       done();
     });
@@ -49,9 +54,13 @@ describe('effects', () => {
       getUserInfo: () => of(user),
     } as unknown as AuthService;
     const actionsMock$ = of(UsersApiActions.getCurrentUser());
+    const loadingBlockService = {
+      showLoading: jest.fn(),
+      hideLoading: jest.fn(),
+    } as unknown as LoadingBlockService;
 
     userEffects
-      .getUserInfo(actionsMock$, authServiceMock)
+      .getUserInfo$(actionsMock$, authServiceMock, loadingBlockService)
       .subscribe((action) => {
         expect(action).toEqual(
           UsersApiActions.getCurrentUserSuccess({ payload: user }),

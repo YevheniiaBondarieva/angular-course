@@ -3,8 +3,8 @@
     <li>
       <a [routerLink]="['/courses']" class="link">Courses</a
       >
-      <span *ngIf="(course$ | async)?.name" class="course-name">
-        / {{ (course$ | async)?.name }}
+      <span *ngIf="(course$ | async)?.name as courseName" class="course-name">
+        / {{ courseName }}
       </span>
     </li>
   </ul>

@@ -6,9 +6,11 @@ export const UsersApiActions = createActionGroup({
   source: 'Users API',
   events: {
     login: props<{ payload: { email: string; password: string } }>(),
-    loginSuccess: props<{ payload: { token: string } }>(),
+    loginSuccess: emptyProps(),
+    loginFailure: emptyProps(),
     logout: emptyProps(),
     getCurrentUser: emptyProps(),
     getCurrentUserSuccess: props<{ payload: User }>(),
+    getCurrentUserFailure: emptyProps(),
   },
 });

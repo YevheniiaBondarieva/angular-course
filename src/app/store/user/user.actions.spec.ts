@@ -14,13 +14,17 @@ describe('UsersApiActions', () => {
   });
 
   it('should create loginSuccess action', () => {
-    const token = 'abc123';
-    const action = UsersApiActions.loginSuccess({ payload: { token } });
+    const action = UsersApiActions.loginSuccess();
 
     expect(action).toEqual({
       type: '[Users API] loginSuccess',
-      payload: { token },
     });
+  });
+
+  it('should create loginFailure action', () => {
+    const action = UsersApiActions.loginFailure();
+
+    expect(action).toEqual({ type: '[Users API] loginFailure' });
   });
 
   it('should create logout action', () => {
@@ -49,5 +53,11 @@ describe('UsersApiActions', () => {
       type: '[Users API] getCurrentUserSuccess',
       payload: user,
     });
+  });
+
+  it('should create getCurrentUserFailure action', () => {
+    const action = UsersApiActions.getCurrentUserFailure();
+
+    expect(action).toEqual({ type: '[Users API] getCurrentUserFailure' });
   });
 });
