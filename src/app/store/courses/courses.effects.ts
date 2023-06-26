@@ -18,20 +18,17 @@ export const addCourse$ = createEffect(
     return actions$.pipe(
       ofType(CoursesApiActions.addCourse),
       tap(() => loadingBlockService.showLoading()),
-      switchMap((action) =>
-        coursesService.createCourse(action.payload).pipe(
-          map((course: Course) =>
-            CoursesApiActions.addCourseSuccess({ payload: course }),
-          ),
-          tap(() => {
-            router.navigate(['/courses']);
-          }),
-          catchError((error) =>
-            of(CoursesApiActions.addCourseFailure({ payload: error })),
-          ),
-          finalize(() => loadingBlockService.hideLoading()),
-        ),
+      switchMap((action) => coursesService.createCourse(action.payload)),
+      map((course: Course) =>
+        CoursesApiActions.addCourseSuccess({ payload: course }),
       ),
+      tap(() => {
+        router.navigate(['/courses']);
+      }),
+      catchError((error) =>
+        of(CoursesApiActions.addCourseFailure({ payload: error })),
+      ),
+      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -56,7 +53,7 @@ export const deleteCourse$ = createEffect(
           catchError((error) =>
             of(CoursesApiActions.deleteCourseFailure({ payload: error })),
           ),
-          finalize(() => loadingBlockService.hideLoading()),
+          tap(() => loadingBlockService.hideLoading()),
         ),
       ),
     );
@@ -74,20 +71,17 @@ export const updateCourse$ = createEffect(
     return actions$.pipe(
       ofType(CoursesApiActions.updateCourse),
       tap(() => loadingBlockService.showLoading()),
-      switchMap((action) =>
-        coursesService.updateCourseItem(action.payload).pipe(
-          map((course: Course) =>
-            CoursesApiActions.updateCourseSuccess({ payload: course }),
-          ),
-          tap(() => {
-            router.navigate(['/courses']);
-          }),
-          catchError((error) =>
-            of(CoursesApiActions.updateCourseFailure({ payload: error })),
-          ),
-          finalize(() => loadingBlockService.hideLoading()),
-        ),
+      switchMap((action) => coursesService.updateCourseItem(action.payload)),
+      map((course: Course) =>
+        CoursesApiActions.updateCourseSuccess({ payload: course }),
       ),
+      tap(() => {
+        router.navigate(['/courses']);
+      }),
+      catchError((error) =>
+        of(CoursesApiActions.updateCourseFailure({ payload: error })),
+      ),
+      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -103,22 +97,19 @@ export const getCourses$ = createEffect(
       ofType(CoursesApiActions.getCourses),
       tap(() => loadingBlockService.showLoading()),
       switchMap((action) =>
-        coursesService
-          .getCourses(
-            action.payload.startIndex,
-            action.payload.itemsPerPage,
-            action.payload.sort,
-          )
-          .pipe(
-            map((courses) =>
-              CoursesApiActions.getCoursesSuccess({ payload: courses }),
-            ),
-            catchError((error) =>
-              of(CoursesApiActions.getCoursesFailure({ payload: error })),
-            ),
-            finalize(() => loadingBlockService.hideLoading()),
-          ),
+        coursesService.getCourses(
+          action.payload.startIndex,
+          action.payload.itemsPerPage,
+          action.payload.sort,
+        ),
       ),
+      map((courses) =>
+        CoursesApiActions.getCoursesSuccess({ payload: courses }),
+      ),
+      catchError((error) =>
+        of(CoursesApiActions.getCoursesFailure({ payload: error })),
+      ),
+      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -134,24 +125,24 @@ export const getCoursesByFragment$ = createEffect(
       ofType(CoursesApiActions.getCoursesByFragment),
       tap(() => loadingBlockService.showLoading()),
       switchMap((action) =>
-        coursesService
-          .getCoursesByFragment(action.payload.fragment, action.payload.sort)
-          .pipe(
-            map((courses) =>
-              CoursesApiActions.getCoursesByFragmentSuccess({
-                payload: courses,
-              }),
-            ),
-            catchError((error) =>
-              of(
-                CoursesApiActions.getCoursesByFragmentFailure({
-                  payload: error,
-                }),
-              ),
-            ),
-            finalize(() => loadingBlockService.hideLoading()),
-          ),
+        coursesService.getCoursesByFragment(
+          action.payload.fragment,
+          action.payload.sort,
+        ),
       ),
+      map((courses) =>
+        CoursesApiActions.getCoursesByFragmentSuccess({
+          payload: courses,
+        }),
+      ),
+      catchError((error) =>
+        of(
+          CoursesApiActions.getCoursesByFragmentFailure({
+            payload: error,
+          }),
+        ),
+      ),
+      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -166,17 +157,14 @@ export const getCourseById$ = createEffect(
     return actions$.pipe(
       ofType(CoursesApiActions.getCourseById),
       tap(() => loadingBlockService.showLoading()),
-      switchMap((action) =>
-        coursesService.getCourseItemById(action.payload).pipe(
-          map((course) =>
-            CoursesApiActions.getCourseByIdSuccess({ payload: course }),
-          ),
-          catchError((error) =>
-            of(CoursesApiActions.getCourseByIdFailure({ payload: error })),
-          ),
-          finalize(() => loadingBlockService.hideLoading()),
-        ),
+      switchMap((action) => coursesService.getCourseItemById(action.payload)),
+      map((course) =>
+        CoursesApiActions.getCourseByIdSuccess({ payload: course }),
       ),
+      catchError((error) =>
+        of(CoursesApiActions.getCourseByIdFailure({ payload: error })),
+      ),
+      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },

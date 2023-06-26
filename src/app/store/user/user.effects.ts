@@ -24,14 +24,13 @@ export const authLogin$ = createEffect(
       ofType(UsersApiActions.login),
       tap(() => loadingBlockService.showLoading()),
       exhaustMap((action) =>
-        authService.login(action.payload.email, action.payload.password).pipe(
-          map(() => UsersApiActions.loginSuccess()),
-          catchError((error: Error) =>
-            of(UsersApiActions.loginFailure({ payload: error })),
-          ),
-          finalize(() => loadingBlockService.hideLoading()),
-        ),
+        authService.login(action.payload.email, action.payload.password),
       ),
+      map(() => UsersApiActions.loginSuccess()),
+      catchError((error: Error) =>
+        of(UsersApiActions.loginFailure({ payload: error })),
+      ),
+      finalize(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -56,17 +55,12 @@ export const getUserInfo$ = createEffect(
     return actions$.pipe(
       ofType(UsersApiActions.getCurrentUser),
       tap(() => loadingBlockService.showLoading()),
-      switchMap(() =>
-        authService.getUserInfo().pipe(
-          map((user) =>
-            UsersApiActions.getCurrentUserSuccess({ payload: user }),
-          ),
-          catchError((error: Error) =>
-            of(UsersApiActions.getCurrentUserFailure({ payload: error })),
-          ),
-          finalize(() => loadingBlockService.hideLoading()),
-        ),
+      switchMap(() => authService.getUserInfo()),
+      map((user) => UsersApiActions.getCurrentUserSuccess({ payload: user })),
+      catchError((error: Error) =>
+        of(UsersApiActions.getCurrentUserFailure({ payload: error })),
       ),
+      finalize(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },

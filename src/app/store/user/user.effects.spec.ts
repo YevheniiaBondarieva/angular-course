@@ -7,7 +7,7 @@ import { User } from '../../shared/models/user.models';
 import { LoadingBlockService } from '../../shared/services/loading-block.service';
 
 describe('effects', () => {
-  it('authLogin should loads token successfully', (done) => {
+  it('authLogin should loads token successfully', () => {
     const email = 'test@example.com';
     const password = 'password';
     const token = 'token';
@@ -25,10 +25,9 @@ describe('effects', () => {
 
     userEffects
       .authLogin$(actionsMock$, authServiceMock, loadingBlockService)
-      .subscribe(() => {
-        expect(spy).toHaveBeenCalledTimes(1);
-        done();
-      });
+      .subscribe(() => spy);
+
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('logout should not dispatch another action', () => {
@@ -38,12 +37,12 @@ describe('effects', () => {
     const actionsMock$ = of(UsersApiActions.logout());
     const spy = jest.spyOn(UsersApiActions, 'logout');
 
-    userEffects.logout$(actionsMock$, authServiceMock).subscribe(() => {
-      expect(spy).toHaveBeenCalledTimes(1);
-    });
+    userEffects.logout$(actionsMock$, authServiceMock).subscribe(() => spy);
+
+    expect(spy).not.toBeCalled();
   });
 
-  it('getUserInfo should loads user successfully', (done) => {
+  it('getUserInfo should loads user successfully', () => {
     const user: User = {
       id: 1,
       token: 'abc123',
@@ -63,9 +62,8 @@ describe('effects', () => {
 
     userEffects
       .getUserInfo$(actionsMock$, authServiceMock, loadingBlockService)
-      .subscribe(() => {
-        expect(spy).toHaveBeenCalledWith({ payload: user });
-        done();
-      });
+      .subscribe(() => spy);
+
+    expect(spy).toHaveBeenCalledWith({ payload: user });
   });
 });
