@@ -40,6 +40,7 @@ describe('coursesReducer', () => {
         },
       },
       ids: [1],
+      error: '',
     };
     const action = CoursesApiActions.addCourseSuccess({ payload: course });
     const state = coursesReducer(initialState, action);
@@ -82,6 +83,7 @@ describe('coursesReducer', () => {
         },
       },
       ids: [1],
+      error: '',
     };
     const action = CoursesApiActions.getCourseByIdSuccess({
       payload: course,
@@ -146,6 +148,7 @@ describe('coursesReducer', () => {
         },
       },
       ids: [1, 2],
+      error: '',
     };
     const action = CoursesApiActions.getCoursesSuccess({ payload: courses });
     const state = coursesReducer(initialState, action);
@@ -190,6 +193,7 @@ describe('coursesReducer', () => {
         },
       },
       ids: [1],
+      error: '',
     };
     const action = CoursesApiActions.getCoursesByFragmentSuccess({
       payload: courses,
@@ -219,6 +223,7 @@ describe('coursesReducer', () => {
         },
       },
       ids: [1],
+      error: '',
     };
     const expectedCourseState = {
       entities: {
@@ -233,6 +238,7 @@ describe('coursesReducer', () => {
         },
       },
       ids: [1],
+      error: '',
     };
     const updatedCourse: Course = {
       id: 1,
@@ -272,8 +278,9 @@ describe('coursesReducer', () => {
         },
       },
       ids: [1],
+      error: '',
     };
-    const expectedCourseState = { entities: {}, ids: [] };
+    const expectedCourseState = { entities: {}, ids: [], error: '' };
     const action = CoursesApiActions.deleteCourseSuccess({
       payload: courseId,
     });
@@ -283,60 +290,68 @@ describe('coursesReducer', () => {
   });
 
   it('should handle addCourseFailure action', () => {
-    const error = new Error('Failed to add course');
-    const action = CoursesApiActions.addCourseFailure({ payload: error });
+    const errorMessage = 'Error adding course';
+    const expectedState = { ...initialState, error: errorMessage };
+    const action = CoursesApiActions.addCourseFailure({
+      payload: { name: 'Error', message: errorMessage },
+    });
     const state = coursesReducer(initialState, action);
 
-    expect(state).toEqual(initialState);
+    expect(state).toEqual(expectedState);
   });
 
   it('should handle getCourseByIdFailure action', () => {
-    const error = new Error('Failed to add course');
+    const errorMessage = 'Failed to get course by id';
+    const expectedState = { ...initialState, error: errorMessage };
     const action = CoursesApiActions.getCourseByIdFailure({
-      payload: error,
+      payload: { name: 'Error', message: errorMessage },
     });
     const state = coursesReducer(initialState, action);
 
-    expect(state).toEqual(initialState);
+    expect(state).toEqual(expectedState);
   });
 
   it('should handle getCoursesFailure action', () => {
-    const error = new Error('Failed to add course');
+    const errorMessage = 'Failed to get courses';
+    const expectedState = { ...initialState, error: errorMessage };
     const action = CoursesApiActions.getCoursesFailure({
-      payload: error,
+      payload: { name: 'Error', message: errorMessage },
     });
     const state = coursesReducer(initialState, action);
 
-    expect(state).toEqual(initialState);
+    expect(state).toEqual(expectedState);
   });
 
   it('should handle getCoursesByFragmentFailure action', () => {
-    const error = new Error('Failed to add course');
+    const errorMessage = 'Failed to get courses by fragment';
+    const expectedState = { ...initialState, error: errorMessage };
     const action = CoursesApiActions.getCoursesByFragmentFailure({
-      payload: error,
+      payload: { name: 'Error', message: errorMessage },
     });
     const state = coursesReducer(initialState, action);
 
-    expect(state).toEqual(initialState);
+    expect(state).toEqual(expectedState);
   });
 
   it('should handle updateCourseFailure action', () => {
-    const error = new Error('Failed to add course');
+    const errorMessage = 'Failed to update course';
+    const expectedState = { ...initialState, error: errorMessage };
     const action = CoursesApiActions.updateCourseFailure({
-      payload: error,
+      payload: { name: 'Error', message: errorMessage },
     });
     const state = coursesReducer(initialState, action);
 
-    expect(state).toEqual(initialState);
+    expect(state).toEqual(expectedState);
   });
 
   it('should handle deleteCourseFailure action', () => {
-    const error = new Error('Failed to add course');
+    const errorMessage = 'Failed to delete course';
+    const expectedState = { ...initialState, error: errorMessage };
     const action = CoursesApiActions.deleteCourseFailure({
-      payload: error,
+      payload: { name: 'Error', message: errorMessage },
     });
     const state = coursesReducer(initialState, action);
 
-    expect(state).toEqual(initialState);
+    expect(state).toEqual(expectedState);
   });
 });

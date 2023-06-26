@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, map, of, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { CoursesApiActions } from './courses.actions';
@@ -29,9 +29,9 @@ export const addCourse$ = createEffect(
           catchError((error) =>
             of(CoursesApiActions.addCourseFailure({ payload: error })),
           ),
+          finalize(() => loadingBlockService.hideLoading()),
         ),
       ),
-      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -56,9 +56,9 @@ export const deleteCourse$ = createEffect(
           catchError((error) =>
             of(CoursesApiActions.deleteCourseFailure({ payload: error })),
           ),
+          finalize(() => loadingBlockService.hideLoading()),
         ),
       ),
-      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -85,9 +85,9 @@ export const updateCourse$ = createEffect(
           catchError((error) =>
             of(CoursesApiActions.updateCourseFailure({ payload: error })),
           ),
+          finalize(() => loadingBlockService.hideLoading()),
         ),
       ),
-      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -116,9 +116,9 @@ export const getCourses$ = createEffect(
             catchError((error) =>
               of(CoursesApiActions.getCoursesFailure({ payload: error })),
             ),
+            finalize(() => loadingBlockService.hideLoading()),
           ),
       ),
-      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -149,9 +149,9 @@ export const getCoursesByFragment$ = createEffect(
                 }),
               ),
             ),
+            finalize(() => loadingBlockService.hideLoading()),
           ),
       ),
-      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -174,9 +174,9 @@ export const getCourseById$ = createEffect(
           catchError((error) =>
             of(CoursesApiActions.getCourseByIdFailure({ payload: error })),
           ),
+          finalize(() => loadingBlockService.hideLoading()),
         ),
       ),
-      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },

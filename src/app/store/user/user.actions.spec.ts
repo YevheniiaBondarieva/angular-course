@@ -22,9 +22,13 @@ describe('UsersApiActions', () => {
   });
 
   it('should create loginFailure action', () => {
-    const action = UsersApiActions.loginFailure();
+    const error = new Error('Failed to login');
+    const action = UsersApiActions.loginFailure({ payload: error });
 
-    expect(action).toEqual({ type: '[Users API] loginFailure' });
+    expect(action).toEqual({
+      type: '[Users API] loginFailure',
+      payload: error,
+    });
   });
 
   it('should create logout action', () => {
@@ -56,8 +60,12 @@ describe('UsersApiActions', () => {
   });
 
   it('should create getCurrentUserFailure action', () => {
-    const action = UsersApiActions.getCurrentUserFailure();
+    const error = new Error('Failed to get user');
+    const action = UsersApiActions.getCurrentUserFailure({ payload: error });
 
-    expect(action).toEqual({ type: '[Users API] getCurrentUserFailure' });
+    expect(action).toEqual({
+      type: '[Users API] getCurrentUserFailure',
+      payload: error,
+    });
   });
 });

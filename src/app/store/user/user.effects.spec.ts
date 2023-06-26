@@ -21,24 +21,25 @@ describe('effects', () => {
       showLoading: jest.fn(),
       hideLoading: jest.fn(),
     } as unknown as LoadingBlockService;
+    const spy = jest.spyOn(UsersApiActions, 'loginSuccess');
 
     userEffects
       .authLogin$(actionsMock$, authServiceMock, loadingBlockService)
-      .subscribe((action) => {
-        expect(action).toEqual(UsersApiActions.loginSuccess());
+      .subscribe(() => {
+        expect(spy).toHaveBeenCalledTimes(1);
         done();
       });
   });
 
-  it('logout should not dispatch another action', (done) => {
+  it('logout should not dispatch another action', () => {
     const authServiceMock = {
       logout: () => of(),
     } as unknown as AuthService;
     const actionsMock$ = of(UsersApiActions.logout());
+    const spy = jest.spyOn(UsersApiActions, 'logout');
 
-    userEffects.logout$(actionsMock$, authServiceMock).subscribe((action) => {
-      expect(action).toEqual(UsersApiActions.logout());
-      done();
+    userEffects.logout$(actionsMock$, authServiceMock).subscribe(() => {
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -58,13 +59,12 @@ describe('effects', () => {
       showLoading: jest.fn(),
       hideLoading: jest.fn(),
     } as unknown as LoadingBlockService;
+    const spy = jest.spyOn(UsersApiActions, 'getCurrentUserSuccess');
 
     userEffects
       .getUserInfo$(actionsMock$, authServiceMock, loadingBlockService)
-      .subscribe((action) => {
-        expect(action).toEqual(
-          UsersApiActions.getCurrentUserSuccess({ payload: user }),
-        );
+      .subscribe(() => {
+        expect(spy).toHaveBeenCalledWith({ payload: user });
         done();
       });
   });

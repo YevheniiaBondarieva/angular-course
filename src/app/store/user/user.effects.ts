@@ -1,6 +1,14 @@
 import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, exhaustMap, map, of, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  exhaustMap,
+  finalize,
+  map,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 
 import { UsersApiActions } from './user.actions';
 import { AuthService } from '../../shared/services/auth.service';
@@ -18,10 +26,12 @@ export const authLogin$ = createEffect(
       exhaustMap((action) =>
         authService.login(action.payload.email, action.payload.password).pipe(
           map(() => UsersApiActions.loginSuccess()),
-          catchError(() => of(UsersApiActions.loginFailure())),
+          catchError((error: Error) =>
+            of(UsersApiActions.loginFailure({ payload: error })),
+          ),
+          finalize(() => loadingBlockService.hideLoading()),
         ),
       ),
-      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },
@@ -51,10 +61,12 @@ export const getUserInfo$ = createEffect(
           map((user) =>
             UsersApiActions.getCurrentUserSuccess({ payload: user }),
           ),
-          catchError(() => of(UsersApiActions.getCurrentUserFailure())),
+          catchError((error: Error) =>
+            of(UsersApiActions.getCurrentUserFailure({ payload: error })),
+          ),
+          finalize(() => loadingBlockService.hideLoading()),
         ),
       ),
-      tap(() => loadingBlockService.hideLoading()),
     );
   },
   { functional: true },

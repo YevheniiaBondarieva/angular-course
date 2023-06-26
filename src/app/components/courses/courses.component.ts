@@ -40,7 +40,6 @@ export class CoursesComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.loadCourses();
     this.selectCourse$.subscribe((courses: Course[]) => {
-      console.log(courses);
       this.coursesArray = [...courses];
     });
   }

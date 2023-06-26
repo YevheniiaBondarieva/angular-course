@@ -12,6 +12,7 @@ describe('userReducer', () => {
     },
     login: '',
     password: '',
+    error: '',
   };
 
   it('should update token on login success', () => {
@@ -22,10 +23,12 @@ describe('userReducer', () => {
   });
 
   it('should reset login on login failure', () => {
-    const action = UsersApiActions.loginFailure();
+    const expectedState = { ...initialState, error: 'Failed to login' };
+    const error = new Error('Failed to login');
+    const action = UsersApiActions.loginFailure({ payload: error });
     const state = userReducer(initialState, action);
 
-    expect(state.login).toBeUndefined();
+    expect(state).toEqual(expectedState);
   });
 
   it('should update user information on get current user success', () => {
@@ -39,7 +42,7 @@ describe('userReducer', () => {
     const action = UsersApiActions.getCurrentUserSuccess({ payload: user });
     const state = userReducer(initialState, action);
 
-    expect(state).toEqual({ ...user, token: '' });
+    expect(state).toEqual({ ...user, token: '', error: '' });
   });
 
   it('should reset state on logout', () => {
@@ -50,9 +53,11 @@ describe('userReducer', () => {
   });
 
   it('should reset first and last name on get current user failure', () => {
-    const action = UsersApiActions.getCurrentUserFailure();
+    const expectedState = { ...initialState, error: 'Failed to get user info' };
+    const error = new Error('Failed to get user info');
+    const action = UsersApiActions.getCurrentUserFailure({ payload: error });
     const state = userReducer(initialState, action);
 
-    expect(state.name.first && state.name.last).toBeUndefined();
+    expect(state).toEqual(expectedState);
   });
 });

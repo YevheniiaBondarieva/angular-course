@@ -14,15 +14,18 @@ export namespace UserSelectors {
 
 export namespace CourseSelectors {
   const adapter = createEntityAdapter<Course>();
-  const { selectAll } = adapter.getSelectors();
+  const { selectAll, selectEntities } = adapter.getSelectors();
 
   export const selectCourses = createSelector(
     (state: { courses: EntityState<Course> }) => state.courses,
     selectAll,
   );
 
+  export const selectCourseEntities = createSelector(
+    (state: { courses: EntityState<Course> }) => state.courses,
+    selectEntities,
+  );
+
   export const selectCourseById = (id: number) =>
-    createSelector(selectCourses, (courses: Course[]) =>
-      courses.find((course) => course.id === id),
-    );
+    createSelector(selectCourseEntities, (entities) => entities[id]);
 }

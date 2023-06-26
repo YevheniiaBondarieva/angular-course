@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { createEntityAdapter, EntityAdapter } from '@ngrx/entity';
+import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 
 import { Course } from '../../shared/models/course.models';
 import { CoursesApiActions } from './courses.actions';
@@ -9,7 +9,13 @@ const adapter: EntityAdapter<Course> = createEntityAdapter<Course>({
     new Date(b.date).getTime() - new Date(a.date).getTime(),
 });
 
-const initialState = adapter.getInitialState();
+const initialState = adapter.getInitialState({
+  error: '',
+});
+
+interface InitialState extends EntityState<Course> {
+  error: string;
+}
 
 export const coursesReducer = createReducer(
   initialState,
@@ -34,10 +40,16 @@ export const coursesReducer = createReducer(
   on(CoursesApiActions.deleteCourseSuccess, (state, action) =>
     adapter.removeOne(Number(action.payload), state),
   ),
-  on(CoursesApiActions.addCourseFailure, (state, action) => state),
-  on(CoursesApiActions.getCourseByIdFailure, (state, action) => state),
-  on(CoursesApiActions.getCoursesFailure, (state, action) => state),
-  on(CoursesApiActions.getCoursesByFragmentFailure, (state, action) => state),
-  on(CoursesApiActions.updateCourseFailure, (state, action) => state),
-  on(CoursesApiActions.deleteCourseFailure, (state, action) => state),
+  on(
+    CoursesApiActions.addCourseFailure,
+    CoursesApiActions.getCourseByIdFailure,
+    CoursesApiActions.getCoursesFailure,
+    CoursesApiActions.getCoursesByFragmentFailure,
+    CoursesApiActions.updateCourseFailure,
+    CoursesApiActions.deleteCourseFailure,
+    (state, action): InitialState => ({
+      ...state,
+      error: action.payload.message,
+    }),
+  ),
 );
