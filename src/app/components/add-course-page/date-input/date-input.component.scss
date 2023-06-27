@@ -6,6 +6,11 @@
     border-radius: 4px;
     padding-left: 10px;
     width: 100%;
+    grid-column-start: 1;
+}
+
+.input.ng-invalid.ng-touched {
+    border: 2px solid map-get($colors, 'red');
 }
 
 .label {

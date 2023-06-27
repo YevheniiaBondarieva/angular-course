@@ -3,6 +3,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { Course } from '../models/course.models';
+import { Author } from '../models/author.models';
 
 @Injectable({ providedIn: 'root' })
 export class CoursesService {
@@ -66,6 +67,16 @@ export class CoursesService {
   removeCourseItem(id: number | string): Observable<void> {
     const url = `${this.apiBaseUrl}/${id}`;
     return this.http.delete<void>(url).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.log(error.message);
+        return throwError(() => error);
+      }),
+    );
+  }
+
+  getAuthorsByFragment(fragment: string): Observable<Author[]> {
+    const url = `http://localhost:3004/authors?textFragment=${fragment}`;
+    return this.http.get<Author[]>(url).pipe(
       catchError((error: HttpErrorResponse) => {
         console.log(error.message);
         return throwError(() => error);

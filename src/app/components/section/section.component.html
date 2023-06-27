@@ -1,12 +1,12 @@
 <div class="section">
-  <form>
+  <form [formGroup]="searchForm">
     <input
       type="text"
       name="search"
       placeholder="Text to search"
       class="search-input"
-      [(ngModel)]="searchValue"
-      (keyup)="onSearchChange(searchValue)"
+      formControlName="search"
+      (keyup)="onSearchChange()"
     />
   </form>
   <div class="add-course-wrapper">

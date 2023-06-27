@@ -1,4 +1,4 @@
-<form class="add-course-form" #courseForm="ngForm">
+<form class="add-course-form" [formGroup]="addCourseForm" (ngSubmit)="onSave()">
   <div class="add-course-section">
     <h2>New course</h2>
     <div class="title-section">
@@ -9,10 +9,18 @@
         placeholder="Text input"
         name="title"
         class="input"
-        [(ngModel)]="courseTitle"
-        required
+        formControlName="name"
       />
-      <span class="required">* required</span>
+      <span
+        *ngIf="addCourseForm.get('name')?.errors?.['required'] && addCourseForm.get('name')?.touched"
+        class="required"
+        >* required</span
+      >
+      <span
+        *ngIf="addCourseForm.get('name')?.errors?.['maxlength'] && addCourseForm.get('name')?.touched"
+        class="pattern"
+        >Maximum allowed length is 50 characters</span
+      >
     </div>
     <div class="description-section">
       <label for="description" class="label">Description:</label>
@@ -22,26 +30,29 @@
         placeholder="Add description"
         name="description"
         class="textarea"
-        [(ngModel)]="courseDescription"
-        required
+        formControlName="description"
       ></textarea>
-      <span class="required">* required</span>
+      <span
+        *ngIf="addCourseForm.get('description')?.errors?.['required'] && addCourseForm.get('description')?.touched"
+        class="required"
+        >* required</span
+      >
+      <span
+        *ngIf="addCourseForm.get('description')?.errors?.['maxlength'] && addCourseForm.get('description')?.touched"
+        class="pattern"
+        >Maximum allowed length is 500 characters</span
+      >
     </div>
-    <app-duration-input
-      [(duration)]="courseDuration"
-      (durationChange)="onDurationChange($event)"
-    />
-    <app-date-input
-      [date]="courseDate"
-      (dateChange)="onDateChange($event)"
-    />
+    <app-duration-input [formControl]="length" />
+    <app-date-input [formControl]="date" />
     <app-authors-input
-      [authors]="courseAuthors"
-      (authorsChange)="onAuthorsChange($event)"
+      [savedAuthors]="authors"
+      [allAuthors]="allAuthors"
+      formArrayName="authors"
     />
     <div class="buttons">
-      <button (click)="onSave()" class="button save">Save</button>
-      <button (click)="onCancel()" class="button">Cancel</button>
+      <button type="submit" class="button save" [disabled]="!addCourseForm.valid">Save</button>
+      <button type="button" (click)="onCancel()" class="button">Cancel</button>
     </div>
   </div>
 </form>

@@ -21,17 +21,19 @@ describe('SectionComponent', () => {
 
     await fireEvent.input(input as Element, { target: { value: 'test' } });
 
-    expect(component.searchValue).toBe('test');
+    expect(component.searchForm.value.search).toBe('test');
   });
 
   it('emits filtered value through filterCourses', fakeAsync(() => {
     const filterValue = 'test';
+
     component.ngOnInit();
 
     component.filterCourses.subscribe((value) => {
       expect(value).toBe(filterValue);
     });
-    component.onSearchChange(filterValue);
+    component.searchForm.get('search')?.setValue(filterValue);
+    component.onSearchChange();
 
     tick(300);
   }));

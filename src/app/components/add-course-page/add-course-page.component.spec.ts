@@ -25,12 +25,16 @@ describe('AddCoursePageComponent', () => {
   const destroyRef = {
     onDestroy: jest.fn(),
   } as unknown as angularCore.DestroyRef;
+  const coursesService = {
+    getAuthorsByFragment: jest.fn().mockReturnValue(of([])),
+  };
 
   beforeEach(() => {
     injectSpy.mockReturnValueOnce(router);
     injectSpy.mockReturnValueOnce(strategyFacade);
     injectSpy.mockReturnValueOnce(store);
     injectSpy.mockReturnValueOnce(destroyRef);
+    injectSpy.mockReturnValueOnce(coursesService);
     component = new AddCoursePageComponent();
   });
 
@@ -38,36 +42,10 @@ describe('AddCoursePageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should update course duration', () => {
-    const duration = 120;
-
-    component.onDurationChange(duration);
-
-    expect(component.courseDuration).toEqual(duration);
-  });
-
-  it('should update course date', () => {
-    const date = '2023-06-03';
-
-    component.onDateChange(date);
-
-    expect(component.courseDate).toEqual(date);
-  });
-
-  it('should update course authors', () => {
-    const authors = [
-      { id: 1, name: 'Author 1', lastName: 'LastName 1' },
-      { id: 2, name: 'Author 2', lastName: 'LastName 2' },
-    ];
-
-    component.onAuthorsChange(authors);
-
-    expect(component.courseAuthors).toEqual(authors);
-  });
-
   it('should navigate to courses on cancel', () => {
     const navigateSpy = jest.spyOn(component.router, 'navigate');
 
+    component.ngOnInit();
     component.onCancel();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/courses']);
@@ -101,6 +79,7 @@ describe('AddCoursePageComponent', () => {
   it('should call strategyFacade.submit when onSave is called', () => {
     const submitSpy = jest.spyOn(component.strategyFacade, 'submit');
 
+    component.ngOnInit();
     component.onSave();
 
     expect(submitSpy).toHaveBeenCalledTimes(1);

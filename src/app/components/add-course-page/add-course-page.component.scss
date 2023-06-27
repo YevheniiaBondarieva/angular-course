@@ -5,12 +5,11 @@
     display: flex;
     box-sizing: border-box;
     justify-content: center;
-    height: 100vh;
     margin: 0px;
     padding: 0px;
 }
 
-.add-course-section{
+.add-course-section {
     background-color: map-get($colors, 'white');
     border-radius: 3px;
     box-shadow: map-get($colors, 'black') 0px 1px 4px;
@@ -20,7 +19,7 @@
     width: 70vw;
 }
 
-.input{
+.input {
     border: 2px solid map-get($colors, 'signal-white');
     height: 30px;
     border-radius: 4px;
@@ -29,7 +28,12 @@
     grid-column-end: 3;
 }
 
-.textarea{
+.input.ng-invalid.ng-touched,
+.textarea.ng-invalid.ng-touched {
+    border: 2px solid map-get($colors, 'red');
+}
+
+.textarea {
     height: 12vh;
     border: 2px solid map-get($colors, 'signal-white');
     border-radius: 4px;
@@ -41,14 +45,14 @@
 }
 
 .title-section,
-.description-section
-{
+.description-section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
 }
 
-.required{
+.required,
+.pattern {
     display: block;
     margin-right: 20px;
     grid-column-start: 2;
@@ -59,19 +63,19 @@
     margin-left: -50px;
 }
 
-.label{
+.label {
     display: block;
-    font-weight:600;
+    font-weight: 600;
     height: 30px;
     margin-top: 10px;
 }
 
-.buttons{
+.buttons {
     display: flex;
     justify-content: end;
 }
 
-.button{
+.button {
     height: 35px;
     margin-right: 5px;
     width: 80px;
@@ -83,7 +87,7 @@
     color: map-get($colors, 'bright-grey');
 }
 
-.save{
+.save {
     background-color: map-get($colors, 'yellow-green');
     color: map-get($colors, 'white')
 }
