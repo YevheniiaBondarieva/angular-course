@@ -18,8 +18,7 @@ describe('effects', () => {
       UsersApiActions.login({ payload: { email, password } }),
     );
     const loadingBlockService = {
-      showLoading: jest.fn(),
-      hideLoading: jest.fn(),
+      wrapWithLoader: jest.fn((observable) => observable),
     } as unknown as LoadingBlockService;
     const spy = jest.spyOn(UsersApiActions, 'loginSuccess');
 
@@ -55,8 +54,7 @@ describe('effects', () => {
     } as unknown as AuthService;
     const actionsMock$ = of(UsersApiActions.getCurrentUser());
     const loadingBlockService = {
-      showLoading: jest.fn(),
-      hideLoading: jest.fn(),
+      wrapWithLoader: jest.fn((observable) => observable),
     } as unknown as LoadingBlockService;
     const spy = jest.spyOn(UsersApiActions, 'getCurrentUserSuccess');
 

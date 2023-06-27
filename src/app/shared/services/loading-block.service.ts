@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, finalize } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -14,5 +14,10 @@ export class LoadingBlockService {
 
   hideLoading(): void {
     this.showSubject.next(false);
+  }
+
+  wrapWithLoader<T>(observable: Observable<T>): Observable<T> {
+    this.showLoading();
+    return observable.pipe(finalize(() => this.hideLoading()));
   }
 }

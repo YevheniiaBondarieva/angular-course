@@ -30,8 +30,7 @@ describe('effects', () => {
     const actionsMock$ = of(CoursesApiActions.addCourse({ payload: course }));
     const router = { navigate: jest.fn() } as unknown as Router;
     const loadingBlockService = {
-      showLoading: jest.fn(),
-      hideLoading: jest.fn(),
+      wrapWithLoader: jest.fn((observable) => observable),
     } as unknown as LoadingBlockService;
 
     it('should loads course successfully', (done) => {
@@ -74,8 +73,7 @@ describe('effects', () => {
       CoursesApiActions.deleteCourse({ payload: courseId }),
     );
     const loadingBlockService = {
-      showLoading: jest.fn(),
-      hideLoading: jest.fn(),
+      wrapWithLoader: jest.fn((observable) => observable),
     } as unknown as LoadingBlockService;
 
     coursesEffects
@@ -112,8 +110,7 @@ describe('effects', () => {
     );
     const router = { navigate: jest.fn() } as unknown as Router;
     const loadingBlockService = {
-      showLoading: jest.fn(),
-      hideLoading: jest.fn(),
+      wrapWithLoader: jest.fn((observable) => observable),
     } as unknown as LoadingBlockService;
 
     it('should update course successfully', (done) => {
@@ -186,8 +183,7 @@ describe('effects', () => {
       }),
     );
     const loadingBlockService = {
-      showLoading: jest.fn(),
-      hideLoading: jest.fn(),
+      wrapWithLoader: jest.fn((observable) => observable),
     } as unknown as LoadingBlockService;
 
     coursesEffects
@@ -238,8 +234,7 @@ describe('effects', () => {
       }),
     );
     const loadingBlockService = {
-      showLoading: jest.fn(),
-      hideLoading: jest.fn(),
+      wrapWithLoader: jest.fn((observable) => observable),
     } as unknown as LoadingBlockService;
 
     coursesEffects
@@ -282,8 +277,7 @@ describe('effects', () => {
       }),
     );
     const loadingBlockService = {
-      showLoading: jest.fn(),
-      hideLoading: jest.fn(),
+      wrapWithLoader: jest.fn((observable) => observable),
     } as unknown as LoadingBlockService;
 
     coursesEffects
