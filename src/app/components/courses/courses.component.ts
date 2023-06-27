@@ -5,20 +5,18 @@ import {
   OnChanges,
   OnInit,
   inject,
-  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, finalize } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
 
 import { CoursesListItemComponent } from './courses-list-item/courses-list-item.component';
 import { Course } from '../../shared/models/course.models';
-import { CoursesService } from '../../shared/services/courses.service';
 import { SectionComponent } from '../section/section.component';
 import { LoadingBlockService } from '../../shared/services/loading-block.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CoursesApiActions } from '../../store/courses/courses.actions';
+import { CourseSelectors } from '../../store/selectors';
 
 @Component({
   selector: 'app-courses',
@@ -29,18 +27,21 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class CoursesComponent implements OnInit, OnChanges {
   @Input() searchValue: string | undefined;
-  coursesService = inject(CoursesService);
   router = inject(Router);
-  route = inject(ActivatedRoute);
+  private store = inject(Store<{ courses: Course[] }>);
   loadingBlockService = inject(LoadingBlockService);
-  destroyRef = inject(DestroyRef);
-  originalCoursesArray: Course[] = [];
+  private selectCourse$ = this.store
+    .select(CourseSelectors.selectCourses)
+    .pipe(takeUntilDestroyed());
   coursesArray: Course[] = [];
   startItemIndex = 0;
   itemsPerPage = 3;
 
   ngOnInit(): void {
     this.loadCourses();
+    this.selectCourse$.subscribe((courses: Course[]) => {
+      this.coursesArray = [...courses];
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -50,46 +51,26 @@ export class CoursesComponent implements OnInit, OnChanges {
   }
 
   loadCourses(): void {
-    this.loadingBlockService.showLoading();
-    this.coursesService
-      .getCourses(this.startItemIndex, this.itemsPerPage, 'date')
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        catchError((error: HttpErrorResponse) => {
-          console.log(error.message);
-          return throwError(() => error);
-        }),
-        finalize(() => {
-          this.loadingBlockService.hideLoading();
-        }),
-      )
-      .subscribe((courses: Course[]) => {
-        this.originalCoursesArray = [...this.originalCoursesArray, ...courses];
-        this.coursesArray = [...this.originalCoursesArray];
-      });
+    this.store.dispatch(
+      CoursesApiActions.getCourses({
+        payload: {
+          startIndex: this.startItemIndex,
+          itemsPerPage: this.itemsPerPage,
+          sort: 'date',
+        },
+      }),
+    );
   }
 
   onSearchItem(): void {
-    this.loadingBlockService.showLoading();
     if (this.searchValue) {
-      this.coursesService
-        .getCoursesByFragment(this.searchValue, 'date')
-        .pipe(
-          catchError((error: HttpErrorResponse) => {
-            console.log(error.message);
-            return throwError(() => error);
-          }),
-          finalize(() => {
-            this.loadingBlockService.hideLoading();
-          }),
-          takeUntilDestroyed(this.destroyRef),
-        )
-        .subscribe((courses: Course[]) => {
-          this.coursesArray = courses;
-        });
+      this.store.dispatch(
+        CoursesApiActions.getCoursesByFragment({
+          payload: { fragment: this.searchValue, sort: 'date' },
+        }),
+      );
     } else {
-      this.coursesArray = [...this.originalCoursesArray];
-      this.loadingBlockService.hideLoading();
+      this.loadCourses();
     }
   }
 
@@ -104,26 +85,8 @@ export class CoursesComponent implements OnInit, OnChanges {
 
   onDeleteCourse(id: string | number): void {
     const confirmation = confirm('Do you really want to delete this course?');
-    this.loadingBlockService.showLoading();
     if (confirmation) {
-      this.coursesService
-        .removeCourseItem(id)
-        .pipe(
-          catchError((error: HttpErrorResponse) => {
-            console.log(error.message);
-            return throwError(() => error);
-          }),
-          finalize(() => {
-            this.loadingBlockService.hideLoading();
-          }),
-          takeUntilDestroyed(this.destroyRef),
-        )
-        .subscribe(() => {
-          this.originalCoursesArray = this.originalCoursesArray.filter(
-            (course) => course.id !== id,
-          );
-          this.loadCourses();
-        });
+      this.store.dispatch(CoursesApiActions.deleteCourse({ payload: id }));
     }
   }
 

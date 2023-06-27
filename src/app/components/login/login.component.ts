@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { finalize, take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
-import { AuthService } from '../../shared/services/auth.service';
 import { LoadingBlockService } from '../../shared/services/loading-block.service';
+import { UsersApiActions } from '../../store/user/user.actions';
+import { User } from '../../shared/models/user.models';
 
 @Component({
   selector: 'app-login',
@@ -14,23 +15,18 @@ import { LoadingBlockService } from '../../shared/services/loading-block.service
   styleUrls: ['./login.component.scss'],
 })
 export default class LoginComponent {
-  authService = inject(AuthService);
   loadingBlockService = inject(LoadingBlockService);
+  private store = inject(Store<{ user: User }>);
   email = '';
   password = '';
 
   onLogin() {
     if (this.email && this.password) {
-      this.loadingBlockService.showLoading();
-      this.authService
-        .login(this.email, this.password)
-        .pipe(
-          take(1),
-          finalize(() => {
-            this.loadingBlockService.hideLoading();
-          }),
-        )
-        .subscribe();
+      this.store.dispatch(
+        UsersApiActions.login({
+          payload: { email: this.email, password: this.password },
+        }),
+      );
     }
   }
 }

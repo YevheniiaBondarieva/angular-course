@@ -1,14 +1,12 @@
 import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouteReuseStrategy, Router, RouterOutlet } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
 
 import { DurationInputComponent } from './duration-input/duration-input.component';
 import { DateInputComponent } from './date-input/date-input.component';
 import { AuthorsInputComponent } from './authors-input/authors-input.component';
-import { CoursesService } from '../../shared/services/courses.service';
 import { Course } from '../../shared/models/course.models';
 import { Author } from '../../shared/models/author.models';
 import { CustomRouteReuseStrategy } from '../../shared/strategy/custom-route-reuse.strategy';
@@ -16,7 +14,8 @@ import { StrategyFacade } from '../../shared/services/strategy-facade.service';
 import { Strategy } from '../../shared/models/course-form.model';
 import { CreateCourseService } from '../../shared/services/create-course.service';
 import { EditCourseService } from '../../shared/services/edit-course.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CoursesApiActions } from '../../store/courses/courses.actions';
+import { CourseSelectors } from '../../store/selectors';
 
 @Component({
   selector: 'app-add-course-page',
@@ -39,9 +38,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export default class AddCoursePageComponent implements OnInit {
   @Input() id!: number | string;
-  coursesService = inject(CoursesService);
   router = inject(Router);
   strategyFacade = inject(StrategyFacade);
+  private store = inject(Store<{ courses: Course[] }>);
   destroyRef = inject(DestroyRef);
   course: Course | undefined;
   IsExist = false;
@@ -56,18 +55,14 @@ export default class AddCoursePageComponent implements OnInit {
     const strategy = this.id ? Strategy.Edit : Strategy.Create;
     this.strategyFacade.registerStrategy(strategy);
     if (this.id) {
-      this.coursesService
-        .getCourseItemById(Number(this.id))
-        .pipe(
-          catchError((error: HttpErrorResponse) => {
-            console.log(error.message);
-            return throwError(() => error);
-          }),
-          takeUntilDestroyed(this.destroyRef),
-        )
-        .subscribe((response: Course) => {
-          console.log(response);
-          this.course = response;
+      this.store.dispatch(
+        CoursesApiActions.getCourseById({ payload: this.id }),
+      );
+      this.store
+        .select(CourseSelectors.selectCourseById(Number(this.id)))
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((course) => {
+          this.course = course;
           this.fillFormFields();
         });
     }

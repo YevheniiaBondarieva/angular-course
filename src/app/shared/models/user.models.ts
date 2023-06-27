@@ -2,9 +2,9 @@ export interface User {
   id: number;
   token: string;
   name: {
-    first: string;
-    last: string;
+    first: string | undefined;
+    last: string | undefined;
   };
-  login: string;
-  password: string;
+  login: string | undefined;
+  password: string | undefined;
 }

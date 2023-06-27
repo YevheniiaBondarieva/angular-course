@@ -1,32 +1,15 @@
-import { DestroyRef, Injectable, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
 
 import { CourseFormStrategy } from '../models/course-form.model';
-import { CoursesService } from './courses.service';
 import { Course } from '../models/course.models';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
+import { CoursesApiActions } from '../../store/courses/courses.actions';
 
 @Injectable()
 export class CreateCourseService implements CourseFormStrategy {
-  coursesService = inject(CoursesService);
-  router = inject(Router);
-  destroyRef = inject(DestroyRef);
+  private store = inject(Store<{ courses: Course[] }>);
 
   submit(course: Course): void {
-    this.coursesService
-      .createCourse(course)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          console.log(error.message);
-          return throwError(() => error);
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(() => {
-        this.router.navigate(['/courses']);
-      });
+    this.store.dispatch(CoursesApiActions.addCourse({ payload: course }));
   }
 }

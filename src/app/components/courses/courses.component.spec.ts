@@ -1,42 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as angularCore from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
 
-import { courses } from '../../shared/data/courses.data';
 import { CoursesComponent } from './courses.component';
-import { CoursesService } from '../../shared/services/courses.service';
 import { Course } from '../../shared/models/course.models';
 import { LoadingBlockService } from '../../shared/services/loading-block.service';
+import { CoursesApiActions } from '../../store/courses/courses.actions';
 
 const injectSpy = jest.spyOn(angularCore, 'inject');
 
 describe('CoursesComponent', () => {
   let component: CoursesComponent;
-  const coursesService = {
-    getCourses: jest.fn(),
-    coursesChanged: { subscribe: jest.fn() },
-    getCoursesByFragment: jest.fn(),
-    removeCourseItem: jest.fn().mockReturnValue(of(null)),
-  };
   const router = { navigate: jest.fn() } as unknown as Router;
+  const store = {
+    dispatch: jest.fn(),
+    select: jest.fn().mockReturnValue(of([])),
+  } as unknown as Store<{
+    courses: Course[];
+  }>;
   const loadingBlockService = {
     showLoading: jest.fn(),
     hideLoading: jest.fn(),
   } as unknown as LoadingBlockService;
-  const route = {} as ActivatedRoute;
-  const destroyRef = {
-    onDestroy: jest.fn(),
-  } as unknown as angularCore.DestroyRef;
 
   beforeEach(() => {
-    injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
-    injectSpy.mockReturnValueOnce(router);
-    injectSpy.mockReturnValueOnce(route);
-    injectSpy.mockReturnValueOnce(loadingBlockService);
-    injectSpy.mockReturnValueOnce(destroyRef);
-    coursesService.getCourses.mockReturnValue(of(courses));
-    component = new CoursesComponent();
+    const injector = angularCore.ɵcreateInjector([
+      injectSpy.mockReturnValueOnce(router),
+      injectSpy.mockReturnValueOnce(store),
+      injectSpy.mockReturnValueOnce(loadingBlockService),
+    ]);
+
+    angularCore.runInInjectionContext(injector, () => {
+      component = new CoursesComponent();
+    });
   });
 
   it('should create', () => {
@@ -53,27 +51,6 @@ describe('CoursesComponent', () => {
     component.ngOnInit();
 
     expect(component.loadCourses).toHaveBeenCalledTimes(1);
-  });
-
-  it('should update coursesArray on onSearchItem', () => {
-    const mockCourses: Course[] = [
-      {
-        id: 3,
-        name: 'Course 3',
-        description: 'Description 3',
-        isTopRated: false,
-        date: '2023-03-03',
-        authors: [],
-        length: 120,
-      },
-    ];
-
-    coursesService.getCoursesByFragment.mockReturnValue(of(mockCourses));
-
-    component.searchValue = 'search query';
-    component.onSearchItem();
-
-    expect(component.coursesArray).toEqual(mockCourses);
   });
 
   it('should call onLoadMoreClick method on Load More button click', () => {
@@ -119,80 +96,45 @@ describe('CoursesComponent', () => {
     expect(result).toBe(course.id);
   });
 
-  it('should set coursesArray to originalCoursesArray when searchValue is empty', () => {
-    const initialCoursesArray = [
-      {
-        id: 3,
-        name: 'Hello',
-        description:
-          'Learn about where you czn find course description, what information they include, how they work, and details about various components of a course description. Course descriptions report information about a university or college`s class.They`re published both in course catalog.',
-        isTopRated: true,
-        date: '2023-05-10',
-        authors: [
-          {
-            id: '4',
-            name: 'Kary',
-            lastName: 'Kok',
-          },
-        ],
-        length: 59,
-      },
-    ];
-    component.coursesArray = initialCoursesArray;
-    component.searchValue = '';
+  it('should navigate to the correct route when onEditCourse is called', () => {
+    const id = '123';
+
+    component.onEditCourse(id);
+
+    expect(router.navigate).toHaveBeenCalledWith([`courses/${id}`]);
+  });
+
+  it('should dispatch deleteCourse action when onDeleteCourse is called with confirmation', () => {
+    const id = '123';
+    const confirmation = true;
+    global.confirm = jest.fn(() => confirmation);
+
+    component.onDeleteCourse(id);
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      CoursesApiActions.deleteCourse({ payload: id }),
+    );
+  });
+
+  it('should dispatch getCoursesByFragment action when onSearchItem is called with searchValue', () => {
+    const searchValue = 'hello';
+    component.searchValue = searchValue;
 
     component.onSearchItem();
 
-    expect(component.coursesArray).toEqual(component.originalCoursesArray);
-  });
-
-  it('should call coursesService.removeCourseItem on onDeleteCourse confirmation', () => {
-    const courseId = 2;
-    jest.spyOn(window, 'confirm').mockReturnValue(true);
-
-    component.onDeleteCourse(courseId);
-
-    expect(coursesService.removeCourseItem).toHaveBeenCalledWith(courseId);
-  });
-
-  it('should load courses and update arrays', () => {
-    const mockCourses: Course[] = [
-      {
-        id: 1,
-        name: 'Course 1',
-        description: 'Description 1',
-        isTopRated: false,
-        date: '2023-01-01',
-        authors: [],
-        length: 60,
-      },
-      {
-        id: 2,
-        name: 'Course 2',
-        description: 'Description 2',
-        isTopRated: true,
-        date: '2023-02-02',
-        authors: [],
-        length: 90,
-      },
-    ];
-    coursesService.getCourses.mockReturnValue(of(mockCourses));
-
-    component.loadCourses();
-
-    expect(component.coursesArray).toEqual(mockCourses);
-  });
-
-  it('should handle error in loadCourses()', () => {
-    const errorMessage = 'Error message';
-    coursesService.getCourses.mockReturnValue(
-      throwError({ message: errorMessage }),
+    expect(store.dispatch).toHaveBeenCalledWith(
+      CoursesApiActions.getCoursesByFragment({
+        payload: { fragment: searchValue, sort: 'date' },
+      }),
     );
-    jest.spyOn(console, 'log');
+  });
 
-    component.loadCourses();
+  it('should increase startItemIndex and call loadCourses when onLoadMoreClick is called', () => {
+    component.startItemIndex = 0;
 
-    expect(console.log).toHaveBeenCalledWith(errorMessage);
+    component.onLoadMoreClick();
+
+    expect(component.startItemIndex).toBe(component.itemsPerPage);
   });
 
   it('should navigate to the correct route when onEditCourse is called', () => {

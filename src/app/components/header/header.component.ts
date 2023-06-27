@@ -8,11 +8,15 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
 
 import { LogoComponent } from '../logo/logo.component';
 import { AuthService } from '../../shared/services/auth.service';
 import { IfAuthenticatedDirective } from '../../shared/directives/if-authenticated/if-authenticated.directive';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { User } from '../../shared/models/user.models';
+import { UsersApiActions } from '../../store/user/user.actions';
+import { UserSelectors } from '../../store/selectors';
 
 @Component({
   selector: 'app-header',
@@ -23,6 +27,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class HeaderComponent implements OnInit {
   authService = inject(AuthService);
+  private store = inject(Store<{ user: User }>);
   router = inject(Router);
   destroyRef = inject(DestroyRef);
   firstName = signal<string | undefined>(undefined);
@@ -32,12 +37,13 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.authService.statusChanged.subscribe((status: boolean) => {
       if (status) {
-        this.authService
-          .getUserInfo()
+        this.store.dispatch(UsersApiActions.getCurrentUser());
+        this.store
+          .select(UserSelectors.selectUserName)
           .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe((response) => {
-            this.firstName.set(response.name.first);
-            this.lastName.set(response.name.last);
+          .subscribe((user) => {
+            this.firstName.set(user?.first);
+            this.lastName.set(user?.last);
           });
       } else {
         this.firstName.set(undefined);
@@ -47,18 +53,19 @@ export class HeaderComponent implements OnInit {
 
     const status = this.authService.isAuthenticated();
     if (status) {
-      this.authService
-        .getUserInfo()
+      this.store.dispatch(UsersApiActions.getCurrentUser());
+      this.store
+        .select(UserSelectors.selectUserName)
         .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe((response) => {
-          this.firstName.set(response.name.first);
-          this.lastName.set(response.name.last);
+        .subscribe((user) => {
+          this.firstName.set(user?.first);
+          this.lastName.set(user?.last);
         });
     }
   }
 
   onLogout() {
-    this.authService.logout();
+    this.store.dispatch(UsersApiActions.logout());
     this.router.navigate(['/login']);
   }
 }

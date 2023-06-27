@@ -1,33 +1,25 @@
 import * as angularCore from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import { BreadcrumbsComponent } from './breadcrumbs.component';
-import { CoursesService } from '../../shared/services/courses.service';
+import { Course } from '../../shared/models/course.models';
 
 const injectSpy = jest.spyOn(angularCore, 'inject');
 
 describe('BreadcrumbsComponent', () => {
   let component: BreadcrumbsComponent;
-  const coursesService = {
-    getCourses: jest.fn(),
-    coursesChanged: { subscribe: jest.fn() },
-    removeCourseItem: jest.fn(),
-    updateCoureItem: jest.fn(),
-    createCourse: jest.fn(),
-    getCourseItemById: jest.fn(),
-  };
   const router = {
     events: of(new NavigationEnd(0, '', '')),
   } as unknown as Router;
-  const destroyRef = {
-    onDestroy: jest.fn(),
-  } as unknown as angularCore.DestroyRef;
+  const store = { select: jest.fn() } as unknown as Store<{
+    courses: Course[];
+  }>;
 
   beforeEach(() => {
-    injectSpy.mockReturnValueOnce(coursesService as unknown as CoursesService);
     injectSpy.mockReturnValueOnce(router);
-    injectSpy.mockReturnValueOnce(destroyRef);
+    injectSpy.mockReturnValueOnce(store);
     component = new BreadcrumbsComponent();
   });
 
@@ -35,12 +27,55 @@ describe('BreadcrumbsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should set courseName when id is provided', () => {
-    const courseName = 'Course Name';
-    coursesService.getCourseItemById.mockReturnValue(of({ name: courseName }));
+  it('should update course$ after selecting course', () => {
+    const courseId = 123;
+    const mockCourse: Course = {
+      id: 123,
+      name: 'Course 3',
+      description: 'Description 3',
+      isTopRated: false,
+      date: '2023-03-03',
+      authors: [],
+      length: 120,
+    };
+    jest
+      .spyOn(router.events, 'pipe')
+      .mockReturnValue(of(new NavigationEnd(0, `/courses/${courseId}`, '')));
+    jest.spyOn(store, 'select').mockReturnValue(of(mockCourse));
 
     component.ngOnInit();
+    const courseSpy = jest.fn();
+    component.course$?.subscribe(courseSpy);
 
-    expect(component.courseName).toBe(courseName);
+    expect(courseSpy).toHaveBeenCalledWith(mockCourse);
+  });
+
+  it('should set course$ to undefined if course is not found', () => {
+    const courseId = 123;
+    jest
+      .spyOn(router.events, 'pipe')
+      .mockReturnValue(of(new NavigationEnd(0, `/courses/${courseId}`, '')));
+    jest.spyOn(store, 'select').mockReturnValue(of(undefined));
+
+    component.ngOnInit();
+    const courseSpy = jest.fn();
+    component.course$?.subscribe(courseSpy);
+
+    expect(courseSpy).toHaveBeenCalledWith(undefined);
+  });
+
+  it('should return null when courseId is not a valid number', () => {
+    const courseId = 'invalid';
+    const expectedCourse = null;
+    jest
+      .spyOn(router.events, 'pipe')
+      .mockReturnValue(of(new NavigationEnd(0, `/courses/${courseId}`, '')));
+    jest.spyOn(store, 'select').mockReturnValue(of(null));
+
+    component.ngOnInit();
+    const courseSpy = jest.fn();
+    component.course$?.subscribe(courseSpy);
+
+    expect(courseSpy).toHaveBeenCalledWith(expectedCourse);
   });
 });
