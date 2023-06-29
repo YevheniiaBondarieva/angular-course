@@ -58,14 +58,6 @@ export default class LoginComponent implements OnInit {
           payload: { email, password },
         }),
       );
-      // this.store
-      //   .select(UserSelectors.selectErrorMessage)
-      //   .pipe(takeUntilDestroyed(this.destroyRef))
-      //   .subscribe((errorMessage) => {
-      //     if (errorMessage.includes('401 Unauthorized')) {
-      //       this.loginError = true;
-      //     }
-      //   });
     }
   }
 }
