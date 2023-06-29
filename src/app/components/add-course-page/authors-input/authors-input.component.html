@@ -7,7 +7,7 @@
     placeholder="Start typing"
     class="input"
     (input)="onAuthorSearch($event)"
-    [ngClass]="{ 'ng-invalid': savedAuthors.errors?.['noAuthors'] && touched}"
+    [ngClass]="{ 'invalid': savedAuthors.errors?.['noAuthors'] && touched}"
   />
   <span *ngIf="savedAuthors.errors?.['noAuthors'] && touched" class="required authors-required">* required</span>
 
@@ -15,7 +15,7 @@
     class="autocomplete"
     *ngIf="filteredAuthors.length > 0 && !!this.searchTerm"
   >
-    <div class="autocomplete-item" *ngFor="let author of filteredAuthors">
+    <div class="autocomplete-item" *ngFor="let author of filteredAuthors; trackBy: trackByAuthorId">
       <button
         class="autocomplete-item-button"
         type="button"

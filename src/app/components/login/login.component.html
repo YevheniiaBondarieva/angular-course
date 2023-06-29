@@ -1,14 +1,21 @@
 <div>
-  <form class="login-form" [formGroup]="loginForm" *ngIf="(loadingBlockService.show$ | async) === false" (ngSubmit)="onLogin()">
+  <form
+    class="login-form"
+    [formGroup]="loginForm"
+    *ngIf="(loadingBlockService.show$ | async) === false"
+    (ngSubmit)="onLogin()"
+  >
     <div class="login-section">
       <div class="login-header">
-      <h2 class="login-title">Login</h2>
-      <span class="invalid-details" *ngIf="loginError">Wrong e-mail or password</span>
+        <h2 class="login-title">Login</h2>
+        <span class="invalid-details" *ngIf="loginError$ | async"
+          >Wrong e-mail or password</span
+        >
       </div>
       <div class="form-group">
         <div class="label-info">
           <label for="email" class="label">Email:</label>
-          <span class="required" *ngIf="loginForm.get('email')?.errors?.['required'] && loginForm.get('email')?.touched"> required</span>
+          <span class="required" *ngIf="isEmailRequired"> required</span>
         </div>
         <input
           class="input"
@@ -23,7 +30,7 @@
       <div class="form-group">
         <div class="label-info">
           <label for="password" class="label">Password:</label>
-          <span class="required" *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched"> required</span>
+          <span class="required" *ngIf="isPasswordRequired"> required</span>
         </div>
         <input
           class="input"
@@ -37,7 +44,9 @@
       </div>
       <div class="link-and-button">
         <a href="javascript:void(0)" class="link">Forgot password?</a>
-        <button type="submit" class="button" [disabled]="!loginForm.valid">Login</button>
+        <button type="submit" class="button" [disabled]="!loginForm.valid">
+          Login
+        </button>
       </div>
     </div>
   </form>

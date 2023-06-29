@@ -1,11 +1,16 @@
-import { FormControl } from '@angular/forms';
+import * as angularCore from '@angular/core';
+import { FormControl, NgControl } from '@angular/forms';
 
 import { DurationInputComponent } from './duration-input.component';
 
-describe('TextInputComponent', () => {
+const injectSpy = jest.spyOn(angularCore, 'inject');
+
+describe('DurationInputComponent', () => {
   let component: DurationInputComponent;
+  const ngControl = jest.fn() as unknown as NgControl;
 
   beforeEach(() => {
+    injectSpy.mockReturnValueOnce(ngControl);
     component = new DurationInputComponent();
   });
 
@@ -13,59 +18,63 @@ describe('TextInputComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should validate required field', () => {
-    const control = new FormControl('');
-    const result = component.validate(control);
+  describe('Validation', () => {
+    it('should validate required field', () => {
+      const control = new FormControl('');
+      const result = component.validate(control);
 
-    expect(result).toEqual({ required: true });
+      expect(result).toEqual({ required: true });
+    });
+
+    it('should validate invalid number format', () => {
+      const control = new FormControl('abc');
+      const result = component.validate(control);
+
+      expect(result).toEqual({ invalidNumber: true });
+    });
+
+    it('should validate negative value', () => {
+      const control = new FormControl(-10);
+      const result = component.validate(control);
+
+      expect(result).toEqual({ negativeValue: true });
+    });
+
+    it('should validate valid value', () => {
+      const control = new FormControl(10);
+      const result = component.validate(control);
+
+      expect(result).toBeNull();
+    });
   });
 
-  it('should validate invalid number format', () => {
-    const control = new FormControl('abc');
-    const result = component.validate(control);
+  describe('Value Handling', () => {
+    it('should set value', () => {
+      const value = 10;
+      component.onChange = jest.fn();
 
-    expect(result).toEqual({ invalidNumber: true });
-  });
+      component.writeValue(value);
 
-  it('should validate negative value', () => {
-    const control = new FormControl(-10);
-    const result = component.validate(control);
+      expect(component.onChange).toHaveBeenCalledWith(value);
+    });
 
-    expect(result).toEqual({ negativeValue: true });
-  });
+    it('should call onTouch when registering touch', () => {
+      const onTouchMock = jest.fn();
+      component.registerOnTouched(onTouchMock);
 
-  it('should validate valid value', () => {
-    const control = new FormControl(10);
-    const result = component.validate(control);
+      component.onTouch();
 
-    expect(result).toBeNull();
-  });
+      expect(onTouchMock).toHaveBeenCalled();
+    });
 
-  it('should set value', () => {
-    const value = 10;
-    component.onChange = jest.fn();
+    it('should call onChange when writing a value', () => {
+      const onChangeMock = jest.fn();
+      component.registerOnChange(onChangeMock);
 
-    component.writeValue(value);
+      const value = 5;
+      component.writeValue(value);
 
-    expect(component.onChange).toHaveBeenCalledWith(value);
-  });
-
-  it('should call onTouch when registering touch', () => {
-    const onTouchMock = jest.fn();
-    component.registerOnTouched(onTouchMock);
-
-    component.onTouch();
-
-    expect(onTouchMock).toHaveBeenCalled();
-  });
-
-  it('should call onChange when writing a value', () => {
-    const onChangeMock = jest.fn();
-    component.registerOnChange(onChangeMock);
-
-    const value = 5;
-    component.writeValue(value);
-
-    expect(onChangeMock).toHaveBeenCalledWith(value);
+      expect(onChangeMock).toHaveBeenCalledWith(value);
+    });
   });
 });

@@ -25,90 +25,98 @@ describe('AuthorsInputComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should validate when there are no authors', () => {
-    const control = { value: new FormArray([]) } as AbstractControl;
-    const result = component.validate(control);
+  describe('Validation', () => {
+    it('should validate when there are no authors', () => {
+      const control = { value: new FormArray([]) } as AbstractControl;
+      const result = component.validate(control);
 
-    expect(result).toEqual({ noAuthors: true });
+      expect(result).toEqual({ noAuthors: true });
+    });
+
+    it('should not validate when there are authors', () => {
+      const control = { value: new FormArray([new FormControl()]) };
+      const result = component.validate(control as AbstractControl);
+
+      expect(result).toBeNull();
+    });
   });
 
-  it('should not validate when there are authors', () => {
-    const control = { value: new FormArray([new FormControl()]) };
-    const result = component.validate(control as AbstractControl);
+  describe('Adding and Removing Authors', () => {
+    it('should add an author to the saved authors', () => {
+      const author = { id: 1, name: 'John', lastName: 'Doe' };
+      component.savedAuthors = new FormArray([]) as unknown as FormArray;
 
-    expect(result).toBeNull();
+      component.addAuthor(author);
+
+      expect(component.savedAuthors.length).toBe(1);
+    });
+
+    it('should remove an author from the saved authors', () => {
+      const author1 = { id: 1, name: 'John', lastName: 'Doe' } as Author;
+      const author2 = { id: 2, name: 'Jane', lastName: 'Smith' } as Author;
+      component.savedAuthors = new FormArray([
+        new FormControl(author1, { nonNullable: true }),
+        new FormControl(author2, { nonNullable: true }),
+      ]);
+
+      component.removeAuthor(0);
+
+      expect(component.savedAuthors.length).toBe(1);
+    });
   });
 
-  it('should add an author to the saved authors', () => {
-    const author = { id: 1, name: 'John', lastName: 'Doe' };
-    component.savedAuthors = new FormArray([]) as unknown as FormArray;
+  describe('Filtering Authors', () => {
+    it('should filter authors based on the search term', () => {
+      const authors = [
+        { id: 1, name: 'John', lastName: 'Doe' },
+        { id: 2, name: 'Jane', lastName: 'Smith' },
+        { id: 3, name: 'Bob', lastName: 'Johnson' },
+      ];
+      component.allAuthors = authors;
 
-    component.addAuthor(author);
+      component.onAuthorSearch({ target: { value: 'Jo' } } as unknown as Event);
 
-    expect(component.savedAuthors.length).toBe(1);
+      expect(component.filteredAuthors.length).toBe(2);
+    });
+
+    it('should not filter authors when the search term is empty', () => {
+      const authors = [
+        { id: 1, name: 'John', lastName: 'Doe' },
+        { id: 2, name: 'Jane', lastName: 'Smith' },
+        { id: 3, name: 'Bob', lastName: 'Johnson' },
+      ];
+      component.allAuthors = authors;
+
+      component.onAuthorSearch({ target: { value: '' } } as unknown as Event);
+
+      expect(component.filteredAuthors.length).toBe(0);
+    });
   });
 
-  it('should remove an author from the saved authors', () => {
-    const author1 = { id: 1, name: 'John', lastName: 'Doe' };
-    const author2 = { id: 2, name: 'Jane', lastName: 'Smith' };
-    component.savedAuthors = new FormArray([
-      new FormControl(author1),
-      new FormControl(author2),
-    ]);
+  describe('Form Control Interaction', () => {
+    it('should call markAsTouched when an author is added', () => {
+      component.markAsTouched = jest.fn();
+      const author = { id: 1, name: 'John', lastName: 'Doe' };
 
-    component.removeAuthor(0);
+      component.addAuthor(author);
 
-    expect(component.savedAuthors.length).toBe(1);
-  });
+      expect(component.markAsTouched).toHaveBeenCalled();
+    });
 
-  it('should filter authors based on the search term', () => {
-    const authors = [
-      { id: 1, name: 'John', lastName: 'Doe' },
-      { id: 2, name: 'Jane', lastName: 'Smith' },
-      { id: 3, name: 'Bob', lastName: 'Johnson' },
-    ];
-    component.allAuthors = authors;
+    it('should call markAsTouched when an author is removed', () => {
+      component.markAsTouched = jest.fn();
 
-    component.onAuthorSearch({ target: { value: 'Jo' } } as unknown as Event);
+      component.removeAuthor(0);
 
-    expect(component.filteredAuthors.length).toBe(2);
-  });
+      expect(component.markAsTouched).toHaveBeenCalled();
+    });
 
-  it('should not filter authors when the search term is empty', () => {
-    const authors = [
-      { id: 1, name: 'John', lastName: 'Doe' },
-      { id: 2, name: 'Jane', lastName: 'Smith' },
-      { id: 3, name: 'Bob', lastName: 'Johnson' },
-    ];
-    component.allAuthors = authors;
+    it('should call onTouch when markAsTouched is called for the first time', () => {
+      component.onTouch = jest.fn();
 
-    component.onAuthorSearch({ target: { value: '' } } as unknown as Event);
+      component.markAsTouched();
 
-    expect(component.filteredAuthors.length).toBe(0);
-  });
-
-  it('should call markAsTouched when an author is added', () => {
-    component.markAsTouched = jest.fn();
-    const author = { id: 1, name: 'John', lastName: 'Doe' };
-
-    component.addAuthor(author);
-
-    expect(component.markAsTouched).toHaveBeenCalled();
-  });
-
-  it('should call markAsTouched when an author is removed', () => {
-    component.markAsTouched = jest.fn();
-
-    component.removeAuthor(0);
-
-    expect(component.markAsTouched).toHaveBeenCalled();
-  });
-
-  it('should call onTouch when markAsTouched is called for the first time', () => {
-    component.onTouch = jest.fn();
-
-    component.markAsTouched();
-
-    expect(component.onTouch).toHaveBeenCalled();
+      expect(component.onTouch).toHaveBeenCalled();
+    });
   });
 });

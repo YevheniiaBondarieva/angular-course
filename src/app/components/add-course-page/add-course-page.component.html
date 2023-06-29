@@ -11,14 +11,8 @@
         class="input"
         formControlName="name"
       />
-      <span
-        *ngIf="addCourseForm.get('name')?.errors?.['required'] && addCourseForm.get('name')?.touched"
-        class="required"
-        >* required</span
-      >
-      <span
-        *ngIf="addCourseForm.get('name')?.errors?.['maxlength'] && addCourseForm.get('name')?.touched"
-        class="pattern"
+      <span *ngIf="isNameRequired" class="required">* required</span>
+      <span *ngIf="isNameMaxLength" class="pattern"
         >Maximum allowed length is 50 characters</span
       >
     </div>
@@ -32,26 +26,26 @@
         class="textarea"
         formControlName="description"
       ></textarea>
-      <span
-        *ngIf="addCourseForm.get('description')?.errors?.['required'] && addCourseForm.get('description')?.touched"
-        class="required"
-        >* required</span
-      >
-      <span
-        *ngIf="addCourseForm.get('description')?.errors?.['maxlength'] && addCourseForm.get('description')?.touched"
-        class="pattern"
+      <span *ngIf="isDescriptionRequired" class="required">* required</span>
+      <span *ngIf="isDescriptionMaxLength" class="pattern"
         >Maximum allowed length is 500 characters</span
       >
     </div>
-    <app-duration-input [formControl]="length" />
-    <app-date-input [formControl]="date" />
+    <app-duration-input [formControl]="lengthControl" />
+    <app-date-input [formControl]="dateControl" />
     <app-authors-input
-      [savedAuthors]="authors"
+      [savedAuthors]="authorsControl"
       [allAuthors]="allAuthors"
       formArrayName="authors"
     />
     <div class="buttons">
-      <button type="submit" class="button save" [disabled]="!addCourseForm.valid">Save</button>
+      <button
+        type="submit"
+        class="button save"
+        [disabled]="!addCourseForm.valid"
+      >
+        Save
+      </button>
       <button type="button" (click)="onCancel()" class="button">Cancel</button>
     </div>
   </div>

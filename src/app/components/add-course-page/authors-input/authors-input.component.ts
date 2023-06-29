@@ -37,7 +37,7 @@ import { CommonModule } from '@angular/common';
   ],
 })
 export class AuthorsInputComponent implements ControlValueAccessor, Validator {
-  @Input({ required: true }) savedAuthors!: FormArray;
+  @Input({ required: true }) savedAuthors!: FormArray<FormControl<Author>>;
   @Input() allAuthors!: Author[] | [];
   filteredAuthors: Author[] = [];
   searchTerm = '';
@@ -75,12 +75,11 @@ export class AuthorsInputComponent implements ControlValueAccessor, Validator {
   onAuthorSearch(event: Event): void {
     this.markAsTouched();
     this.searchTerm = (event.target as HTMLInputElement).value;
-    this.filteredAuthors = this.allAuthors
-      .filter((author) => this.isAuthorMatch(author, this.searchTerm))
-      .filter(
-        (author, index, self) =>
-          index === self.findIndex((a) => a.id === author.id),
-      );
+    this.filteredAuthors = this.allAuthors.filter(
+      (author, index, self) =>
+        this.isAuthorMatch(author, this.searchTerm) &&
+        index === self.findIndex((a) => a.id === author.id),
+    );
   }
 
   isAuthorMatch(author: Author, searchTerm: string): boolean {
@@ -93,7 +92,9 @@ export class AuthorsInputComponent implements ControlValueAccessor, Validator {
 
   addAuthor(author: Author): void {
     this.markAsTouched();
-    const authorControl = new FormControl(author);
+    const authorControl = new FormControl<Author>(author, {
+      nonNullable: true,
+    });
     this.savedAuthors.push(authorControl);
   }
 
@@ -107,5 +108,9 @@ export class AuthorsInputComponent implements ControlValueAccessor, Validator {
       this.onTouch();
       this.touched = true;
     }
+  }
+
+  trackByAuthorId(index: number, author: Author): number | string {
+    return author.id;
   }
 }

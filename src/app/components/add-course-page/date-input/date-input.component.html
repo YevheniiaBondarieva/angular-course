@@ -5,9 +5,10 @@
     id="date"
     placeholder="MM/DD/YYYY"
     class="input"
-   [formControl]="formControl"
+    [formControl]="formControl"
   />
-  <span class="required date-required" *ngIf="formControl.errors?.['required'] && formControl.touched">* required</span>
-   <span class="required date-required" 
-   *ngIf="formControl.errors?.['invalidDateFormat'] && formControl.touched">The date should be in the format 'dd/mm/yyyy'</span>
+  <span class="required date-required" *ngIf="isDateRequired">* required</span>
+  <span class="required date-required" *ngIf="isInvalidDate"
+    >The date should be in the format 'dd/mm/yyyy'</span
+  >
 </div>

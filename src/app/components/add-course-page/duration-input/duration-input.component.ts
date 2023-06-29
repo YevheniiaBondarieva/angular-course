@@ -1,17 +1,16 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { CommonModule } from '@angular/common';
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
   FormControl,
   FormsModule,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
+  NgControl,
   ReactiveFormsModule,
   ValidationErrors,
-  Validator,
 } from '@angular/forms';
 
 import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
@@ -22,21 +21,20 @@ import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
   templateUrl: './duration-input.component.html',
   styleUrls: ['./duration-input.component.scss'],
   imports: [CommonModule, FormsModule, DurationPipe, ReactiveFormsModule],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => DurationInputComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      multi: true,
-      useExisting: forwardRef(() => DurationInputComponent),
-    },
-  ],
 })
-export class DurationInputComponent implements ControlValueAccessor, Validator {
-  @Input({ required: true }) formControl!: FormControl;
+export class DurationInputComponent implements ControlValueAccessor, OnInit {
+  ngControl = inject(NgControl);
+  durationControl!: FormControl;
+
+  constructor() {
+    this.ngControl.valueAccessor = this;
+  }
+
+  ngOnInit(): void {
+    this.durationControl = this.ngControl.control! as unknown as FormControl;
+    this.durationControl.setValidators([this.validate]);
+    this.durationControl.updateValueAndValidity();
+  }
 
   onChange(value: number) {}
 
@@ -54,6 +52,26 @@ export class DurationInputComponent implements ControlValueAccessor, Validator {
     return null;
   }
 
+  get isDurationRequired(): boolean {
+    return (
+      this.durationControl.errors?.['required'] && this.durationControl.touched
+    );
+  }
+
+  get isInvalidNumber(): boolean {
+    return (
+      this.durationControl.errors?.['invalidNumber'] &&
+      this.durationControl.touched
+    );
+  }
+
+  get isNegativeNumber(): boolean {
+    return (
+      this.durationControl.errors?.['negativeValue'] &&
+      this.durationControl.touched
+    );
+  }
+
   writeValue(obj: number): void {
     this.onChange(obj);
   }
@@ -64,9 +82,5 @@ export class DurationInputComponent implements ControlValueAccessor, Validator {
 
   registerOnTouched(fn: () => void): void {
     this.onTouch = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    isDisabled ? this.formControl.disable() : this.formControl.enable();
   }
 }

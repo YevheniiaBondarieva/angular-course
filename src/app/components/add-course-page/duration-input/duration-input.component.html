@@ -5,10 +5,10 @@
     id="duration"
     placeholder="minutes"
     class="input"
-    [formControl]="formControl"
+    [formControl]="durationControl"
   />
-  <span class="required duration-required" *ngIf="formControl.errors?.['required'] && formControl.touched">* required</span>
-  <span class="required duration-required" *ngIf="formControl.errors?.['invalidNumber'] && formControl.touched">Only numbers are allowed</span>
-  <span class="required duration-required" *ngIf="formControl.errors?.['negativeValue'] && formControl.touched">Minus values are not allowed</span>
-  <span class="duration-result">{{ formControl.value | duration }}</span>
+  <span class="required duration-required" *ngIf="isDurationRequired">* required</span>
+  <span class="required duration-required" *ngIf="isInvalidNumber">Only numbers are allowed</span>
+  <span class="required duration-required" *ngIf="isNegativeNumber">Minus values are not allowed</span>
+  <span class="duration-result">{{ durationControl.value | duration }}</span>
 </div>

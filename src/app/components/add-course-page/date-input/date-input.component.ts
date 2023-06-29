@@ -52,6 +52,16 @@ export class DateInputComponent implements ControlValueAccessor, Validator {
     return null;
   }
 
+  get isDateRequired(): boolean {
+    return this.formControl.errors?.['required'] && this.formControl.touched;
+  }
+
+  get isInvalidDate(): boolean {
+    return (
+      this.formControl.errors?.['invalidDateFormat'] && this.formControl.touched
+    );
+  }
+
   writeValue(obj: string): void {
     this.onChange(obj);
   }

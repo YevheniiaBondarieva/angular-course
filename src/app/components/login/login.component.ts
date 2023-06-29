@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Observable, map } from 'rxjs';
 
 import { LoadingBlockService } from '../../shared/services/loading-block.service';
 import { UsersApiActions } from '../../store/user/user.actions';
@@ -27,13 +27,27 @@ export default class LoginComponent implements OnInit {
   private store = inject(Store<{ user: User }>);
   destroyRef = inject(DestroyRef);
   loginForm!: FormGroup;
-  loginError = false;
+  loginError$!: Observable<boolean>;
 
   ngOnInit() {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
     });
+
+    this.loginError$ = this.store
+      .select(UserSelectors.selectErrorMessage)
+      .pipe(map((errorMessage) => errorMessage.includes('401 Unauthorized')));
+  }
+
+  get isEmailRequired(): boolean {
+    const emailControl = this.loginForm.get('email');
+    return emailControl?.errors?.['required'] && emailControl.touched;
+  }
+
+  get isPasswordRequired(): boolean {
+    const passwordControl = this.loginForm.get('password');
+    return passwordControl?.errors?.['required'] && passwordControl.touched;
   }
 
   onLogin() {
@@ -44,14 +58,14 @@ export default class LoginComponent implements OnInit {
           payload: { email, password },
         }),
       );
-      this.store
-        .select(UserSelectors.selectErrorMessage)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe((errorMessage) => {
-          if (errorMessage.includes('401 Unauthorized')) {
-            this.loginError = true;
-          }
-        });
+      // this.store
+      //   .select(UserSelectors.selectErrorMessage)
+      //   .pipe(takeUntilDestroyed(this.destroyRef))
+      //   .subscribe((errorMessage) => {
+      //     if (errorMessage.includes('401 Unauthorized')) {
+      //       this.loginError = true;
+      //     }
+      //   });
     }
   }
 }

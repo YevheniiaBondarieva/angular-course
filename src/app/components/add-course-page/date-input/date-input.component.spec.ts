@@ -13,52 +13,56 @@ describe('DateInputComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should validate required field', () => {
-    const control = new FormControl('');
-    const result = component.validate(control);
+  describe('Validation', () => {
+    it('should validate required field', () => {
+      const control = new FormControl('');
+      const result = component.validate(control);
 
-    expect(result).toEqual({ required: true });
+      expect(result).toEqual({ required: true });
+    });
+
+    it('should validate invalid date format', () => {
+      const control = new FormControl('12.34.5678');
+      const result = component.validate(control);
+
+      expect(result).toEqual({ invalidDateFormat: true });
+    });
+
+    it('should validate valid date format', () => {
+      const control = new FormControl('12/31/2022');
+      const result = component.validate(control);
+
+      expect(result).toBeNull();
+    });
   });
 
-  it('should validate invalid date format', () => {
-    const control = new FormControl('12.34.5678');
-    const result = component.validate(control);
+  describe('Value Handling', () => {
+    it('should set value', () => {
+      const value = '12/31/2022';
+      component.onChange = jest.fn();
 
-    expect(result).toEqual({ invalidDateFormat: true });
-  });
+      component.writeValue(value);
 
-  it('should validate valid date format', () => {
-    const control = new FormControl('12/31/2022');
-    const result = component.validate(control);
+      expect(component.onChange).toHaveBeenCalledWith(value);
+    });
 
-    expect(result).toBeNull();
-  });
+    it('should call onTouch when registering touch', () => {
+      const onTouchMock = jest.fn();
+      component.registerOnTouched(onTouchMock);
 
-  it('should set value', () => {
-    const value = '12/31/2022';
-    component.onChange = jest.fn();
+      component.onTouch();
 
-    component.writeValue(value);
+      expect(onTouchMock).toHaveBeenCalled();
+    });
 
-    expect(component.onChange).toHaveBeenCalledWith(value);
-  });
+    it('should call onChange when writing a value', () => {
+      const onChangeMock = jest.fn();
+      component.registerOnChange(onChangeMock);
 
-  it('should call onTouch when registering touch', () => {
-    const onTouchMock = jest.fn();
-    component.registerOnTouched(onTouchMock);
+      const value = '12/31/2021';
+      component.writeValue(value);
 
-    component.onTouch();
-
-    expect(onTouchMock).toHaveBeenCalled();
-  });
-
-  it('should call onChange when writing a value', () => {
-    const onChangeMock = jest.fn();
-    component.registerOnChange(onChangeMock);
-
-    const value = '12/31/2021';
-    component.writeValue(value);
-
-    expect(onChangeMock).toHaveBeenCalledWith(value);
+      expect(onChangeMock).toHaveBeenCalledWith(value);
+    });
   });
 });
