@@ -1,16 +1,13 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import {
-  AbstractControl,
   ControlValueAccessor,
   FormControl,
   FormsModule,
   NgControl,
   ReactiveFormsModule,
-  ValidationErrors,
 } from '@angular/forms';
 
 import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
@@ -22,53 +19,39 @@ import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
   styleUrls: ['./duration-input.component.scss'],
   imports: [CommonModule, FormsModule, DurationPipe, ReactiveFormsModule],
 })
-export class DurationInputComponent implements ControlValueAccessor, OnInit {
+export class DurationInputComponent implements ControlValueAccessor {
   ngControl = inject(NgControl);
-  durationControl!: FormControl;
 
   constructor() {
     this.ngControl.valueAccessor = this;
-  }
-
-  ngOnInit(): void {
-    this.durationControl = this.ngControl.control! as unknown as FormControl;
-    this.durationControl.setValidators([this.validate]);
-    this.durationControl.updateValueAndValidity();
   }
 
   onChange(value: number) {}
 
   onTouch() {}
 
-  validate(control: AbstractControl): ValidationErrors | null {
-    const value = control.value;
-    if (value && isNaN(value)) {
-      return { invalidNumber: true };
-    } else if (!value) {
-      return { required: true };
-    } else if (value <= 0) {
-      return { negativeValue: true };
-    }
-    return null;
+  get durationControl(): FormControl {
+    return this.ngControl.control as unknown as FormControl;
   }
 
   get isDurationRequired(): boolean {
     return (
-      this.durationControl.errors?.['required'] && this.durationControl.touched
+      this.ngControl.control?.errors?.['required'] &&
+      this.ngControl.control.touched
     );
   }
 
   get isInvalidNumber(): boolean {
     return (
-      this.durationControl.errors?.['invalidNumber'] &&
-      this.durationControl.touched
+      this.ngControl.control?.errors?.['invalidNumber'] &&
+      this.ngControl.control.touched
     );
   }
 
   get isNegativeNumber(): boolean {
     return (
-      this.durationControl.errors?.['negativeValue'] &&
-      this.durationControl.touched
+      this.ngControl.control?.errors?.['negativeValue'] &&
+      this.ngControl.control.touched
     );
   }
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { CommonModule } from '@angular/common';
-import { Component, Input, forwardRef } from '@angular/core';
+import { AfterViewInit, Component, Input, forwardRef } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -33,9 +33,18 @@ import {
     },
   ],
 })
-export class DateInputComponent implements ControlValueAccessor, Validator {
-  @Input({ required: true }) formControl!: FormControl;
+export class DateInputComponent
+  implements ControlValueAccessor, Validator, AfterViewInit
+{
+  dateControl = new FormControl('', { nonNullable: true });
   date: string | undefined;
+
+  ngAfterViewInit(): void {
+    this.dateControl.setValidators(this.validate.bind(this));
+    this.dateControl.valueChanges.subscribe((value) => {
+      this.onChange(value);
+    });
+  }
 
   onChange(value: string) {}
 
@@ -53,17 +62,18 @@ export class DateInputComponent implements ControlValueAccessor, Validator {
   }
 
   get isDateRequired(): boolean {
-    return this.formControl.errors?.['required'] && this.formControl.touched;
+    return this.dateControl.errors?.['required'] && this.dateControl.touched;
   }
 
   get isInvalidDate(): boolean {
     return (
-      this.formControl.errors?.['invalidDateFormat'] && this.formControl.touched
+      this.dateControl.errors?.['invalidDateFormat'] && this.dateControl.touched
     );
   }
 
   writeValue(obj: string): void {
-    this.onChange(obj);
+    const date = new Date(obj).toLocaleDateString('en-GB');
+    this.dateControl.setValue(date);
   }
 
   registerOnChange(fn: (value: string) => void): void {

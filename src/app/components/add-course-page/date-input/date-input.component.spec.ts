@@ -43,7 +43,7 @@ describe('DateInputComponent', () => {
 
       component.writeValue(value);
 
-      expect(component.onChange).toHaveBeenCalledWith(value);
+      expect(component.dateControl.value).toEqual('31/12/2022');
     });
 
     it('should call onTouch when registering touch', () => {
@@ -53,16 +53,6 @@ describe('DateInputComponent', () => {
       component.onTouch();
 
       expect(onTouchMock).toHaveBeenCalled();
-    });
-
-    it('should call onChange when writing a value', () => {
-      const onChangeMock = jest.fn();
-      component.registerOnChange(onChangeMock);
-
-      const value = '12/31/2021';
-      component.writeValue(value);
-
-      expect(onChangeMock).toHaveBeenCalledWith(value);
     });
   });
 });

@@ -72,9 +72,14 @@ export default class AddCoursePageComponent implements OnInit {
         validators: [Validators.required, Validators.maxLength(500)],
       }),
       isTopRated: new FormControl(false, { nonNullable: true }),
-      date: new FormControl('', { nonNullable: true }),
+      date: new FormControl('', {
+        nonNullable: true,
+      }),
       authors: new FormArray<FormControl<Author>>([]),
-      length: new FormControl(0, { nonNullable: true }),
+      length: new FormControl(0, {
+        nonNullable: true,
+        validators: [Validators.required, this.validateDuration],
+      }),
     });
 
     this.coursesService
@@ -98,6 +103,16 @@ export default class AddCoursePageComponent implements OnInit {
           AddCourseFunctions.fillFormFields(this.addCourseForm, this.course);
         });
     }
+  }
+
+  validateDuration(control: FormControl): { [s: string]: boolean } | null {
+    const value = control.value;
+    if (value && isNaN(value)) {
+      return { invalidNumber: true };
+    } else if (value < 0) {
+      return { negativeValue: true };
+    }
+    return null;
   }
 
   get lengthControl() {
@@ -138,6 +153,10 @@ export default class AddCoursePageComponent implements OnInit {
 
   onSave(): void {
     this.course = this.addCourseForm.value;
+    if (!this.course) {
+      return;
+    }
+    this.course.date = AddCourseFunctions.convertDateFormat(this.course.date);
     this.strategyFacade.submit(this.course);
   }
 

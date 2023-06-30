@@ -6,6 +6,8 @@ import { Store } from '@ngrx/store';
 import AddCoursePageComponent from './add-course-page.component';
 import { StrategyFacade } from '../../shared/services/strategy-facade.service';
 import { Course } from '../../shared/models/course.models';
+import { FormControl } from '@angular/forms';
+import { AddCourseFunctions } from './add-course-page.functions';
 
 const injectSpy = jest.spyOn(angularCore, 'inject');
 
@@ -78,10 +80,36 @@ describe('AddCoursePageComponent', () => {
 
   it('should call strategyFacade.submit when onSave is called', () => {
     const submitSpy = jest.spyOn(component.strategyFacade, 'submit');
+    jest
+      .spyOn(AddCourseFunctions, 'convertDateFormat')
+      .mockReturnValueOnce('2017-11-05T23:17:58+00:00');
 
     component.ngOnInit();
     component.onSave();
 
     expect(submitSpy).toHaveBeenCalledTimes(1);
+  });
+
+  describe('Duration validation', () => {
+    it('should validate invalid number format', () => {
+      const control = new FormControl('abc');
+      const result = component.validateDuration(control);
+
+      expect(result).toEqual({ invalidNumber: true });
+    });
+
+    it('should validate negative value', () => {
+      const control = new FormControl(-10);
+      const result = component.validateDuration(control);
+
+      expect(result).toEqual({ negativeValue: true });
+    });
+
+    it('should validate valid value', () => {
+      const control = new FormControl(10);
+      const result = component.validateDuration(control);
+
+      expect(result).toBeNull();
+    });
   });
 });

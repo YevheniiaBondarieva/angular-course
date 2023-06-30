@@ -1,5 +1,5 @@
 import * as angularCore from '@angular/core';
-import { FormControl, NgControl } from '@angular/forms';
+import { NgControl } from '@angular/forms';
 
 import { DurationInputComponent } from './duration-input.component';
 
@@ -16,36 +16,6 @@ describe('DurationInputComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  describe('Validation', () => {
-    it('should validate required field', () => {
-      const control = new FormControl('');
-      const result = component.validate(control);
-
-      expect(result).toEqual({ required: true });
-    });
-
-    it('should validate invalid number format', () => {
-      const control = new FormControl('abc');
-      const result = component.validate(control);
-
-      expect(result).toEqual({ invalidNumber: true });
-    });
-
-    it('should validate negative value', () => {
-      const control = new FormControl(-10);
-      const result = component.validate(control);
-
-      expect(result).toEqual({ negativeValue: true });
-    });
-
-    it('should validate valid value', () => {
-      const control = new FormControl(10);
-      const result = component.validate(control);
-
-      expect(result).toBeNull();
-    });
   });
 
   describe('Value Handling', () => {
