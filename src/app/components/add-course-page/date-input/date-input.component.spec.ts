@@ -1,11 +1,18 @@
+import * as angularCore from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { DateInputComponent } from './date-input.component';
 
+const injectSpy = jest.spyOn(angularCore, 'inject');
+
 describe('DateInputComponent', () => {
   let component: DateInputComponent;
+  const destroyRef = {
+    onDestroy: jest.fn(),
+  } as unknown as angularCore.DestroyRef;
 
   beforeEach(() => {
+    injectSpy.mockReturnValueOnce(destroyRef);
     component = new DateInputComponent();
   });
 

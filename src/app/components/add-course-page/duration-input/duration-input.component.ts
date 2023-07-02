@@ -3,6 +3,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import {
+  AbstractControl,
   ControlValueAccessor,
   FormControl,
   FormsModule,
@@ -30,8 +31,8 @@ export class DurationInputComponent implements ControlValueAccessor {
 
   onTouch() {}
 
-  get durationControl(): FormControl {
-    return this.ngControl.control as unknown as FormControl;
+  get durationControl(): AbstractControl | null {
+    return this.ngControl?.control;
   }
 
   get isDurationRequired(): boolean {
@@ -53,6 +54,12 @@ export class DurationInputComponent implements ControlValueAccessor {
       this.ngControl.control?.errors?.['negativeValue'] &&
       this.ngControl.control.touched
     );
+  }
+
+  getFormControl(): FormControl {
+    return this.durationControl instanceof FormControl
+      ? this.durationControl
+      : new FormControl(0);
   }
 
   writeValue(obj: number): void {

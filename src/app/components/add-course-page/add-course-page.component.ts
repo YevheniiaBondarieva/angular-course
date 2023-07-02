@@ -107,10 +107,11 @@ export default class AddCoursePageComponent implements OnInit {
 
   validateDuration(control: FormControl): { [s: string]: boolean } | null {
     const value = control.value;
-    if (value && isNaN(value)) {
-      return { invalidNumber: true };
-    } else if (value < 0) {
+    const numberRegex = /^[0-9]+$/;
+    if (value < 0) {
       return { negativeValue: true };
+    } else if (!numberRegex.test(value)) {
+      return { invalidNumber: true };
     }
     return null;
   }

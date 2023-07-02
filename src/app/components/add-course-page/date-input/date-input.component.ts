@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, forwardRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  Input,
+  forwardRef,
+  inject,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -36,14 +44,17 @@ import {
 export class DateInputComponent
   implements ControlValueAccessor, Validator, AfterViewInit
 {
+  destroyRef = inject(DestroyRef);
   dateControl = new FormControl('', { nonNullable: true });
   date: string | undefined;
 
   ngAfterViewInit(): void {
     this.dateControl.setValidators(this.validate.bind(this));
-    this.dateControl.valueChanges.subscribe((value) => {
-      this.onChange(value);
-    });
+    this.dateControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        this.onChange(value);
+      });
   }
 
   onChange(value: string) {}
