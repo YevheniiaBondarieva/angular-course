@@ -6,12 +6,47 @@
     grid-template-rows: auto auto;
 }
 
+.author-tags {
+    width: 100%;
+    grid-row-start: 2;
+    grid-column-start: 1;
+}
+
+.author-tag {
+    display: inline-block;
+    background-color: map-get($colors, 'signal-white');
+    padding: 5px;
+    border-radius: 4px;
+}
+
 .input {
     border: 2px solid map-get($colors, 'signal-white');
     height: 30px;
     border-radius: 4px;
     padding-left: 10px;
     width: 100%;
+    grid-column-start: 1;
+    grid-row-start: 3;
+}
+
+.input.invalid {
+    border: 2px solid map-get($colors, 'red');
+}
+
+.autocomplete {
+    grid-column-start: 1;
+    border: 2px solid map-get($colors, 'signal-white');
+}
+
+.autocomplete-item {
+    border: 2px solid map-get($colors, 'signal-white');
+    text-align: center;
+}
+
+.autocomplete-item-button {
+    width: 100%;
+    background-color: map-get($colors, 'white');
+    border: none;
 }
 
 .label {

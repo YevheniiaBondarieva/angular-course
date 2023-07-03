@@ -3,7 +3,7 @@ import { createReducer, on } from '@ngrx/store';
 import { User } from '../../shared/models/user.models';
 import { UsersApiActions } from './user.actions';
 
-interface UserState extends User {
+export interface UserState extends User {
   error: string;
 }
 

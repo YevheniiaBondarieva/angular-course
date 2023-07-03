@@ -1,11 +1,21 @@
 <div>
-  <form class="login-form" *ngIf="(loadingBlockService.show$ | async) === false">
+  <form
+    class="login-form"
+    [formGroup]="loginForm"
+    *ngIf="(loadingBlockService.show$ | async) === false"
+    (ngSubmit)="onLogin()"
+  >
     <div class="login-section">
-      <h2 class="login-title">Login</h2>
+      <div class="login-header">
+        <h2 class="login-title">Login</h2>
+        <span class="invalid-details" *ngIf="loginError$ | async"
+          >Wrong e-mail or password</span
+        >
+      </div>
       <div class="form-group">
         <div class="label-info">
           <label for="email" class="label">Email:</label>
-          <span class="required"> required</span>
+          <span class="required" *ngIf="isEmailRequired"> required</span>
         </div>
         <input
           class="input"
@@ -13,15 +23,14 @@
           id="email"
           placeholder="Enter e-mail"
           name="email"
-          [(ngModel)]="email"
           autocomplete="email"
-          required
+          formControlName="email"
         />
       </div>
       <div class="form-group">
         <div class="label-info">
           <label for="password" class="label">Password:</label>
-          <span class="required"> required</span>
+          <span class="required" *ngIf="isPasswordRequired"> required</span>
         </div>
         <input
           class="input"
@@ -29,14 +38,15 @@
           id="password"
           placeholder="Enter password"
           name="password"
-          [(ngModel)]="password"
-          autocomplete="current-password"
-          required
+          autocomplete="password"
+          formControlName="password"
         />
       </div>
       <div class="link-and-button">
         <a href="javascript:void(0)" class="link">Forgot password?</a>
-        <button type="submit" class="button" (click)="onLogin()">Login</button>
+        <button type="submit" class="button" [disabled]="!loginForm.valid">
+          Login
+        </button>
       </div>
     </div>
   </form>

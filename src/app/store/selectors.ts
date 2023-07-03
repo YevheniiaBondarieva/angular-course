@@ -4,12 +4,15 @@ import { EntityState, createEntityAdapter } from '@ngrx/entity';
 
 import { Course } from '../shared/models/course.models';
 import { User } from '../shared/models/user.models';
+import { UserState } from './user/user.reducer';
 
 export namespace UserSelectors {
   export const selectUserName = createSelector(
     (state: { user: User }) => state?.user?.name,
     (name) => name,
   );
+  export const selectErrorMessage = (state: { user: UserState }) =>
+    state.user.error;
 }
 
 export namespace CourseSelectors {

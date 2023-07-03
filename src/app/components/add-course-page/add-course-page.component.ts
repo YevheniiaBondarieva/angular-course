@@ -1,8 +1,17 @@
 import { Component, DestroyRef, Input, OnInit, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { RouteReuseStrategy, Router, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
+import { CommonModule } from '@angular/common';
+import { take } from 'rxjs';
 
 import { DurationInputComponent } from './duration-input/duration-input.component';
 import { DateInputComponent } from './date-input/date-input.component';
@@ -11,11 +20,13 @@ import { Course } from '../../shared/models/course.models';
 import { Author } from '../../shared/models/author.models';
 import { CustomRouteReuseStrategy } from '../../shared/strategy/custom-route-reuse.strategy';
 import { StrategyFacade } from '../../shared/services/strategy-facade.service';
-import { Strategy } from '../../shared/models/course-form.model';
+import { AddCourseForm, Strategy } from '../../shared/models/course-form.model';
 import { CreateCourseService } from '../../shared/services/create-course.service';
 import { EditCourseService } from '../../shared/services/edit-course.service';
 import { CoursesApiActions } from '../../store/courses/courses.actions';
 import { CourseSelectors } from '../../store/selectors';
+import { CoursesService } from '../../shared/services/courses.service';
+import { AddCourseFunctions } from './add-course-page.functions';
 
 @Component({
   selector: 'app-add-course-page',
@@ -27,7 +38,9 @@ import { CourseSelectors } from '../../store/selectors';
     FormsModule,
     DateInputComponent,
     AuthorsInputComponent,
+    CommonModule,
     RouterOutlet,
+    ReactiveFormsModule,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
@@ -42,16 +55,40 @@ export default class AddCoursePageComponent implements OnInit {
   strategyFacade = inject(StrategyFacade);
   private store = inject(Store<{ courses: Course[] }>);
   destroyRef = inject(DestroyRef);
+  coursesService = inject(CoursesService);
+  addCourseForm!: FormGroup;
   course: Course | undefined;
-  IsExist = false;
-  courseTitle: string | undefined;
-  courseDescription: string | undefined;
-  courseDuration: number | undefined;
-  courseDate: string | undefined;
-  courseAuthors: Author[] | undefined;
-  CourseIsTopRated = false;
+  allAuthors: Author[] | [] = [];
 
   ngOnInit() {
+    this.addCourseForm = new FormGroup<AddCourseForm>({
+      id: new FormControl('', { nonNullable: true }),
+      name: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.maxLength(50)],
+      }),
+      description: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.maxLength(500)],
+      }),
+      isTopRated: new FormControl(false, { nonNullable: true }),
+      date: new FormControl('', {
+        nonNullable: true,
+      }),
+      authors: new FormArray<FormControl<Author>>([]),
+      length: new FormControl(0, {
+        nonNullable: true,
+        validators: [Validators.required, this.validateDuration],
+      }),
+    });
+
+    this.coursesService
+      .getAuthorsByFragment('')
+      .pipe(take(1))
+      .subscribe((result) => {
+        this.allAuthors = result;
+      });
+
     const strategy = this.id ? Strategy.Edit : Strategy.Create;
     this.strategyFacade.registerStrategy(strategy);
     if (this.id) {
@@ -63,49 +100,67 @@ export default class AddCoursePageComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe((course) => {
           this.course = course;
-          this.fillFormFields();
+          AddCourseFunctions.fillFormFields(this.addCourseForm, this.course);
         });
     }
   }
 
-  fillFormFields(): void {
-    if (this.course !== undefined) {
-      this.IsExist = true;
-      this.courseTitle = this.course.name;
-      this.CourseIsTopRated = this.course.isTopRated;
-      this.courseDescription = this.course.description;
-      this.courseDuration = this.course.length;
-      this.courseDate = this.course.date;
-      this.courseAuthors = this.course.authors;
+  validateDuration(control: FormControl): { [s: string]: boolean } | null {
+    const value = control.value;
+    const numberRegex = /^[0-9]+$/;
+    if (!numberRegex.test(value)) {
+      return { invalidNumber: true };
     }
+    return null;
   }
 
-  onDurationChange(duration: number) {
-    this.courseDuration = duration;
+  get lengthControl() {
+    return <FormControl>this.addCourseForm.get('length');
   }
 
-  onDateChange(date: string) {
-    this.courseDate = date;
+  get dateControl() {
+    return <FormControl>this.addCourseForm.get('date');
   }
 
-  onAuthorsChange(authors: Author[]) {
-    this.courseAuthors = authors;
+  get authorsControl() {
+    return <FormArray>this.addCourseForm.get('authors');
+  }
+
+  get isNameRequired(): boolean {
+    const nameControl = this.addCourseForm.get('name');
+    return nameControl?.errors?.['required'] && nameControl.touched;
+  }
+
+  get isNameMaxLength(): boolean {
+    const nameControl = this.addCourseForm.get('name');
+    return nameControl?.errors?.['maxlength'] && nameControl.touched;
+  }
+
+  get isDescriptionRequired(): boolean {
+    const descriptionControl = this.addCourseForm.get('description');
+    return (
+      descriptionControl?.errors?.['required'] && descriptionControl.touched
+    );
+  }
+
+  get isDescriptionMaxLength(): boolean {
+    const descriptionControl = this.addCourseForm.get('description');
+    return (
+      descriptionControl?.errors?.['maxlength'] && descriptionControl.touched
+    );
   }
 
   onSave(): void {
-    this.course = {
-      id: Number(this.id),
-      name: this.courseTitle || '',
-      description: this.courseDescription || '',
-      isTopRated: this.CourseIsTopRated,
-      date: this.courseDate || '',
-      authors: this.courseAuthors || [],
-      length: this.courseDuration || 0,
-    };
+    this.course = this.addCourseForm.value;
+    if (!this.course) {
+      return;
+    }
+    this.course.date = AddCourseFunctions.convertDateFormat(this.course.date);
     this.strategyFacade.submit(this.course);
   }
 
   onCancel(): void {
+    this.addCourseForm.reset();
     this.router.navigate(['/courses']);
   }
 }

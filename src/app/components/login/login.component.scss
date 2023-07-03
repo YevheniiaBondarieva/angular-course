@@ -37,6 +37,16 @@
     padding-bottom: 17px;
 }
 
+.login-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.invalid-details {
+    color: map-get($colors, 'red');
+}
+
 .form-group {
     margin: 0px;
     padding: 0px;

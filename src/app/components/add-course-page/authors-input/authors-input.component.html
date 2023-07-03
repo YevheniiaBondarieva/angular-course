@@ -1,12 +1,44 @@
 <div class="autors-section">
   <label for="authors" class="label">Authors: </label>
+  <br />
   <input
     type="text"
     id="authors"
     placeholder="Start typing"
     class="input"
-    [(ngModel)]="authors"
-    (ngModelChange)="authorsChange.emit(authors)"
+    (input)="onAuthorSearch($event)"
+    [ngClass]="{ 'invalid': savedAuthors.errors?.['noAuthors'] && touched}"
   />
-  <span class="required authors-required">* required</span>
+  <span *ngIf="savedAuthors.errors?.['noAuthors'] && touched" class="required authors-required">* required</span>
+
+  <div
+    class="autocomplete"
+    *ngIf="filteredAuthors.length > 0 && !!this.searchTerm"
+  >
+    <div class="autocomplete-item" *ngFor="let author of filteredAuthors; trackBy: trackByAuthorId">
+      <button
+        class="autocomplete-item-button"
+        type="button"
+        (click)="addAuthor(author)"
+      >
+        {{ author.name }} {{ author.lastName }}
+      </button>
+    </div>
+  </div>
+
+  <div class="author-tags">
+  <div
+    *ngFor="let author of selectedAuthors; let i = index"
+    class="author-tag"
+  >
+    {{ author.value.name }} {{ author.value.lastName }}
+    <button
+      type="button"
+      (click)="removeAuthor(i)"
+      class="delete-button"
+    >
+      x
+    </button>
+  </div>
 </div>
+
