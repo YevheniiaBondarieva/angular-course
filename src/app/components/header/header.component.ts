@@ -48,9 +48,6 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedLanguage = this.languageService.getSelectedLanguage();
-    if (this.selectedLanguage) {
-      this.translateService.use(this.selectedLanguage);
-    }
     this.authService.statusChanged.subscribe((status: boolean) => {
       if (status) {
         this.store.dispatch(UsersApiActions.getCurrentUser());
