@@ -1,7 +1,7 @@
 <div class="main">
   <div *ngIf="(loadingBlockService.show$ | async) === false">
   <div class="no-data" *ngIf="coursesArray.length === 0">
-    NO DATA. FEEL FREE TO ADD NEW COURSE
+    {{'courses.noData' | translate}}
   </div>
   <div *ngIf="coursesArray.length !== 0">
     <app-courses-list-item
@@ -11,7 +11,7 @@
       (editCourse)="onEditCourse($event)"
     />
     <button type="button" class="load-more" (click)="onLoadMoreClick()">
-      LOAD MORE
+      {{'courses.loadMore' | translate}}
     </button>
   </div>
   </div>

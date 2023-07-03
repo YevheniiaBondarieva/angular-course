@@ -7,7 +7,7 @@
   <div class="course-info">
     <div class="course-header">
       <h2>
-        Video Course {{ courseItem?.id }}.{{ courseItem?.name | uppercase }}
+        {{'courseItem.videoCourseText' | translate}} {{ courseItem?.id }}.{{ courseItem?.name | uppercase }}
         <i
           *ngIf="courseItem?.isTopRated"
           class="fa-sharp fa-solid fa-star fa-xs"
@@ -20,16 +20,16 @@
         </li>
         <li class="date">
           <i class="fa-regular fa-calendar-days"></i
-          >{{ courseItem?.date | date : 'dd MMM, yyyy' }}
+          >{{ courseItem?.date | date : 'dd MMM, yyyy':undefined:locale }}
         </li>
       </ul>
     </div>
     {{ courseItem?.description }}
   </div>
   <button class="course-button" (click)="onEditCourse(courseItem?.id)">
-    <i class="fa fa-pencil"></i>Edit
+    <i class="fa fa-pencil"></i>{{'courseItem.edit' | translate}}
   </button>
   <button class="course-button" (click)="onDeleteCouse(courseItem?.id)">
-    <i class="fa fa-trash"></i>Delete
+    <i class="fa fa-trash"></i>{{'courseItem.delete' | translate}}
   </button>
 </div>

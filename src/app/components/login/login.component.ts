@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, map } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { LoadingBlockService } from '../../shared/services/loading-block.service';
 import { UsersApiActions } from '../../store/user/user.actions';
@@ -18,7 +19,7 @@ import { UserSelectors } from '../../store/selectors';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })

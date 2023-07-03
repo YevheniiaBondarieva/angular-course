@@ -1,15 +1,15 @@
 <div class="autors-section">
-  <label for="authors" class="label">Authors: </label>
+  <label for="authors" class="label">{{'addCourse.authors' | translate}}: </label>
   <br />
   <input
     type="text"
     id="authors"
-    placeholder="Start typing"
+    placeholder="{{'addCourse.authorsPlaceholder' | translate}}"
     class="input"
     (input)="onAuthorSearch($event)"
     [ngClass]="{ 'invalid': savedAuthors.errors?.['noAuthors'] && touched}"
   />
-  <span *ngIf="savedAuthors.errors?.['noAuthors'] && touched" class="required authors-required">* required</span>
+  <span *ngIf="savedAuthors.errors?.['noAuthors'] && touched" class="required authors-required">* {{'addCourse.required' | translate}}</span>
 
   <div
     class="autocomplete"

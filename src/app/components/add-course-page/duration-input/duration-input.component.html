@@ -1,13 +1,13 @@
 <div class="duration-section">
-  <label for="duration" class="label"> Duration: </label>
+  <label for="duration" class="label"> {{'addCourse.duration' | translate}}: </label>
   <input
     type="number"
     id="duration"
-    placeholder="minutes"
+    placeholder="{{'addCourse.durationPlaceholder' | translate}}"
     class="input"
     [formControl] ='durationControl'
   />
-  <span class="required duration-required" *ngIf="isDurationRequired">* required</span>
-  <span class="required duration-required" *ngIf="isInvalidNumber">Only positive values are available</span>
-  <span class="duration-result">{{ durationControl?.value | duration }}</span>
+  <span class="required duration-required" *ngIf="isDurationRequired">* {{'addCourse.required' | translate}}</span>
+  <span class="required duration-required" *ngIf="isInvalidNumber">{{'addCourse.durationOnlyPositiveNumbers' | translate}}</span>
+  <span class="duration-result">{{ durationControl.value | duration }}</span>
 </div>

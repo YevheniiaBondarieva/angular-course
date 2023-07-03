@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { CoursesListItemComponent } from './courses-list-item/courses-list-item.component';
 import { Course } from '../../shared/models/course.models';
@@ -21,7 +22,12 @@ import { CourseSelectors } from '../../store/selectors';
 @Component({
   selector: 'app-courses',
   standalone: true,
-  imports: [CommonModule, CoursesListItemComponent, SectionComponent],
+  imports: [
+    CommonModule,
+    CoursesListItemComponent,
+    SectionComponent,
+    TranslateModule,
+  ],
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.scss'],
 })

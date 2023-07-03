@@ -13,16 +13,17 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { Author } from '../../../shared/models/author.models';
-import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'app-authors-input',
   templateUrl: './authors-input.component.html',
   styleUrls: ['./authors-input.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, TranslateModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

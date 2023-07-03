@@ -12,6 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
 import { take } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { DurationInputComponent } from './duration-input/duration-input.component';
 import { DateInputComponent } from './date-input/date-input.component';
@@ -41,6 +42,7 @@ import { AddCourseFunctions } from './add-course-page.functions';
     CommonModule,
     RouterOutlet,
     ReactiveFormsModule,
+    TranslateModule,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },

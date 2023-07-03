@@ -1,14 +1,26 @@
 import { fakeAsync, tick } from '@angular/core/testing';
+import { RenderResult, fireEvent, render } from '@testing-library/angular';
+import { EventEmitter } from '@angular/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
 
 import { SectionComponent } from './section.component';
-import { RenderResult, fireEvent, render } from '@testing-library/angular';
 
 describe('SectionComponent', () => {
   let fixture: RenderResult<SectionComponent>;
   let component: SectionComponent;
+  const translateService = {
+    use: jest.fn(),
+    get: jest.fn().mockReturnValue(of()),
+    onLangChange: new EventEmitter<LangChangeEvent>(),
+    onTranslationChange: new EventEmitter(),
+    onDefaultLangChange: new EventEmitter(),
+  } as unknown as TranslateService;
 
   beforeEach(async () => {
-    fixture = await render(SectionComponent);
+    fixture = await render(SectionComponent, {
+      providers: [{ provide: TranslateService, useValue: translateService }],
+    });
     component = fixture.fixture.componentInstance;
   });
 

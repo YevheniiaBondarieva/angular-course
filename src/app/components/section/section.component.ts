@@ -23,11 +23,12 @@ import {
   filter,
 } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-section',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './section.component.html',
   styleUrls: ['./section.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

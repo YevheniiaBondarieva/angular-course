@@ -1,14 +1,16 @@
 <div class="date-section">
-  <label for="date" class="label">Date: </label>
+  <label for="date" class="label">{{ 'addCourse.date' | translate }}: </label>
   <input
     type="string"
     id="date"
-    placeholder="MM/DD/YYYY"
+    placeholder="{{ 'addCourse.datePlaceholder' | translate }}"
     class="input"
     [formControl]="dateControl"
   />
-  <span class="required date-required" *ngIf="isDateRequired">* required</span>
-  <span class="required date-required" *ngIf="isInvalidDate"
-    >The date should be in the format 'dd/mm/yyyy'</span
+  <span class="required date-required" *ngIf="isDateRequired"
+    >* {{ 'addCourse.required' | translate }}</span
   >
+  <span class="required date-required" *ngIf="isInvalidDate">{{
+    'addCourse.dateFormat' | translate
+  }}</span>
 </div>

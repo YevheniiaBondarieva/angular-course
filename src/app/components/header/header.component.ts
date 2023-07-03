@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { LogoComponent } from '../logo/logo.component';
 import { AuthService } from '../../shared/services/auth.service';
@@ -21,7 +22,12 @@ import { UserSelectors } from '../../store/selectors';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, LogoComponent, IfAuthenticatedDirective],
+  imports: [
+    CommonModule,
+    LogoComponent,
+    IfAuthenticatedDirective,
+    TranslateModule,
+  ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
@@ -30,6 +36,7 @@ export class HeaderComponent implements OnInit {
   private store = inject(Store<{ user: User }>);
   router = inject(Router);
   destroyRef = inject(DestroyRef);
+  translateService = inject(TranslateService);
   firstName = signal<string | undefined>(undefined);
   lastName = signal<string | undefined>(undefined);
   fullName = computed(() => `${this.firstName()} ${this.lastName()}`);
@@ -67,5 +74,10 @@ export class HeaderComponent implements OnInit {
   onLogout() {
     this.store.dispatch(UsersApiActions.logout());
     this.router.navigate(['/login']);
+  }
+
+  changeLanguage(event: Event): void {
+    const lang = (event.target as HTMLSelectElement).value;
+    this.translateService.use(lang);
   }
 }

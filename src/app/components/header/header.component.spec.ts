@@ -1,7 +1,13 @@
-import { RenderResult, render } from '@testing-library/angular';
+import { RenderResult, fireEvent, render } from '@testing-library/angular';
 import { HttpClient } from '@angular/common/http';
 import { of } from 'rxjs';
 import { Store } from '@ngrx/store';
+import {
+  LangChangeEvent,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
+import { EventEmitter } from '@angular/core';
 
 import { AuthService } from '../../shared/services/auth.service';
 import { HeaderComponent } from './header.component';
@@ -19,13 +25,21 @@ describe('HeaderComponent', () => {
   } as unknown as Store<{
     user: User;
   }>;
+  const translateService = {
+    use: jest.fn(),
+    get: jest.fn().mockReturnValue(of()),
+    onLangChange: new EventEmitter<LangChangeEvent>(),
+    onTranslationChange: new EventEmitter(),
+    onDefaultLangChange: new EventEmitter(),
+  } as unknown as TranslateService;
 
   beforeEach(async () => {
     fixture = await render(HeaderComponent, {
-      imports: [IfAuthenticatedDirective],
+      imports: [IfAuthenticatedDirective, TranslateModule],
       providers: [
         AuthService,
         { provide: HttpClient, useValue: {} },
+        { provide: TranslateService, useValue: translateService },
         {
           provide: Store<{
             user: User;
@@ -119,5 +133,18 @@ describe('HeaderComponent', () => {
     component.ngOnInit();
 
     expect(component.fullName()).toEqual('undefined undefined');
+  });
+
+  it('should change language', () => {
+    jest.spyOn(translateService, 'use');
+
+    const selectElement = fixture.container.querySelector(
+      '.select-language',
+    ) as Element;
+    fireEvent.change(selectElement, {
+      target: { value: 'en' },
+    });
+
+    expect(translateService.use).toHaveBeenCalledWith('en');
   });
 });
