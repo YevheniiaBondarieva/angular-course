@@ -98,13 +98,6 @@ describe('AddCoursePageComponent', () => {
       expect(result).toEqual({ invalidNumber: true });
     });
 
-    it('should validate negative value', () => {
-      const control = new FormControl(-10);
-      const result = component.validateDuration(control);
-
-      expect(result).toEqual({ negativeValue: true });
-    });
-
     it('should validate valid value', () => {
       const control = new FormControl(10);
       const result = component.validateDuration(control);
