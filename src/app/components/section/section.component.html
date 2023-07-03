@@ -3,7 +3,7 @@
     <input
       type="text"
       name="search"
-      placeholder="Text to search"
+      placeholder="{{'section.searchText' | translate}}"
       class="search-input"
       formControlName="search"
       (keyup)="onSearchChange()"
@@ -11,7 +11,7 @@
   </form>
   <div class="add-course-wrapper">
     <button class="add-course" type="button" (click)="onAddCourse()">
-      <i class="fa fa-plus"></i> Add course
+      <i class="fa fa-plus"></i> {{'section.addCourse' | translate}}
     </button>
   </div>
 </div>

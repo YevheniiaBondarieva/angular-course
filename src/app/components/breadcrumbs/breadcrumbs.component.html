@@ -1,7 +1,7 @@
 <nav>
   <ul class="list">
     <li>
-      <a [routerLink]="['/courses']" class="link">Courses</a
+      <a [routerLink]="['/courses']" class="link">{{'breadcrumbs.mainText' | translate}}</a
       >
       <span *ngIf="(course$ | async)?.name as courseName" class="course-name">
         / {{ courseName }}

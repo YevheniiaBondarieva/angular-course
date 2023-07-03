@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 import CoursesPageComponent from './components/courses-page/courses-page.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -18,6 +19,7 @@ import { LoadingBlockComponent } from './components/loading-block/loading-block.
   imports: [
     CommonModule,
     RouterOutlet,
+    TranslateModule,
     CoursesPageComponent,
     FooterComponent,
     HeaderComponent,

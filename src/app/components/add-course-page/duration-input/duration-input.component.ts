@@ -9,6 +9,7 @@ import {
   NgControl,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
 
@@ -17,7 +18,13 @@ import { DurationPipe } from '../../../shared/pipes/duration/duration.pipe';
   selector: 'app-duration-input',
   templateUrl: './duration-input.component.html',
   styleUrls: ['./duration-input.component.scss'],
-  imports: [CommonModule, FormsModule, DurationPipe, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DurationPipe,
+    ReactiveFormsModule,
+    TranslateModule,
+  ],
 })
 export class DurationInputComponent implements ControlValueAccessor {
   ngControl = inject(NgControl);

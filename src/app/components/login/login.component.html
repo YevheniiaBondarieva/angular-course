@@ -7,21 +7,21 @@
   >
     <div class="login-section">
       <div class="login-header">
-        <h2 class="login-title">Login</h2>
+        <h2 class="login-title">{{ 'login.text' | translate }}</h2>
         <span class="invalid-details" *ngIf="loginError$ | async"
-          >Wrong e-mail or password</span
+          >{{ 'login.failed' | translate }}</span
         >
       </div>
       <div class="form-group">
         <div class="label-info">
-          <label for="email" class="label">Email:</label>
-          <span class="required" *ngIf="isEmailRequired"> required</span>
+          <label for="email" class="label">{{ 'login.email' | translate }}:</label>
+          <span class="required" *ngIf="isEmailRequired"> {{ 'login.required' | translate }}</span>
         </div>
         <input
           class="input"
           type="email"
           id="email"
-          placeholder="Enter e-mail"
+          placeholder="{{ 'login.emailPlaceholder' | translate }}"
           name="email"
           autocomplete="email"
           formControlName="email"
@@ -29,23 +29,27 @@
       </div>
       <div class="form-group">
         <div class="label-info">
-          <label for="password" class="label">Password:</label>
-          <span class="required" *ngIf="isPasswordRequired"> required</span>
+          <label for="password" class="label">{{
+            'login.password' | translate
+          }}</label>
+          <span class="required" *ngIf="isPasswordRequired"> {{ 'login.required' | translate }}</span>
         </div>
         <input
           class="input"
           type="password"
           id="password"
-          placeholder="Enter password"
+          placeholder="{{ 'login.passwordPlaceholder' | translate }}"
           name="password"
           autocomplete="password"
           formControlName="password"
         />
       </div>
       <div class="link-and-button">
-        <a href="javascript:void(0)" class="link">Forgot password?</a>
+        <a href="javascript:void(0)" class="link">{{
+          'login.noPassword' | translate
+        }}</a>
         <button type="submit" class="button" [disabled]="!loginForm.valid">
-          Login
+          {{ 'login.text' | translate }}
         </button>
       </div>
     </div>

@@ -1,34 +1,34 @@
 <form class="add-course-form" [formGroup]="addCourseForm" (ngSubmit)="onSave()">
   <div class="add-course-section">
-    <h2>New course</h2>
+    <h2>{{'addCourse.header' | translate}}</h2>
     <div class="title-section">
-      <label for="title" class="label">Title:</label>
+      <label for="title" class="label">{{'addCourse.title' | translate}}:</label>
       <input
         type="text"
         id="title"
-        placeholder="Text input"
+        placeholder="{{'addCourse.titlePlaceholder' | translate}}"
         name="title"
         class="input"
         formControlName="name"
       />
-      <span *ngIf="isNameRequired" class="required">* required</span>
+      <span *ngIf="isNameRequired" class="required">* {{'addCourse.required' | translate}}</span>
       <span *ngIf="isNameMaxLength" class="pattern"
-        >Maximum allowed length is 50 characters</span
+        >{{'addCourse.maxTitleLength' | translate}}</span
       >
     </div>
     <div class="description-section">
-      <label for="description" class="label">Description:</label>
+      <label for="description" class="label">{{'addCourse.description' | translate}}:</label>
       <textarea
         type="text"
         id="description"
-        placeholder="Add description"
+        placeholder="{{'addCourse.descriptionPlaceholder' | translate}}"
         name="description"
         class="textarea"
         formControlName="description"
       ></textarea>
-      <span *ngIf="isDescriptionRequired" class="required">* required</span>
+      <span *ngIf="isDescriptionRequired" class="required">* {{'addCourse.required' | translate}}</span>
       <span *ngIf="isDescriptionMaxLength" class="pattern"
-        >Maximum allowed length is 500 characters</span
+        >{{'addCourse.maxDescriptionLength' | translate}}</span
       >
     </div>
     <app-duration-input [formControl]="lengthControl" />
@@ -44,9 +44,9 @@
         class="button save"
         [disabled]="!addCourseForm.valid"
       >
-        Save
+        {{'addCourse.save' | translate}}
       </button>
-      <button type="button" (click)="onCancel()" class="button">Cancel</button>
+      <button type="button" (click)="onCancel()" class="button">{{'addCourse.cancel' | translate}}</button>
     </div>
   </div>
 </form>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable, filter, of, switchMap } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { Course } from '../../shared/models/course.models';
 import { CourseSelectors } from '../../store/selectors';
@@ -10,7 +11,7 @@ import { CourseSelectors } from '../../store/selectors';
 @Component({
   selector: 'app-breadcrumbs',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './breadcrumbs.component.html',
   styleUrls: ['./breadcrumbs.component.scss'],
 })

@@ -21,13 +21,14 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'app-date-input',
   templateUrl: './date-input.component.html',
   styleUrls: ['./date-input.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, TranslateModule],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -83,6 +84,9 @@ export class DateInputComponent
   }
 
   writeValue(obj: string): void {
+    if (!obj) {
+      return;
+    }
     const date = new Date(obj).toLocaleDateString('en-GB');
     this.dateControl.setValue(date);
   }

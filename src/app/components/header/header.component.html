@@ -10,10 +10,14 @@
     <li class="list-item">
       <button class="log-off" (click)="onLogout()">
         <a class="link">
-          <i class="fa fa-sign-out icon" aria-hidden="true"></i> Log off</a
+          <i class="fa fa-sign-out icon" aria-hidden="true"></i> {{ 'header.logout' | translate }}</a
         >
       </button>
     </li>
   </ul>
   </div>
+  <select (change)="changeLanguage($event)" class="select-language" [ngModel]="selectedLanguage">
+    <option value="en">{{'language.english' | translate }}</option>
+    <option value="uk">{{'language.ukraine' | translate }}</option>
+  </select>
 </header>

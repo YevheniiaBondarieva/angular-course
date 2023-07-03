@@ -1,20 +1,37 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable, map, of } from 'rxjs';
 
 @Pipe({
   name: 'duration',
   standalone: true,
 })
 export class DurationPipe implements PipeTransform {
-  transform(value: number | undefined): string | undefined {
+  translateService = inject(TranslateService);
+  transform(value: number | undefined): Observable<string | undefined> {
     if (typeof value === 'number') {
       const hours = Math.floor(value / 60);
       const minutes = value % 60;
       if (hours > 0) {
-        return `${hours}h ${minutes}min`;
+        return this.translateService
+          .stream('duration.hoursMinutes')
+          .pipe(
+            map((translation: string) =>
+              translation
+                .replace('{{hours}}', `${hours}`)
+                .replace('{{minutes}}', `${minutes}`),
+            ),
+          );
       } else {
-        return `${minutes}min`;
+        return this.translateService
+          .stream('duration.minutes')
+          .pipe(
+            map((translation: string) =>
+              translation.replace('{{minutes}}', `${minutes}`),
+            ),
+          );
       }
     }
-    return undefined;
+    return of(undefined);
   }
 }

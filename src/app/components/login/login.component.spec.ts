@@ -1,6 +1,8 @@
 import { RenderResult, render } from '@testing-library/angular';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { EventEmitter } from '@angular/core';
 
 import LoginComponent from './login.component';
 import { User } from '../../shared/models/user.models';
@@ -10,6 +12,13 @@ describe('LoginComponent', () => {
   let fixture: RenderResult<LoginComponent>;
   let component: LoginComponent;
   let store: Store;
+  const translateService = {
+    use: jest.fn(),
+    get: jest.fn().mockReturnValue(of()),
+    onLangChange: new EventEmitter<LangChangeEvent>(),
+    onTranslationChange: new EventEmitter(),
+    onDefaultLangChange: new EventEmitter(),
+  } as unknown as TranslateService;
 
   beforeEach(async () => {
     store = {
@@ -19,7 +28,10 @@ describe('LoginComponent', () => {
       user: User;
     }>;
     fixture = await render(LoginComponent, {
-      providers: [{ provide: Store, useValue: store }],
+      providers: [
+        { provide: Store, useValue: store },
+        { provide: TranslateService, useValue: translateService },
+      ],
     });
     component = fixture.fixture.componentInstance;
   });
