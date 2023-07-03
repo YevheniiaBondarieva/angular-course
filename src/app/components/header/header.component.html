@@ -16,7 +16,7 @@
     </li>
   </ul>
   </div>
-  <select (change)="changeLanguage($event)" class="select-language">
+  <select (change)="changeLanguage($event)" class="select-language" [ngModel]="selectedLanguage">
     <option value="en">{{'language.english' | translate }}</option>
     <option value="uk">{{'language.ukraine' | translate }}</option>
   </select>

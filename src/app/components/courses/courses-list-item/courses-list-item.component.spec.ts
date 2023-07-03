@@ -12,6 +12,7 @@ describe('CoursesListItemComponent', () => {
     use: jest.fn(),
     instant: jest.fn((key: string) => key),
     get: jest.fn((key: string) => of(key)),
+    stream: jest.fn().mockReturnValue(of('1h 35min')),
     onLangChange: new EventEmitter<LangChangeEvent>(),
     onTranslationChange: new EventEmitter(),
     onDefaultLangChange: new EventEmitter(),
@@ -75,7 +76,7 @@ describe('CoursesListItemComponent', () => {
     });
 
     it('should render course duration correctly', () => {
-      const duration = fixture.getByText('duration.hoursMinutes');
+      const duration = fixture.getByText('1h 35min');
 
       expect(duration).toBeTruthy();
     });

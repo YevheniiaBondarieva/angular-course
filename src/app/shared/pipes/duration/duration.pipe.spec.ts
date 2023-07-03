@@ -1,7 +1,8 @@
 import * as angularCore from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { of } from 'rxjs';
 
 import { DurationPipe } from './duration.pipe';
-import { TranslateService } from '@ngx-translate/core';
 
 const injectSpy = jest.spyOn(angularCore, 'inject');
 
@@ -9,6 +10,7 @@ describe('DurationPipe', () => {
   let pipe: DurationPipe;
   const translateService = {
     instant: jest.fn(),
+    stream: jest.fn(),
   };
 
   beforeEach(() => {
@@ -22,25 +24,31 @@ describe('DurationPipe', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('should transform duration(less than 1h) to "mm min" format', () => {
+  it('should transform duration(less than 1h) to "mm min" format', (done) => {
     const duration = 45;
-    translateService.instant.mockReturnValue('45min');
-    const transformedValue = pipe.transform(duration);
+    translateService.stream.mockReturnValue(of('45min'));
 
-    expect(transformedValue).toBe('45min');
+    pipe.transform(duration).subscribe((transformedValue) => {
+      expect(transformedValue).toBe('45min');
+      done();
+    });
   });
-  it('should transform duration(more than 1h) to "hh h mm min" format', () => {
+  it('should transform duration(more than 1h) to "hh h mm min" format', (done) => {
     const duration = 65;
-    translateService.instant.mockReturnValue('1h 5min');
-    const transformedValue = pipe.transform(duration);
+    translateService.stream.mockReturnValue(of('1h 5min'));
 
-    expect(transformedValue).toBe('1h 5min');
+    pipe.transform(duration).subscribe((transformedValue) => {
+      expect(transformedValue).toBe('1h 5min');
+      done();
+    });
   });
-  it('should return undefined for undefined duration', () => {
+  it('should return undefined for undefined duration', (done) => {
     const duration = undefined;
-    translateService.instant.mockReturnValue('');
-    const transformedValue = pipe.transform(duration);
+    translateService.stream.mockReturnValue(of(''));
 
-    expect(transformedValue).toBeUndefined();
+    pipe.transform(duration).subscribe((transformedValue) => {
+      expect(transformedValue).toBeUndefined();
+      done();
+    });
   });
 });

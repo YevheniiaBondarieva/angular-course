@@ -16,7 +16,7 @@
       <ul class="duration-and-date">
         <li class="length">
           <i class="fa-regular fa-clock fa-rotate-270"></i
-          >{{ courseItem?.length | duration }}
+          >{{ courseItem?.length | duration | async }}
         </li>
         <li class="date">
           <i class="fa-regular fa-calendar-days"></i
